@@ -1,3 +1,21 @@
+# DoSomething.org User API
+
+## Requirements
+1. Homestead VM configured for MongoDB 
+2. Composer
+
+## Setup
+
+After installation, run the outstanding migrations:
+
+    $ php artisan migrate
+
+Seed the database with test data by running this command:
+
+    $ php artisan db:seed
+
+***
+
 ## Laravel PHP Framework
 
 [![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
