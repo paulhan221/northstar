@@ -6,7 +6,8 @@
 	"type": "project",
 	"require": {
 		"laravel/framework": "4.2.*",
-		"jenssegers/mongodb": "~2.0"
+		"jenssegers/mongodb": "~2.0",
+		"phpunit/phpunit": "4.0.*"
 	},
 	"autoload": {
 		"classmap": [

@@ -4,6 +4,7 @@ class UserController extends \BaseController {
 
 	/**
 	 * Display a listing of the resource.
+	 * GET /users
 	 *
 	 * @return Response
 	 */
@@ -41,12 +42,44 @@ class UserController extends \BaseController {
 
 	/**
 	 * Store a newly created resource in storage.
+	 * POST /users
 	 *
 	 * @return Response
 	 */
 	public function store()
 	{
-		//
+		$user = '';
+		$validator = Validator::make(Input::all(), User::$rules);
+
+		if($validator->passes()) {
+
+			try {
+				$user = new User;
+			    $user->email = mb_strtolower(Input::get('email'));
+			    $user->mobile = Input::get('mobile');
+			    $user->password = Hash::make(Input::get('password'));
+			    $user->birthdate = Input::get('birthdate');
+			    $user->first_name = Input::get('first_name');
+			    $user->drupal_uid = uniqid();
+			    $user->doc_id = uniqid();
+			    $user->save();
+
+			    return Response::json([
+			    	'created_at' => $user->created_at, 
+			    	'doc_id' => $user->doc_id
+			    	], 
+			        201
+			    );
+			}
+			catch(\Exception $e) {
+				return Response::json($e, 401);
+			}
+			
+		}
+		else {
+			return Response::json('Validation did not pass', 401);
+		}
+
 	}
 
 
@@ -64,23 +97,12 @@ class UserController extends \BaseController {
 
 	/**
 	 * Update the specified resource in storage.
+	 * PUT /users
 	 *
 	 * @param  int  $id
 	 * @return Response
 	 */
 	public function update($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
 	{
 		//
 	}
