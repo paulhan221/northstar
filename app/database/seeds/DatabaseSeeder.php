@@ -25,12 +25,19 @@ class UserTableSeeder extends Seeder {
         DB::table('users')->delete();
 
         User::create(array(
-        	'email' => 'test@dosomething.org', 
-        	'mobile' => '5555555555',
-        	'drupal_uid' => 123456,
-        	'doc_id' => Hash::make("123abc"),
-        	'first_name' => 'First',
-        	'last_name' => 'Last',
+            'email' => 'test@dosomething.org', 
+            'mobile' => '5555555555',
+            'password' => Hash::make('secret'),
+            'drupal_uid' => 123456,
+            'addr_street1' => '123',
+            'addr_street2' => '456',
+            'addr_city' => 'Paris',
+            'addr_state' => 'Florida',
+            'addr_zip' => '555555',
+            'country' => 'US',
+            'birthdate' => '12/17/91',
+            'first_name' => 'First',
+            'last_name' => 'Last',
             'campaigns' => array(
             	array(
             			"nid" => 123,
@@ -44,22 +51,29 @@ class UserTableSeeder extends Seeder {
         )); 
 
         User::create(array(
-        	'email' => 'example@dosomething.org', 
-        	'drupal_uid' => 789542,
-        	'doc_id' => Hash::make("456def"),
-        	'mobile' => '3333333333',
+            'email' => 'info@dosomething.org', 
+            'mobile' => '5556669999',
+            'password' => Hash::make('secret'),
+            'drupal_uid' => 456788,
+            'addr_street1' => '456',
+            'addr_street2' => '33',
+            'addr_city' => 'Example',
+            'addr_state' => 'Testing',
+            'addr_zip' => '555555',
+            'country' => 'US',
+            'birthdate' => '12/17/91',
             'first_name' => 'John',
-        	'last_name' => 'Doe',
+            'last_name' => 'Doe',
             'campaigns' => array(
-            	array(
-            			"nid" => 555,
-            			"rbid" => 200,
-            			"sid" => 200
-            	),
-            	array(
-            			"nid" => 124,
-            			"sid" => 201
-            	))
+                array(
+                        "nid" => 123,
+                        "rbid" => 100,
+                        "sid" => 100
+                ),
+                array(
+                        "nid" => 456,
+                        "sid" => 101
+                ))
         )); 
     }
 

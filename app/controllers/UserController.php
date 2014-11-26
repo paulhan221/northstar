@@ -8,18 +8,106 @@ class UserController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function index()
-	{
+	public function getUsers()
+	{	
 		$drupal_uid = Input::has('drupal_uid') ? (int) Input::get('drupal_uid') : false;
-		$doc_id = Input::has('doc_id') ? (int) Input::get('drupal_uid') : false;
-		$mobile = Input::has('mobile') ? Input::get('drupal_uid') : false;
-		$email = Input::has('email') ? Input::get('drupal_uid') : false;
+		$id = Input::has('_id') ? Input::get('_id') : false;
+		$mobile = Input::has('mobile') ? Input::get('mobile') : false;
+		$email = Input::has('email') ? Input::get('email') : false;
 
 		if($drupal_uid) {
 			$user = User::where('drupal_uid', $drupal_uid)->first();
 		}
-		elseif($doc_id) {
-			$user = User::where('doc_id', $doc_id)->first();
+		elseif($id) {
+			$user = User::where('_id', $id)->first();
+		}
+		elseif($mobile) {
+			$user = User::where('mobile', $mobile)->first();
+		}
+		elseif($email) {
+			$user = User::where('email', $email)->first();
+		}
+		else {
+			$user = false;
+		}
+
+		if(!$user) {
+			return Response::json('The resource does not exist', 404);
+		}
+		else {
+			return Response::json($user, 200);
+		}
+	}
+
+
+	/**
+	 * Store a newly created resource in storage.
+	 * POST /users
+	 *
+	 * @return Response
+	 */
+	public function postUsers()
+	{
+		$input = Input::json()->all();
+		$validator = Validator::make($input, User::$rules);
+
+		if($validator->passes()) {
+
+			try {
+				$user = new User;
+				foreach($input as $key => $value) {
+					if($key == 'password') {
+						$user->$key = Hash::make($value);
+					}
+					elseif($key = 'email') {
+						$user->$key = mb_strtolower($value);
+					}
+					elseif(isset($key)) {
+						$user->$key = $value;
+					}
+				}
+				
+				$user->save();
+
+				$response = array(
+					'created_at' => $user->created_at->format('Y-m-d H:i:s'), 
+					'_id' => $user->_id
+					);
+
+				return Response::json($response, 201);
+
+				}
+			catch(\Exception $e) {
+				return Response::json($e, 401);
+			}
+			
+		}
+		else {
+			return Response::json($validator->messages()->all(), 401);
+		}
+
+	}
+
+
+	/**
+	 * Update the specified resource in storage.
+	 * PUT /users
+	 *
+	 * @return Response
+	 */
+	public function putUsers()
+	{	
+		$input = Input::json()->all();
+		$drupal_uid = Input::has('drupal_uid') ? (int) Input::get('drupal_uid') : false;
+		$id = Input::has('_id') ? Input::get('_id') : false;
+		$mobile = Input::has('mobile') ? Input::get('mobile') : false;
+		$email = Input::has('email') ? Input::get('email') : false;
+
+		if($drupal_uid) {
+			$user = User::where('drupal_uid', $drupal_uid)->first();
+		}
+		elseif($id) {
+			$user = User::where('_id', $id)->first();
 		}
 		elseif($mobile) {
 			$user = User::where('mobile', $mobile)->first();
@@ -35,78 +123,24 @@ class UserController extends \BaseController {
 			return Response::json("The resource does not exist", 404);
 		}
 		else {
-			return Response::json($user, 200);
-		}
-	}
-
-
-	/**
-	 * Store a newly created resource in storage.
-	 * POST /users
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		$user = '';
-		$validator = Validator::make(Input::all(), User::$rules);
-
-		if($validator->passes()) {
-
-			try {
-				$user = new User;
-			    $user->email = mb_strtolower(Input::get('email'));
-			    $user->mobile = Input::get('mobile');
-			    $user->password = Hash::make(Input::get('password'));
-			    $user->birthdate = Input::get('birthdate');
-			    $user->first_name = Input::get('first_name');
-			    $user->drupal_uid = uniqid();
-			    $user->doc_id = uniqid();
-			    $user->save();
-
-			    return Response::json([
-			    	'created_at' => $user->created_at, 
-			    	'doc_id' => $user->doc_id
-			    	], 
-			        201
-			    );
+			foreach($input as $key => $value) {
+				if($key == 'password') {
+					$user->$key = Hash::make($value);
+				}
+				elseif($key = 'email') {
+					$user->$key = mb_strtolower($value);
+				}
+				elseif(isset($key)) {
+					$user->$key = $value;
+				}
 			}
-			catch(\Exception $e) {
-				return Response::json($e, 401);
-			}
-			
+			$user->save();
+
+			$response = array('updated_at' => $user->updated_at->format('Y-m-d H:i:s'));
+
+			return Response::json($response, 202);
 		}
-		else {
-			return Response::json('Validation did not pass', 401);
-		}
-
 	}
-
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Update the specified resource in storage.
-	 * PUT /users
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		//
-	}
-
 
 	/**
 	 * Logging In
