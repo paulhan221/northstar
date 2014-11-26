@@ -19,6 +19,6 @@ Route::get('/', function()
 // https://api.dosomething.org/1/ 
 Route::group(array('prefix' => '1'), function()
 {
-	Route::resource('users', 'UserController');  	   
+	Route::controller('/', 'UserController');  	   
 });
 

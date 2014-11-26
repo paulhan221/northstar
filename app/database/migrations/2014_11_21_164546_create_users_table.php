@@ -14,17 +14,22 @@ class CreateUsersTable extends Migration {
 	{
 		Schema::create('users', function($collection)
 		{	
+			/* Database-generated ID */
+		    //$collection->index('doc_id');
+
+		    $collection->text('mobile');
+
 			/* Email address - forced to lowercase */
 		    $collection->unique('email');
 
 		    /* Mobile phone number */
 		    $collection->text('mobile');
 
+		    /* Password */
+		    $collection->text('password');
+
 		     /* Drupal UID */
 		    $collection->text('drupal_uid');
-
-		    /* Database-generated ID */
-		    $collection->text('doc_uid');
 
 		    /* Mailing address */
 		    $collection->text('addr_street1');
