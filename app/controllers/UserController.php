@@ -143,8 +143,12 @@ class UserController extends \BaseController {
 
 			$user = User::where('email', '=', $input['email'])->first();
 			if ( !($user instanceof User) ) {
+				$user = User::where('mobile', '=', $input['mobile'])->first();
+			}
+			if ( !($user instanceof User) ) {
 				return Response::json("User is not registered.");
 			}
+			
 			if (Hash::check( $input['password'] , $user->password)) {
 				$token = $user->login();
 				$token->user = $user->toArray();

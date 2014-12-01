@@ -52,7 +52,7 @@ class CampaignController extends \BaseController {
 		if($id) {
 			$campaign = new Campaign;
 			$campaign->nid = $id;
-			$campaign->sid = $id.'_'.rand(1,50);
+			$campaign->sid = (int) Input::get('sid') 
 			$user = User::first();
 			$campaign = $user->campaigns()->save($campaign);
 			$response = array(
