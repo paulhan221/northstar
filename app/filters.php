@@ -57,10 +57,10 @@ Route::filter('auth.basic', function()
 
 Route::filter('auth.token', function() 
 {
-	if (!Input::has('token')) {
+	if (!Request::header('Session')) {
 		return Response::json("No token found.");
 	}
-	$token = Input::get('token');
+	$token = Request::header('Session');
 	if (!Token::where('key', '=', $token )->exists()) {
 		return Response::json("Token mismatched.");
 	}

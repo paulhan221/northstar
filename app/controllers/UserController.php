@@ -28,7 +28,7 @@ class UserController extends \BaseController {
 			$user = User::where('email', $email)->first();
 		}
 		else {
-			$user = User::all();
+			$user = false;
 		}
 
 		if(!$user) {
@@ -175,10 +175,10 @@ class UserController extends \BaseController {
 	 *	@param user User
 	 */
 	public function logout() {
-		if (!Input::has('token')) {
+		if (!Request::header('Session')) {
 			return Response::json('No token given.');
 		}
-		$input_token = Input::get('token');
+		$input_token = Request::header('Session');
 		$token = Token::where('key', '=', $input_token)->first();
 		if (empty($token)) {
 			return Response::json('No active session found.');

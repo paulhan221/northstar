@@ -21,8 +21,6 @@ Route::group(array('prefix' => '1'), function()
 {	
 	//Route::group(array('before' => 'auth.token'), function() {
 		Route::post('campaigns/{id}/signup', 'CampaignController@signup');
-		Route::post('campaigns/{id}/reportback', 'CampaignController@reportback');
-		Route::get('campaigns', 'CampaignController@index');
 	//}); 
 
 	Route::post('login', 'UserController@login');
