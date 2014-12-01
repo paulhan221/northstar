@@ -18,7 +18,18 @@ Route::get('/', function()
 
 // https://api.dosomething.org/1/ 
 Route::group(array('prefix' => '1'), function()
-{
-	Route::controller('/', 'UserController');  	   
+{	
+	//Route::group(array('before' => 'auth.token'), function() {
+		Route::post('campaigns/{id}/signup', 'CampaignController@signup');
+		Route::post('campaigns/{id}/reportback', 'CampaignController@reportback');
+		Route::get('campaigns', 'CampaignController@index');
+	//}); 
+
+	Route::post('login', 'UserController@login');
+	Route::post('logout', 'UserController@logout');
+
+	Route::get('/users/campaigns', 'CampaignController@index');
+	Route::controller('/', 'UserController');  	 
+
 });
 

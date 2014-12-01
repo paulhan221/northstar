@@ -54,6 +54,19 @@ Route::filter('auth.basic', function()
 	return Auth::basic();
 });
 
+
+Route::filter('auth.token', function() 
+{
+	if (!Input::has('token')) {
+		return Response::json("No token found.");
+	}
+	$token = Input::get('token');
+	if (!Token::where('key', '=', $token )->exists()) {
+		return Response::json("Token mismatched.");
+	}
+		
+});
+
 /*
 |--------------------------------------------------------------------------
 | Guest Filter
