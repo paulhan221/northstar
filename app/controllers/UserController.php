@@ -56,13 +56,7 @@ class UserController extends \BaseController {
 			try {
 				$user = new User;
 				foreach($input as $key => $value) {
-					if($key == 'password') {
-						$user->$key = Hash::make($value);
-					}
-					elseif($key = 'email') {
-						$user->$key = mb_strtolower($value);
-					}
-					elseif(isset($key)) {
+					if(isset($key)) {
 						$user->$key = $value;
 					}
 				}
@@ -124,13 +118,7 @@ class UserController extends \BaseController {
 		}
 		else {
 			foreach($input as $key => $value) {
-				if($key == 'password') {
-					$user->$key = Hash::make($value);
-				}
-				elseif($key = 'email') {
-					$user->$key = mb_strtolower($value);
-				}
-				elseif(isset($key)) {
+				if(isset($key)) {
 					$user->$key = $value;
 				}
 			}
@@ -143,15 +131,72 @@ class UserController extends \BaseController {
 	}
 
 	/**
-	 * Logging In
+	 * Authenticate a registered user
 	 *
-	 * @param  int  $id
 	 * @return Response
 	 */
 	public function login()
 	{
-		//
+		$input = Input::json()->all();
+		$validator = Validator::make($input, User::$auth_rules);
+		if($validator->passes()) {
+
+			$user = User::where('email', '=', $input['email'])->first();
+			if ( !($user instanceof User) ) {
+				$user = User::where('mobile', '=', $input['mobile'])->first();
+			}
+			if ( !($user instanceof User) ) {
+				return Response::json("User is not registered.");
+			}
+			
+			if (Hash::check( $input['password'] , $user->password)) {
+				$token = $user->login();
+				$token->user = $user->toArray();
+
+				$response = array(
+					'email' => $user->email,
+					'phone' => $user->mobile,
+					'created_at' => $user->created_at->format('Y-m-d H:i:s'), 
+					'updated_at' => $user->updated_at->format('Y-m-d H:i:s'), 
+					'_id' => $user->_id,
+					'session_token' => $token->key
+				);
+				return Response::json($response, '200');
+			}
+			else {
+				return Response::json("Incorrect password.", '412');
+			}
+
+		}
+		else {
+			return Response::json($validator->messages()->all(), 401);
+		}
+
 	}
 
+	/**
+	 *	Logout a user: remove the specified active token from the database
+	 *	@param user User
+	 */
+	public function logout() {
+		if (!Request::header('Session')) {
+			return Response::json('No token given.');
+		}
+		$input_token = Request::header('Session');
+		$token = Token::where('key', '=', $input_token)->first();
+		if (empty($token)) {
+			return Response::json('No active session found.');
+		}
+		if ($token->user_id !== $user->_id) {
+			Response::json('You do not own this token.');
+		}
+		if ($token->delete()){
+			return Response::json('User logged out successfully.', '202');
+		}	
+		else {
+			return Response::json('User could not log out. Please try again.');
+		}
+			
+	}
 
 }

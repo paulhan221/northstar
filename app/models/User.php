@@ -10,6 +10,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	use UserTrait, RemindableTrait;
 
+	protected $primaryKey = "_id";
+
 	/**
 	 * The database collection used by the model.
 	 *
@@ -34,5 +36,52 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	    'mobile'=>'required|unique:users',
 	    'password'=>'required'
     );
+
+    /**
+	* Authentication rules
+	*
+	* @var array
+	*/
+	public static $auth_rules = array(
+	    'email'=>'required|email',
+	    'password'=>'required'
+    );
+
+    /**
+    * Email address mutator that converts the email value to lowercase
+    *
+    */
+    public function setEmailAttribute($value) {
+    	$this->attributes['email'] = strtolower($value);
+    }
+
+    /**
+    * Passoword mutator that hashes the password field
+    *
+    */
+    public function setPasswordAttribute($value) {
+    	$this->attributes['password'] = Hash::make($value);
+    }
+
+    /**
+    * Define embedded relationship with the Campaign Model
+    *
+    */
+    public function campaigns() {
+    	return $this->embedsMany('Campaign');
+    }
+
+	/**
+	* Generate a token to authenticate a user
+	*
+	* @return mixed
+	*/
+	public function login() {
+		$token = Token::getInstance();
+		$token->user_id	= $this->_id;
+		$token->save();
+		
+		return $token;
+	}
 
 }
