@@ -50,16 +50,103 @@ class CampaignController extends \BaseController {
 	public function signup($id)
 	{
 		if($id) {
-			$campaign = new Campaign;
-			$campaign->nid = $id;
-			$campaign->sid = (int) Input::get('sid') 
-			$user = User::first();
-			$campaign = $user->campaigns()->save($campaign);
-			$response = array(
-				'created_at' => $campaign->created_at->format('Y-m-d H:i:s'),
-				'sid' => $campaign->sid
-			);
-			return Response::json($response, 201);
+			if(Input::has('sid')) {
+				$nid = (int) $id;
+				$sid = (int) Input::get('sid');
+				$token = Request::header('Session');
+				$user = Token::userFor($token);
+				$campaign = $user->campaigns()->where('nid', '=', $nid)->first();
+				if($campaign instanceof Campaign) {
+					return Response::json("Campaign already exists", 401);
+				}
+				$campaign = new Campaign;
+				$campaign->nid = $nid;
+				$campaign->sid = $sid;
+				$campaign = $user->campaigns()->save($campaign);
+				$response = array(
+					'created_at' => $campaign->created_at->format('Y-m-d H:i:s'),
+					'sid' => $campaign->sid
+				);
+				return Response::json($response, 201);
+			}
+			return Response::json("Campaign SID not provided", 401);
+		}
+		else {
+			return Response::json("Campaign node ID not provided", 401);
+		}
+	}
+
+
+	/**
+	 * Store a newly created campaign report back in storage.
+	 * POST /campaigns/:nid/reportback
+	 *
+	 * @return Response
+	 */
+	public function reportback($id)
+	{
+		if($id) {
+			if(Input::has('rbid')) {
+				$nid = (int) $id;
+				$token = Request::header('Session');
+				$user = Token::userFor($token);
+				$campaign = $user->campaigns()->where('nid', '=', $nid)->first();
+
+				if(!($campaign instanceof Campaign)) {
+					return Response::json("Campaign does not exist", 401);
+				}
+
+				$campaign->rbid = (int) Input::get('rbid');
+				$campaign->quantity = (int) Input::get('quantity');
+				$campaign->why_participated = Input::get('why_participated');
+				$campaign->file_url = Input::get('file_url');
+				$campaign = $user->campaigns()->save($campaign);
+
+				$response = array(
+					'created_at' => $campaign->created_at->format('Y-m-d H:i:s'),
+					'rbid' => $campaign->rbid
+				);
+				return Response::json($response, 201);
+			}
+			return Response::json("Campaign RBID not provided", 401);
+		}
+		else {
+			return Response::json("Campaign node ID not provided", 401);
+		}
+	}
+
+	/**
+	 * Update a campaign report back in storage.
+	 * PUT /campaigns/:nid/reportback
+	 *
+	 * @return Response
+	 */
+	public function updateReportback($id)
+	{
+		if($id) {
+			if(Input::has('rbid')) {
+				$nid = (int) $id;
+				$rbid = (int) Input::get('rbid');
+				$token = Request::header('Session');
+				$user = Token::userFor($token);
+				$campaign = $user->campaigns()->where('rbid', '=', $rbid)->first();
+
+				if(!($campaign instanceof Campaign)) {
+					return Response::json("Campaign does not exist", 401);
+				}
+
+				$campaign->quantity = (int) Input::get('quantity');
+				$campaign->why_participated = Input::get('why_participated');
+				$campaign->file_url = Input::get('file_url');
+				$campaign = $user->campaigns()->save($campaign);
+
+				$response = array(
+					'created_at' => $campaign->created_at->format('Y-m-d H:i:s'),
+					'rbid' => $campaign->rbid
+				);
+				return Response::json($response, 201);
+			}
+			return Response::json("Campaign RBID not provided", 401);
 		}
 		else {
 			return Response::json("Campaign node ID not provided", 401);

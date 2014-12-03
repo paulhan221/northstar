@@ -28,7 +28,7 @@ class UserController extends \BaseController {
 			$user = User::where('email', $email)->first();
 		}
 		else {
-			$user = false;
+			$user = User::all();
 		}
 
 		if(!$user) {
@@ -142,14 +142,14 @@ class UserController extends \BaseController {
 		if($validator->passes()) {
 
 			$user = User::where('email', '=', $input['email'])->first();
-			if ( !($user instanceof User) ) {
+			if(!($user instanceof User)) {
 				$user = User::where('mobile', '=', $input['mobile'])->first();
 			}
-			if ( !($user instanceof User) ) {
+			if(!($user instanceof User)) {
 				return Response::json("User is not registered.");
 			}
 			
-			if (Hash::check( $input['password'] , $user->password)) {
+			if(Hash::check($input['password'] , $user->password)) {
 				$token = $user->login();
 				$token->user = $user->toArray();
 
@@ -184,6 +184,7 @@ class UserController extends \BaseController {
 		}
 		$input_token = Request::header('Session');
 		$token = Token::where('key', '=', $input_token)->first();
+		$user = Token::userFor($input_token);
 		if (empty($token)) {
 			return Response::json('No active session found.');
 		}
@@ -191,7 +192,7 @@ class UserController extends \BaseController {
 			Response::json('You do not own this token.');
 		}
 		if ($token->delete()){
-			return Response::json('User logged out successfully.', '202');
+			return Response::json('User logged out successfully.', '200');
 		}	
 		else {
 			return Response::json('User could not log out. Please try again.');

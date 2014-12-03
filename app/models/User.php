@@ -63,6 +63,15 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     	$this->attributes['password'] = Hash::make($value);
     }
 
+	/*
+	* Automatically convert date columns to instances of Carbon
+	*
+	*/
+	public function getDates()
+	{
+		return array('created_at','updated_at');
+	}
+
     /**
     * Define embedded relationship with the Campaign Model
     *
