@@ -56,9 +56,11 @@ class CampaignController extends \BaseController {
 				$token = Request::header('Session');
 				$user = Token::userFor($token);
 				$campaign = $user->campaigns()->where('nid', '=', $nid)->first();
+				
 				if($campaign instanceof Campaign) {
 					return Response::json("Campaign already exists", 401);
 				}
+
 				$campaign = new Campaign;
 				$campaign->nid = $nid;
 				$campaign->sid = $sid;

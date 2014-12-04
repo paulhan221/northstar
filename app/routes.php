@@ -17,7 +17,7 @@ Route::get('/', function()
 });
 
 // https://api.dosomething.org/1/ 
-Route::group(array('prefix' => '1'), function()
+Route::group(array('prefix' => '1', 'before' => 'auth.api'), function()
 {	
 	Route::group(array('before' => 'auth.token'), function() {
 		Route::post('campaigns/{id}/signup', 'CampaignController@signup');

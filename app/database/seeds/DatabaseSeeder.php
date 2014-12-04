@@ -12,7 +12,9 @@ class DatabaseSeeder extends Seeder {
 		Eloquent::unguard();
 
 		$this->call('UserTableSeeder');
+        $this->call('ApiKeyTableSeeder');
 		$this->command->info('User table seeded successfully!');
+        $this->command->info('API Key table seeded successfully!');
 	}
 
 }
@@ -55,6 +57,26 @@ class UserTableSeeder extends Seeder {
             'first_name' => 'John',
             'last_name' => 'Doe'
         )); 
+    }
+
+}
+
+class ApiKeyTableSeeder extends Seeder {
+
+    public function run()
+    {
+        DB::table('api_keys')->delete();
+
+        ApiKey::create(array(
+            'app_id' => '456',
+            'api_key' => 'abc4324'
+        ));
+
+        ApiKey::create(array(
+            'app_id' => '123',
+            'api_key' => '5464utyrs'
+        ));
+
     }
 
 }
