@@ -13,8 +13,10 @@ class DatabaseSeeder extends Seeder {
 
 		$this->call('UserTableSeeder');
         $this->call('ApiKeyTableSeeder');
-		$this->command->info('User table seeded successfully!');
+        $this->call('TokenTableSeeder');
+        $this->command->info('User table seeded successfully!');
         $this->command->info('API Key table seeded successfully!');
+        $this->command->info('Token table seeded successfully!');
 	}
 
 }
@@ -27,6 +29,7 @@ class UserTableSeeder extends Seeder {
         DB::table('users')->delete();
 
         User::create(array(
+            '_id' => '5480c950bffebc651c8b456f',
             'email' => 'test@dosomething.org', 
             'mobile' => '5555555555',
             'password' => 'secret',
@@ -75,6 +78,21 @@ class ApiKeyTableSeeder extends Seeder {
         ApiKey::create(array(
             'app_id' => '123',
             'api_key' => '5464utyrs'
+        ));
+
+    }
+
+}
+
+class TokenTableSeeder extends Seeder {
+
+    public function run()
+    {
+        DB::table('tokens')->delete();
+
+        Token::create(array(
+            'key' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz0=',
+            'user_id' => '5480c950bffebc651c8b456f'
         ));
 
     }

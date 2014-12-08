@@ -8,8 +8,9 @@ class UserController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function getUsers()
+	public function index()
 	{	
+		$user = '';
 		$drupal_uid = Input::has('drupal_uid') ? (int) Input::get('drupal_uid') : false;
 		$id = Input::has('_id') ? Input::get('_id') : false;
 		$mobile = Input::has('mobile') ? Input::get('mobile') : false;
@@ -27,16 +28,13 @@ class UserController extends \BaseController {
 		elseif($email) {
 			$user = User::where('email', $email)->first();
 		}
-		else {
-			$user = User::all();
-		}
 
-		if(!$user) {
-			return Response::json('The resource does not exist', 404);
-		}
-		else {
+		if($user instanceof User) {
 			return Response::json($user, 200);
 		}
+
+		return Response::json('The resource does not exist', 404);
+	
 	}
 
 
@@ -46,15 +44,15 @@ class UserController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function postUsers()
+	public function store()
 	{
-		$input = Input::json()->all();
-		$validator = Validator::make($input, User::$rules);
+		$input = Input::only('email','mobile','password','drupal_uid','addr_street1','addr_street2','addr_city','addr_state','addr_zip','country','birthdate','first_name','last_name');
 
-		if($validator->passes()) {
+		$user = new User;
+
+		if($user->validate($input)) {
 
 			try {
-				$user = new User;
 				foreach($input as $key => $value) {
 					if(isset($key)) {
 						$user->$key = $value;
@@ -66,7 +64,7 @@ class UserController extends \BaseController {
 				$response = array(
 					'created_at' => $user->created_at->format('Y-m-d H:i:s'), 
 					'_id' => $user->_id
-					);
+				);
 
 				return Response::json($response, 201);
 
@@ -77,7 +75,7 @@ class UserController extends \BaseController {
 			
 		}
 		else {
-			return Response::json($validator->messages()->all(), 401);
+			return Response::json($user->messages(), 401);
 		}
 
 	}
@@ -89,34 +87,13 @@ class UserController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function putUsers()
+	public function update($id)
 	{	
-		$input = Input::json()->all();
-		$drupal_uid = Input::has('drupal_uid') ? (int) Input::get('drupal_uid') : false;
-		$id = Input::has('_id') ? Input::get('_id') : false;
-		$mobile = Input::has('mobile') ? Input::get('mobile') : false;
-		$email = Input::has('email') ? Input::get('email') : false;
+		$input = Input::only('email','mobile','password','drupal_uid','addr_street1','addr_street2','addr_city','addr_state','addr_zip','country','birthdate','first_name','last_name');
 
-		if($drupal_uid) {
-			$user = User::where('drupal_uid', $drupal_uid)->first();
-		}
-		elseif($id) {
-			$user = User::where('_id', $id)->first();
-		}
-		elseif($mobile) {
-			$user = User::where('mobile', $mobile)->first();
-		}
-		elseif($email) {
-			$user = User::where('email', $email)->first();
-		}
-		else {
-			$user = false;
-		}
+		$user = User::where('_id', $id)->first();
 
-		if(!$user) {
-			return Response::json("The resource does not exist", 404);
-		}
-		else {
+		if($user instanceof User) {
 			foreach($input as $key => $value) {
 				if(isset($key)) {
 					$user->$key = $value;
@@ -128,6 +105,8 @@ class UserController extends \BaseController {
 
 			return Response::json($response, 202);
 		}
+
+		return Response::json("The resource does not exist", 404);
 	}
 
 	/**
@@ -137,25 +116,25 @@ class UserController extends \BaseController {
 	 */
 	public function login()
 	{
-		$input = Input::json()->all();
-		$validator = Validator::make($input, User::$auth_rules);
-		if($validator->passes()) {
-
-			$user = User::where('email', '=', $input['email'])->first();
+		$input = Input::only('email','mobile','password');
+		$user = new User;
+		
+		if($user->validate($input, true)) {
+			$user = User::where('email', '=', Input::get('email'))->first();
 			if(!($user instanceof User)) {
-				$user = User::where('mobile', '=', $input['mobile'])->first();
+				$user = User::where('mobile', '=', Input::get('mobile'))->first();
 			}
 			if(!($user instanceof User)) {
 				return Response::json("User is not registered.");
 			}
 			
-			if(Hash::check($input['password'] , $user->password)) {
+			if(Hash::check(Input::get('password') , $user->password)) {
 				$token = $user->login();
 				$token->user = $user->toArray();
 
 				$response = array(
 					'email' => $user->email,
-					'phone' => $user->mobile,
+					'mobile' => $user->mobile,
 					'created_at' => $user->created_at->format('Y-m-d H:i:s'), 
 					'updated_at' => $user->updated_at->format('Y-m-d H:i:s'), 
 					'_id' => $user->_id,
@@ -169,7 +148,7 @@ class UserController extends \BaseController {
 
 		}
 		else {
-			return Response::json($validator->messages()->all(), 401);
+			return Response::json($user->messages(), 401);
 		}
 
 	}

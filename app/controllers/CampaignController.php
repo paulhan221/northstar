@@ -10,6 +10,7 @@ class CampaignController extends \BaseController {
 	 */
 	public function index()
 	{	
+		$user = '';
 		$drupal_uid = Input::has('drupal_uid') ? (int) Input::get('drupal_uid') : false;
 		$id = Input::has('_id') ? Input::get('_id') : false;
 		$mobile = Input::has('mobile') ? Input::get('mobile') : false;
@@ -27,17 +28,15 @@ class CampaignController extends \BaseController {
 		elseif($email) {
 			$user = User::where('email', $email)->first();
 		}
-		else {
-			$user = false;
-		}
 
-		if(!$user) {
-			return Response::json('The resource does not exist', 404);
-		}
-		else {
+		if($user instanceof User) {
 			$campaigns = $user->campaigns;
 			return Response::json($campaigns, 200);
+			
 		}
+
+		return Response::json('The resource does not exist', 404);
+
 	}
 
 
@@ -49,14 +48,14 @@ class CampaignController extends \BaseController {
 	 */
 	public function signup($id)
 	{
-		if($id) {
-			if(Input::has('sid')) {
-				$nid = (int) $id;
-				$sid = (int) Input::get('sid');
+		$sid = Input::get('sid');
+		$nid = (int) $id;
+		if($nid) {
+			if($sid) {
 				$token = Request::header('Session');
 				$user = Token::userFor($token);
 				$campaign = $user->campaigns()->where('nid', '=', $nid)->first();
-				
+
 				if($campaign instanceof Campaign) {
 					return Response::json("Campaign already exists", 401);
 				}
@@ -87,22 +86,30 @@ class CampaignController extends \BaseController {
 	 */
 	public function reportback($id)
 	{
-		if($id) {
-			if(Input::has('rbid')) {
-				$nid = (int) $id;
+		$rbid = Input::get('rbid');
+		$nid = (int) $id;
+		if($nid) {
+			if($rbid) {
 				$token = Request::header('Session');
 				$user = Token::userFor($token);
 				$campaign = $user->campaigns()->where('nid', '=', $nid)->first();
 
 				if(!($campaign instanceof Campaign)) {
-					return Response::json("Campaign does not exist", 401);
+					$campaign = new Campaign;
+					$campaign->nid = $nid;
+					$campaign->rbid = $rbid;
+					$campaign->quantity = (int) Input::get('quantity');
+					$campaign->why_participated = Input::get('why_participated');
+					$campaign->file_url = Input::get('file_url');
+					$campaign = $user->campaigns()->save($campaign);
 				}
-
-				$campaign->rbid = (int) Input::get('rbid');
-				$campaign->quantity = (int) Input::get('quantity');
-				$campaign->why_participated = Input::get('why_participated');
-				$campaign->file_url = Input::get('file_url');
-				$campaign = $user->campaigns()->save($campaign);
+				else {
+					$campaign->rbid = $rbid;
+					$campaign->quantity = (int) Input::get('quantity');
+					$campaign->why_participated = Input::get('why_participated');
+					$campaign->file_url = Input::get('file_url');
+					$campaign = $user->campaigns()->save($campaign);	
+				}
 
 				$response = array(
 					'created_at' => $campaign->created_at->format('Y-m-d H:i:s'),
@@ -125,10 +132,10 @@ class CampaignController extends \BaseController {
 	 */
 	public function updateReportback($id)
 	{
-		if($id) {
-			if(Input::has('rbid')) {
-				$nid = (int) $id;
-				$rbid = (int) Input::get('rbid');
+		$rbid = Input::get('rbid');
+		$nid = (int) $id;
+		if($nid) {
+			if($rbid) {
 				$token = Request::header('Session');
 				$user = Token::userFor($token);
 				$campaign = $user->campaigns()->where('rbid', '=', $rbid)->first();
@@ -137,7 +144,7 @@ class CampaignController extends \BaseController {
 					return Response::json("Campaign does not exist", 401);
 				}
 
-				$campaign->quantity = (int) Input::get('quantity');
+				$campaign->quantity = Input::get('quantity');
 				$campaign->why_participated = Input::get('why_participated');
 				$campaign->file_url = Input::get('file_url');
 				$campaign = $user->campaigns()->save($campaign);
