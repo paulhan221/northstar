@@ -31,21 +31,60 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 *
 	 * @var array
 	 */
-	public static $rules = array(
-	    'email'=>'required|email|unique:users',
-	    'mobile'=>'required|unique:users',
+	private $rules = array(
+	    'email'=>'email|unique:users',
+	    'mobile'=>'unique:users',
 	    'password'=>'required'
     );
 
     /**
-	* Authentication rules
-	*
-	* @var array
+	 * Authentication rules
+	 *
+	 * @var array
 	*/
-	public static $auth_rules = array(
-	    'email'=>'required|email',
+	private $auth_rules = array(
+	    'email'=>'email',
 	    'password'=>'required'
     );
+
+	private $messages;
+
+	/**
+	 * Determines validation rules for user registration and authentication
+	 *
+	 * @var array
+	 */
+    public function validate($data, $auth = false)
+    {	
+    	$rules = ($auth == true) ? $this->auth_rules : $this->rules;
+
+        $v = Validator::make($data, $rules);
+
+        $v->sometimes('email', 'required', function($data)
+		{
+			$mobile = (empty($data->mobile)) ? true : false;
+		    return $mobile;
+		});
+
+		$v->sometimes('mobile', 'required', function($data)
+		{
+			$email = (empty($data->email)) ? true : false;
+		    return $email;
+		});
+
+        if($v->fails())
+        {
+            $this->messages = $v->messages()->all();
+            return false;
+        }
+
+        return true;
+    }
+
+    public function messages()
+    {
+        return $this->messages;
+    }
 
     /**
     * Email address mutator that converts the email value to lowercase
@@ -62,6 +101,15 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     public function setPasswordAttribute($value) {
     	$this->attributes['password'] = Hash::make($value);
     }
+
+	/*
+	* Automatically convert date columns to instances of Carbon
+	*
+	*/
+	public function getDates()
+	{
+		return array('created_at','updated_at');
+	}
 
     /**
     * Define embedded relationship with the Campaign Model

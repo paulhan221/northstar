@@ -67,6 +67,17 @@ Route::filter('auth.token', function()
 		
 });
 
+
+Route::filter('auth.api', function() 
+{
+	$app_id = Request::header('X-DS-Application-Id');
+	$api_key = Request::header('X-DS-REST-API-Key');
+
+	if(!ApiKey::where("app_id", '=', $app_id)->where("api_key", '=', $api_key)->exists())
+		return Response::json("Unauthorized access.", 404);
+});
+
+
 /*
 |--------------------------------------------------------------------------
 | Guest Filter
