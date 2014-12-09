@@ -13,13 +13,13 @@
 
 App::before(function($request)
 {
-	//
+  //
 });
 
 
 App::after(function($request, $response)
 {
-	//
+  //
 });
 
 /*
@@ -35,46 +35,42 @@ App::after(function($request, $response)
 
 Route::filter('auth', function()
 {
-	if (Auth::guest())
-	{
-		if (Request::ajax())
-		{
-			return Response::make('Unauthorized', 401);
-		}
-		else
-		{
-			return Redirect::guest('login');
-		}
-	}
+  if (Auth::guest()) {
+    if (Request::ajax()) {
+      return Response::make('Unauthorized', 401);
+    }
+    else {
+      return Redirect::guest('login');
+    }
+  }
 });
 
 
 Route::filter('auth.basic', function()
 {
-	return Auth::basic();
+  return Auth::basic();
 });
 
 
 Route::filter('auth.token', function() 
 {
-	if (!Request::header('Session')) {
-		return Response::json("No token found.");
-	}
-	$token = Request::header('Session');
-	if (!Token::where('key', '=', $token )->exists()) {
-		return Response::json("Token mismatched.");
-	}
-		
+  if(!Request::header('Session')) {
+    return Response::json("No token found.");
+  }
+  $token = Request::header('Session');
+  if(!Token::where('key', '=', $token )->exists()) {
+    return Response::json("Token mismatched.");
+  }
 });
 
 
 Route::filter('auth.api', function() 
 {
-	$app_id = Request::header('X-DS-Application-Id');
-	$api_key = Request::header('X-DS-REST-API-Key');
+  $app_id = Request::header('X-DS-Application-Id');
+  $api_key = Request::header('X-DS-REST-API-Key');
 
-	if(!ApiKey::where("app_id", '=', $app_id)->where("api_key", '=', $api_key)->exists())
-		return Response::json("Unauthorized access.", 404);
+  if(!ApiKey::where("app_id", '=', $app_id)->where("api_key", '=', $api_key)->exists())
+    return Response::json("Unauthorized access.", 404);
 });
 
 
@@ -91,7 +87,7 @@ Route::filter('auth.api', function()
 
 Route::filter('guest', function()
 {
-	if (Auth::check()) return Redirect::to('/');
+  if (Auth::check()) return Redirect::to('/');
 });
 
 /*
@@ -107,8 +103,7 @@ Route::filter('guest', function()
 
 Route::filter('csrf', function()
 {
-	if (Session::token() !== Input::get('_token'))
-	{
-		throw new Illuminate\Session\TokenMismatchException;
-	}
+  if (Session::token() !== Input::get('_token')) {
+    throw new Illuminate\Session\TokenMismatchException;
+  }
 });

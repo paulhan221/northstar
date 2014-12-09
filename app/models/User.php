@@ -8,128 +8,135 @@ use Jenssegers\Mongodb\Model as Eloquent;
 
 class User extends Eloquent implements UserInterface, RemindableInterface {
 
-	use UserTrait, RemindableTrait;
+  use UserTrait, RemindableTrait;
 
-	protected $primaryKey = "_id";
+  protected $primaryKey = "_id";
 
-	/**
-	 * The database collection used by the model.
-	 *
-	 * @var string
-	 */
-	protected $collection = 'users';
+  /**
+   * The database collection used by the model.
+   *
+   * @var string
+   */
+  protected $collection = 'users';
 
-	/**
-	 * The attributes excluded from the model's JSON form.
-	 *
-	 * @var array
-	 */
-	protected $hidden = array('password');
+  /**
+   * The attributes excluded from the model's JSON form.
+   *
+   * @var array
+   */
+  protected $hidden = array('password');
 
-	/**
-	 * Validation rules
-	 *
-	 * @var array
-	 */
-	private $rules = array(
-	    'email'=>'email|unique:users',
-	    'mobile'=>'unique:users',
-	    'password'=>'required'
-    );
+  /**
+   * Validation rules
+   *
+   * @var array
+   */
+  private $rules = array(
+      'email'=>'email|unique:users',
+      'mobile'=>'unique:users',
+      'password'=>'required'
+  );
 
-    /**
-	 * Authentication rules
-	 *
-	 * @var array
-	*/
-	private $auth_rules = array(
-	    'email'=>'email',
-	    'password'=>'required'
-    );
+  /**
+   * Authentication rules
+   *
+   * @var array
+  */
+  private $auth_rules = array(
+      'email'=>'email',
+      'password'=>'required'
+  );
 
-	private $messages;
+  private $messages;
 
-	/**
-	 * Determines validation rules for user registration and authentication
-	 *
-	 * @var array
-	 */
-    public function validate($data, $auth = false)
-    {	
-    	$rules = ($auth == true) ? $this->auth_rules : $this->rules;
+  /*
+   * Display validation messages
+   *
+  */
+  public function messages()
+  {
+      return $this->messages;
+  }
 
-        $v = Validator::make($data, $rules);
+  /**
+   * Email address mutator that converts the email value to lowercase
+   *
+  */
+  public function setEmailAttribute($value) 
+  {
+    $this->attributes['email'] = strtolower($value);
+  }
 
-        $v->sometimes('email', 'required', function($data)
-		{
-			$mobile = (empty($data->mobile)) ? true : false;
-		    return $mobile;
-		});
+  /**
+   * Password mutator that hashes the password field
+   *
+  */
+  public function setPasswordAttribute($value) 
+  {
+    $this->attributes['password'] = Hash::make($value);
+  }
 
-		$v->sometimes('mobile', 'required', function($data)
-		{
-			$email = (empty($data->email)) ? true : false;
-		    return $email;
-		});
+  /*
+   * Automatically convert date columns to instances of Carbon
+   *
+  */
+  public function getDates()
+  {
+    return array('created_at','updated_at');
+  }
 
-        if($v->fails())
-        {
-            $this->messages = $v->messages()->all();
-            return false;
-        }
+  /**
+   * Define embedded relationship with the Campaign Model
+   *
+  */
+  public function campaigns() 
+  {
+    return $this->embedsMany('Campaign');
+  }
 
-        return true;
-    }
+  /**
+   * Determines validation rules for user registration and authentication
+   *
+   * @var array
+  */
+  public function validate($data, $auth = false)
+  { 
+    $rules = ($auth == true) ? $this->auth_rules : $this->rules;
 
-    public function messages()
+    $v = Validator::make($data, $rules);
+
+    $v->sometimes('email', 'required', function($data)
     {
-        return $this->messages;
+      $mobile = (empty($data->mobile)) ? true : false;
+        return $mobile;
+    });
+
+    $v->sometimes('mobile', 'required', function($data)
+    {
+      $email = (empty($data->email)) ? true : false;
+        return $email;
+    });
+
+    if($v->fails()) {
+        $this->messages = $v->messages()->all();
+        return false;
     }
 
-    /**
-    * Email address mutator that converts the email value to lowercase
-    *
-    */
-    public function setEmailAttribute($value) {
-    	$this->attributes['email'] = strtolower($value);
-    }
+    return true;
+  }
 
-    /**
-    * Passoword mutator that hashes the password field
-    *
-    */
-    public function setPasswordAttribute($value) {
-    	$this->attributes['password'] = Hash::make($value);
-    }
-
-	/*
-	* Automatically convert date columns to instances of Carbon
-	*
-	*/
-	public function getDates()
-	{
-		return array('created_at','updated_at');
-	}
-
-    /**
-    * Define embedded relationship with the Campaign Model
-    *
-    */
-    public function campaigns() {
-    	return $this->embedsMany('Campaign');
-    }
-
-	/**
-	* Generate a token to authenticate a user
-	*
-	* @return mixed
-	*/
-	public function login() {
-		$token = Token::getInstance();
-		$token->user_id	= $this->_id;
-		$token->save();
-		
-		return $token;
-	}
+  /**
+   * Generate a token to authenticate a user
+   *
+   * @return mixed
+  */
+  public function login() 
+  {
+    $token = Token::getInstance();
+    $token->user_id = $this->_id;
+    $token->save();
+    
+    return $token;
+  }
 
 }
