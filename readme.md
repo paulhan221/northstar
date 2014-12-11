@@ -14,6 +14,10 @@ Seed the database with test data by running this command:
 
     $ php artisan db:seed
 
+You may run all of the tests by executing this command from your terminal:
+
+	vendor/bin/phpunit
+
 ***
 
 ## Laravel PHP Framework
