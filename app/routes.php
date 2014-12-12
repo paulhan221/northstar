@@ -13,23 +13,23 @@
 
 Route::get('/', function()
 {
-	return View::make('hello');
+  return View::make('hello');
 });
 
 // https://api.dosomething.org/1/ 
 Route::group(array('prefix' => '1', 'before' => 'auth.api'), function()
-{	
-	Route::group(array('before' => 'auth.token'), function() {
-		Route::post('campaigns/{id}/signup', 'CampaignController@signup');
-		Route::post('campaigns/{id}/reportback', 'CampaignController@reportback');
-		Route::put('campaigns/{id}/reportback', 'CampaignController@updateReportback');
-	}); 
+{   
+  Route::group(array('before' => 'auth.token'), function() {
+    Route::post('campaigns/{id}/signup', 'CampaignController@signup');
+    Route::post('campaigns/{id}/reportback', 'CampaignController@reportback');
+    Route::put('campaigns/{id}/reportback', 'CampaignController@updateReportback');
+  }); 
 
-	Route::post('login', 'UserController@login');
-	Route::post('logout', 'UserController@logout');
+  Route::post('login', 'UserController@login');
+  Route::post('logout', 'UserController@logout');
 
-	Route::get('users/campaigns', 'CampaignController@index');
-	Route::resource('users', 'UserController');  	 
+  Route::get('users/campaigns', 'CampaignController@index');
+  Route::resource('users', 'UserController');      
 
 });
 

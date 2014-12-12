@@ -2,153 +2,164 @@
 
 class UserTest extends TestCase {
 
-    /**
-     * Migrate database
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        parent::setUp();
-        Route::enableFilters();
+  /**
+   * Migrate database and set up HTTP headers
+   *
+   * @return void
+  */
+  public function setUp()
+  {
+    parent::setUp();
+    Route::enableFilters();
 
-        Artisan::call('migrate');
-        $this->seed();
+    Artisan::call('migrate');
+    $this->seed();
 
-        $this->server = array(
-            'CONTENT_TYPE' => 'application/json',
-            'HTTP_X-DS-Application-Id' => '456',
-            'HTTP_X-DS-REST-API-Key' => 'abc4324'
-        );
+    $this->server = array(
+      'CONTENT_TYPE' => 'application/json',
+      'HTTP_X-DS-Application-Id' => '456',
+      'HTTP_X-DS-REST-API-Key' => 'abc4324',
+      'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz0='
+    );
+  }
 
-    }
 
+  /**
+   * Test for retrieving a user 
+   * GET /users
+   *
+   * @return void
+  */
+  public function testGetDataFromUser()
+  {   
+    $parameters = array('email' => 'test@dosomething.org',);
+    $response = $this->call('GET', '1/users', $parameters, array(), $this->server);
+    $content = $response->getContent();
 
-    /**
-     * Test for retrieving a user 
-     * GET /users
-     *
-     * @return void
-     */
-    public function testGetDataFromUser()
-    {   
+    // The response should return a 200 OK status code
+    $this->assertEquals(200, $response->getStatusCode());
+    
+    // Response should be valid JSON
+    $this->assertJson($content);
+  }
 
-        $parameters = array('email' => 'test@dosomething.org',);
-        $response = $this->call('GET', '1/users', $parameters, array(), $this->server);
-        $content = $response->getContent();
+  /**
+   * Test for retrieving a nonexistant User 
+   * GET /users
+   *
+   * @return void
+  */
+  public function testGetData()
+  {
+    $response = $this->call('GET', '1/users');
+    $content = $response->getContent();
 
-        // The response should return a 200 OK status code
-        $this->assertEquals(200, $response->getStatusCode());
-        
-        // Response should be valid JSON
-        $this->assertJson($content);
-    }
+    // The response should return a 404 Not Found status code
+    $this->assertEquals(404, $response->getStatusCode());
+  }
 
-    /**
-     * Test for retrieving a nonexistant User 
-     * GET /users
-     *
-     * @return void
-     */
-    public function testGetData()
-    {
-        $response = $this->call('GET', '1/users');
-        $content = $response->getContent();
+  /**
+   * Test for registering a new user 
+   * POST /users
+   *
+   * @return void
+  */
+  public function testRegisterUser()
+  {
+    // Create a new user object
+    $user = array(
+      'email' => 'new@dosomething.org',
+      'mobile' => '5556667777',
+      'password' => 'secret',
+    );
 
-        // The response should return a 404 Not Found status code
-        $this->assertEquals(404, $response->getStatusCode());
-        
-    }
+    $response = $this->call('POST', '1/users', array(), array(), $this->server, json_encode($user));
+    $content = $response->getContent();
+    $data = json_decode($content, true);
 
-    /**
-     * Test for registering a new user 
-     * POST /users
-     *
-     * @return void
-     */
-    public function testRegisterUser()
-    {
+    // The response should return a 201 Created status code
+    $this->assertEquals(201, $response->getStatusCode());
 
-        // Create a new user object
-        $user = array(
-            'email' => 'new@dosomething.org',
-            'mobile' => '5556667777',
-            'password' => 'secret',
-        );
+    // Response should be valid JSON
+    $this->assertJson($content);
 
-        $response = $this->call('POST', '1/users', array(), array(), $this->server, json_encode($user));
-        $content = $response->getContent();
-        $data = json_decode($content, true);
+    // Response should return created at and id columns
+    $this->assertArrayHasKey('created_at', $data);
+    $this->assertArrayHasKey('_id', $data);
+  }
 
-        // The response should return a 201 Created status code
-        $this->assertEquals(201, $response->getStatusCode());
+  /**
+   * Test for updating an existing user 
+   * PUT /users
+   *
+   * @return void
+  */
+  public function testUpdateUser()
+  {
+    // Create a new user object
+    $user = array(
+      'email' => 'newemail@dosomething.org'
+    );
 
-        // Response should be valid JSON
-        $this->assertJson($content);
+    $response = $this->call('PUT', '1/users/5480c950bffebc651c8b456f', array(), array(), $this->server, json_encode($user));
+    $content = $response->getContent();
+    $data = json_decode($content, true);
 
-        // Response should return created at and id columns
-        $this->assertArrayHasKey('created_at', $data);
-        $this->assertArrayHasKey('_id', $data);
-        
-    }
+    // The response should return a 202 Accepted status code
+    $this->assertEquals(202, $response->getStatusCode());
 
-    /**
-     * Test for updating an existing user 
-     * PUT /users
-     *
-     * @return void
-     */
-    public function testUpdateUser()
-    {
+    // Response should be valid JSON
+    $this->assertJson($content);
 
-        // Create a new user object
-        $user = array(
-            'email' => 'newemail@dosomething.org'
-        );
+    // Response should return updated at and id columns
+    $this->assertArrayHasKey('updated_at', $data);
+  }
 
-        $response = $this->call('PUT', '1/users/5480c950bffebc651c8b456f', array(), array(), $this->server, json_encode($user));
-        $content = $response->getContent();
-        $data = json_decode($content, true);
+  /**
+   * Test for logging in a user
+   * POST /login
+   *
+   * @return void
+  */
+  public function testLogin()
+  {   
+    // User login info
+    $credentials = array(
+      'email' => 'test@dosomething.org',
+      'password' => 'secret'
+    );
 
-        // The response should return a 202 Accepted status code
-        $this->assertEquals(202, $response->getStatusCode());
+    $response = $this->call('POST', '1/login', array(), array(), $this->server, json_encode($credentials));
+    $content = $response->getContent();
+    $data = json_decode($content, true);
 
-        // Response should be valid JSON
-        $this->assertJson($content);
+    // The response should return a 200 Created status code
+    $this->assertEquals(200, $response->getStatusCode());
 
-        // Response should return created at and id columns
-        $this->assertArrayHasKey('updated_at', $data);
-        
-    }
+    // Response should be valid JSON
+    $this->assertJson($content);
 
-    /**
-     * Test for logging in a user
-     * POST /login
-     *
-     * @return void
-     */
-    public function testLogin()
-    {   
+    // Response should return session token column
+    $this->assertArrayHasKey('session_token', $data);
+  }
 
-        // User login info
-        $credentials = array(
-            'email' => 'test@dosomething.org',
-            'password' => 'secret'
-        );
+  /**
+   * Test for logging out a user
+   * POST /logout
+   *
+   * @return void
+  */
+  public function testLogout()
+  {   
+    $response = $this->call('POST', '1/logout', array(), array(), $this->server);
+    $content = $response->getContent();
+    $data = json_decode($content, true);
 
-        $response = $this->call('POST', '1/login', array(), array(), $this->server, json_encode($credentials));
-        $content = $response->getContent();
-        $data = json_decode($content, true);
+    // The response should return a 200 Created status code
+    $this->assertEquals(200, $response->getStatusCode());
 
-        // The response should return a 201 Created status code
-        $this->assertEquals(200, $response->getStatusCode());
-
-        // Response should be valid JSON
-        $this->assertJson($content);
-
-        // Response should return created at and id columns
-        $this->assertArrayHasKey('session_token', $data);
-
-    }
+    // Response should be valid JSON
+    $this->assertJson($content);
+  }
 
 }
