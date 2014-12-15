@@ -5,8 +5,8 @@ set :application, "user-api"
 set :deploy_to, ENV["DEPLOY_PATH"]
 server  ENV["SERVER_NAME"], :app, :web
 
-set :user, "ubuntu"
-set :group, "ubuntu"
+set :user, "dosomething"
+set :group, "dosomething"
 set :use_sudo, false
 
 set :repository, "."
