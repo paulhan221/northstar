@@ -5,9 +5,6 @@ build:
       # A custom script step, name value is used in the UI
       # and the code value contains the command that get executed
       - leipert/composer-install@0.0.1
-      - script:
-          name: npm install
-          code: sudo npm install
     after-steps:
         - hipchat-notify:
             token: $HIPCHAT_TOKEN
