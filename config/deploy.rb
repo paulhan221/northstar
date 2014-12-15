@@ -38,5 +38,4 @@ end
 
 after "deploy:update", "deploy:cleanup"
 after "deploy:symlink", "deploy:link_folders"
-before "deploy:artisan_migrate", "deploy:backup_db"
 
