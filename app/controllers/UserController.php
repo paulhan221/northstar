@@ -93,7 +93,8 @@ class UserController extends \BaseController {
 
     if($user instanceof User) {
       foreach($input as $key => $value) {
-        if(isset($key)) {
+        // Only update attribute if value is non-null.
+        if(isset($key) && !is_null($value)) {
           $user->$key = $value;
         }
       }
