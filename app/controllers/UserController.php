@@ -11,22 +11,22 @@ class UserController extends \BaseController {
   public function index()
   {   
     $user = '';
-    $drupal_uid = Input::has('drupal_uid') ? (int) Input::get('drupal_uid') : false;
-    $id = Input::has('_id') ? Input::get('_id') : false;
-    $mobile = Input::has('mobile') ? Input::get('mobile') : false;
-    $email = Input::has('email') ? Input::get('email') : false;
+    $drupal_uid = Input::has(USER_PARAMS::drupal_uid) ? (int) Input::get(USER_PARAMS::drupal_uid) : false;
+    $id = Input::has(USER_PARAMS::_id) ? Input::get(USER_PARAMS::_id) : false;
+    $mobile = Input::has(USER_PARAMS::mobile) ? Input::get(USER_PARAMS::mobile) : false;
+    $email = Input::has(USER_PARAMS::email) ? Input::get(USER_PARAMS::email) : false;
 
     if($drupal_uid) {
-      $user = User::where('drupal_uid', $drupal_uid)->first();
+      $user = User::where(USER_PARAMS::drupal_uid, $drupal_uid)->first();
     }
     elseif($id) {
-      $user = User::where('_id', $id)->first();
+      $user = User::where(USER_PARAMS::_id, $id)->first();
     }
     elseif($mobile) {
-      $user = User::where('mobile', $mobile)->first();
+      $user = User::where(USER_PARAMS::mobile, $mobile)->first();
     }
     elseif($email) {
-      $user = User::where('email', $email)->first();
+      $user = User::where(USER_PARAMS::email, $email)->first();
     }
 
     if($user instanceof User) {
@@ -45,7 +45,7 @@ class UserController extends \BaseController {
    */
   public function store()
   {
-    $input = Input::only('email','mobile','password','drupal_uid','addr_street1','addr_street2','addr_city','addr_state','addr_zip','country','birthdate','first_name','last_name');
+    $input = Input::only(USER_PARAMS::editableKeys());
 
     $user = new User;
 
@@ -61,8 +61,8 @@ class UserController extends \BaseController {
         $user->save();
 
         $response = array(
-          'created_at' => $user->created_at->format('Y-m-d H:i:s'), 
-          '_id' => $user->_id
+          RESPONSE_PARAMS::created_at => $user->created_at->format('Y-m-d H:i:s'),
+          USER_PARAMS::_id => $user->_id
         );
 
         return Response::json($response, 201);
@@ -86,10 +86,10 @@ class UserController extends \BaseController {
    * @return Response
    */
   public function update($id)
-  {   
-    $input = Input::only('email','mobile','password','drupal_uid','addr_street1','addr_street2','addr_city','addr_state','addr_zip','country','birthdate','first_name','last_name');
+  {
+    $input = Input::only(USER_PARAMS::editableKeys());
 
-    $user = User::where('_id', $id)->first();
+    $user = User::where(USER_PARAMS::_id, $id)->first();
 
     if($user instanceof User) {
       foreach($input as $key => $value) {
@@ -100,7 +100,7 @@ class UserController extends \BaseController {
 
       $user->save();
 
-      $response = array('updated_at' => $user->updated_at->format('Y-m-d H:i:s'));
+      $response = array(RESPONSE_PARAMS::updated_at => $user->updated_at->format('Y-m-d H:i:s'));
 
       return Response::json($response, 202);
     }
@@ -115,29 +115,29 @@ class UserController extends \BaseController {
    */
   public function login()
   {
-    $input = Input::only('email','mobile','password');
+    $input = Input::only(USER_PARAMS::email, USER_PARAMS::mobile, USER_PARAMS::password);
     $user = new User;
     
     if($user->validate($input, true)) {
-      $user = User::where('email', '=', Input::get('email'))->first();
+      $user = User::where(USER_PARAMS::email, '=', Input::get(USER_PARAMS::email))->first();
       if(!($user instanceof User)) {
-        $user = User::where('mobile', '=', Input::get('mobile'))->first();
+        $user = User::where(USER_PARAMS::mobile, '=', Input::get(USER_PARAMS::mobile))->first();
       }
       if(!($user instanceof User)) {
         return Response::json("User is not registered.");
       }
       
-      if(Hash::check(Input::get('password') , $user->password)) {
+      if(Hash::check(Input::get(USER_PARAMS::password) , $user->password)) {
         $token = $user->login();
         $token->user = $user->toArray();
 
         $response = array(
-          'email' => $user->email,
-          'mobile' => $user->mobile,
-          'created_at' => $user->created_at->format('Y-m-d H:i:s'), 
-          'updated_at' => $user->updated_at->format('Y-m-d H:i:s'), 
-          '_id' => $user->_id,
-          'session_token' => $token->key
+          USER_PARAMS::email => $user->email,
+          USER_PARAMS::mobile => $user->mobile,
+          RESPONSE_PARAMS::created_at => $user->created_at->format('Y-m-d H:i:s'),
+          RESPONSE_PARAMS::updated_at => $user->updated_at->format('Y-m-d H:i:s'),
+          USER_PARAMS::_id => $user->_id,
+          RESPONSE_PARAMS::session_token => $token->key
         );
         return Response::json($response, '200');
       }
@@ -181,4 +181,48 @@ class UserController extends \BaseController {
           
   }
 
+}
+
+abstract class USER_PARAMS {
+  // Params that cannot be modified by the user
+  const _id = "_id";
+
+  // Editable params
+  const email = 'email';
+  const mobile = 'mobile';
+  const password = 'password';
+  const drupal_uid = 'drupal_uid';
+  const address_street1 = 'addr_street1';
+  const address_street2 = 'addr_street2';
+  const address_city = 'addr_city';
+  const address_state = 'addr_state';
+  const address_zip = 'addr_zip';
+  const country = 'country';
+  const birthdate = 'birthdate';
+  const first_name = 'first_name';
+  const last_name = 'last_name';
+
+  public static function editableKeys() {
+    return array(
+        self::email,
+        self::mobile,
+        self::password,
+        self::drupal_uid,
+        self::address_street1,
+        self::address_street2,
+        self::address_city,
+        self::address_state,
+        self::address_zip,
+        self::country,
+        self::birthdate,
+        self::first_name,
+        self::last_name
+    );
+  }
+};
+
+abstract class RESPONSE_PARAMS {
+  const session_token = 'session_token';
+  const created_at = 'created_at';
+  const updated_at = 'updated_at';
 }
