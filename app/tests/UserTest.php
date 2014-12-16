@@ -162,4 +162,28 @@ class UserTest extends TestCase {
     $this->assertJson($content);
   }
 
+  /**
+   * Test for deleting an existing user
+   * DELETE /users
+   *
+   * @return void
+   */
+  public function testDelete()
+  {
+    $response = $this->call('DELETE', '1/users/5480c950bffebc651c8b4570', array(), array(), $this->server, array());
+
+    $this->assertEquals(204, $response->getStatusCode());
+  }
+
+  /**
+   * Test for deleting a user that does not exist.
+   * DELETE /users
+   *
+   * @return void
+   */
+  public function testDeleteNoResource() {
+    $response = $this->call('DELETE', '1/users/DUMMY_ID', array(), array(), $this->server, array());
+
+    $this->assertEquals(404, $response->getStatusCode());
+  }
 }

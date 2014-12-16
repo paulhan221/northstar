@@ -110,6 +110,25 @@ class UserController extends \BaseController {
   }
 
   /**
+   * Delete a user resource.
+   * DELETE /users/:id
+   *
+   * @return Response
+   */
+  public function destroy($id)
+  {
+    $user = User::where(USER_PARAMS::_id, $id)->first();
+
+    if ($user instanceof User) {
+      $user->delete();
+
+      return Response::json("No Content", 204);
+    }
+
+    return Response::json("The resource does not exist", 404);
+  }
+
+  /**
    * Authenticate a registered user
    *
    * @return Response
