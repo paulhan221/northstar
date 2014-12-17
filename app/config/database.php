@@ -85,11 +85,11 @@ return array(
 
     'mongodb' => array(
       'driver'   => 'mongodb',
-      'host'     => $_ENV['DB_HOST'],
-      'port'     => $_ENV['DB_PORT'],
-      'username' => $_ENV['DB_USERNAME'],
-      'password' => $_ENV['DB_PASSWORD'],
-      'database' => $_ENV['DB_NAME'],
+      'host'     => getenv('DB_HOST') ? getenv('DB_HOST') : 'localhost',
+      'port'     => getenv('DB_PORT') ? getenv('DB_PORT') : 27017,
+      'username' => getenv('DB_USERNAME') ? getenv('DB_USERNAME') : '',
+      'password' => getenv('DB_PASSWORD') ? getenv('DB_PASSWORD') : '',
+      'database' => getenv('DB_NAME') ? getenv('DB_NAME') : 'userapi',
     ),
 
   ),
