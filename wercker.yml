@@ -5,6 +5,18 @@ build:
       # A custom script step, name value is used in the UI
       # and the code value contains the command that get executed
       - leipert/composer-install@0.0.1
+      - script:
+          name: install pear
+          code: sudo apt-get install php5-dev php5-cli php-pear
+      - script:
+          name: install mongo driver
+          code: sudo pecl install mongo
+      - script:
+          name: Add mongo extensino to php
+          code: echo "extension=mongo.so" >> /etc/php5/fpm/php.ini
+      - script:
+          name: Restart php
+          code: sudo service php5-fpm restart
     after-steps:
         - hipchat-notify:
             token: $HIPCHAT_TOKEN
