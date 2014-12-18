@@ -41,7 +41,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
    * Authentication rules
    *
    * @var array
-  */
+   */
   private $auth_rules = array(
       'email'=>'email',
       'password'=>'required'
@@ -49,10 +49,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
   private $messages;
 
-  /*
+  /**
    * Display validation messages
    *
-  */
+   */
   public function messages()
   {
       return $this->messages;
@@ -61,7 +61,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
   /**
    * Email address mutator that converts the email value to lowercase
    *
-  */
+   */
   public function setEmailAttribute($value) 
   {
     $this->attributes['email'] = strtolower($value);
@@ -70,25 +70,55 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
   /**
    * Password mutator that hashes the password field
    *
-  */
+   */
   public function setPasswordAttribute($value) 
   {
     $this->attributes['password'] = Hash::make($value);
   }
 
-  /*
+  /**
    * Automatically convert date columns to instances of Carbon
    *
-  */
+   */
   public function getDates()
   {
     return array('created_at','updated_at');
   }
 
   /**
+   * Formats date if its a MongoDate.
+   *
+   * @param $value date attribute value
+   * @return String
+   */
+  private function formatDate($value) {
+    $date = $this->asDateTime($value);
+    if ($value instanceof MongoDate) {
+      return $date->format('Y-m-d H:i:s');
+    }
+    else {
+      return $date;
+    }
+  }
+
+  /**
+   * Accessor for created_at date. Formats to Y-m-d H:i:s.
+   */
+  public function getCreatedAtAttribute($value) {
+    return $this->formatDate($value);
+  }
+
+  /**
+   * Accessor for updated_at date. Formats to Y-m-d H:i:s.
+   */
+  public function getUpdatedAtAttribute($value) {
+    return $this->formatDate($value);
+  }
+
+  /**
    * Define embedded relationship with the Campaign Model
    *
-  */
+   */
   public function campaigns() 
   {
     return $this->embedsMany('Campaign');
@@ -98,7 +128,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
    * Determines validation rules for user registration and authentication
    *
    * @var array
-  */
+   */
   public function validate($data, $auth = false)
   { 
     $rules = ($auth == true) ? $this->auth_rules : $this->rules;
