@@ -59,7 +59,13 @@ class UserTableSeeder extends Seeder {
       'birthdate' => '12/17/91',
       'first_name' => 'John',
       'last_name' => 'Doe'
-    )); 
+    ));
+
+    User::create(array(
+      '_id' =>'5480c950bffebc651c8b4570',
+      'email' => 'delete-test@ds.org',
+      'password' => 'secret'
+    ));
   }
 
 }
