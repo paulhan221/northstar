@@ -6,6 +6,9 @@ build:
       # and the code value contains the command that get executed
       - leipert/composer-install@0.0.1
       - script:
+          name: update packages list
+          code: sudo apt-get update
+      - script:
           name: install php mongo extension
           code: sudo apt-get install php5-mongo
     after-steps:
