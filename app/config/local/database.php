@@ -44,11 +44,11 @@ return array(
 
     'mongodb' => array(
       'driver'   => 'mongodb',
-      'host'     => isset($_ENV['DB_HOST']) ? $_ENV['DB_HOST'] : 'localhost',
-      'port'     => isset($_ENV['DB_PORT']) ? $_ENV['DB_PORT'] : 27017,
-      'username' => isset($_ENV['DB_USERNAME']) ? $_ENV['DB_USERNAME'] : '',
-      'password' => isset($_ENV['DB_PASSWORD']) ? $_ENV['DB_PASSWORD'] : '',
-      'database' => isset($_ENV['DB_NAME']) ? $_ENV['DB_NAME'] : 'userapi',
+      'host'     => getenv(['DB_HOST']) ? getenv(['DB_HOST']) : 'localhost',
+      'port'     => getenv(['DB_PORT']) ? getenv(['DB_PORT']) : 27017,
+      'username' => getenv(['DB_USERNAME']) ? getenv(['DB_USERNAME']) : '',
+      'password' => getenv(['DB_PASSWORD']) ? getenv(['DB_PASSWORD']) : '',
+      'database' => getenv(['DB_NAME']) ? getenv(['DB_NAME']) : 'userapi',
     ),
 
   ),
