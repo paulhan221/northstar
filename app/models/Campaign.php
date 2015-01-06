@@ -66,6 +66,36 @@ class Campaign extends Eloquent {
     return $this->validationMessages;
   }
 
+  /**
+   * Formats date if its a MongoDate.
+   *
+   * @param $value date attribute value
+   * @return String
+   */
+  private function formatDate($value) {
+    $date = $this->asDateTime($value);
+    if ($value instanceof MongoDate) {
+      return $date->format('Y-m-d H:i:s');
+    }
+    else {
+      return $date;
+    }
+  }
+
+  /**
+   * Accessor for created_at date. Formats to Y-m-d H:i:s.
+   */
+  public function getCreatedAtAttribute($value) {
+    return $this->formatDate($value);
+  }
+
+  /**
+   * Accessor for updated_at date. Formats to Y-m-d H:i:s.
+   */
+  public function getUpdatedAtAttribute($value) {
+    return $this->formatDate($value);
+  }
+
   public function getQuantityAttribute($value) {
     return (int) $value;
   }
@@ -112,5 +142,3 @@ abstract class REPORTBACK_ATTRIBUTE {
 abstract class SIGNUP_ATTRIBUTE {
   const sid = 'sid';
 }
-
-

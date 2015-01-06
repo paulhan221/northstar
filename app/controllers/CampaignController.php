@@ -76,7 +76,7 @@ class CampaignController extends \BaseController {
     $campaign->sid = $sid;
     $campaign = $user->campaigns()->save($campaign);
     $response = array(
-      'created_at' => $campaign->created_at->format('Y-m-d H:i:s'),
+      CAMPAIGN_RESPONSE::created_at => $campaign->created_at,
       SIGNUP_ATTRIBUTE::sid => $campaign->sid
     );
 
@@ -123,7 +123,7 @@ class CampaignController extends \BaseController {
       $campaign = $user->campaigns()->save($campaign);
 
       $response = array(
-        'created_at' => $campaign->created_at->format('Y-m-d H:i:s'),
+        CAMPAIGN_RESPONSE::created_at => $campaign->created_at,
       );
 
       $statusCode = 201;
@@ -146,7 +146,7 @@ class CampaignController extends \BaseController {
       $campaign = $user->campaigns()->save($campaign);
 
       $response = array(
-        'updated_at' => $campaign->updated_at->format('Y-m-d H:i:s'),
+        CAMPAIGN_RESPONSE::updated_at => $campaign->updated_at,
       );
     }
 
@@ -196,11 +196,19 @@ class CampaignController extends \BaseController {
     $campaign = $user->campaigns()->save($campaign);
 
     $response = array(
-      'updated_at' => $campaign->updated_at->format('Y-m-d H:i:s'),
+      CAMPAIGN_RESPONSE::updated_at => $campaign->updated_at,
       REPORTBACK_ATTRIBUTE::rbid => $campaign->rbid
     );
 
     return Response::json($response, 200);
   }
 
+}
+
+/**
+ * Abstract class defining string values for response properties.
+ */
+abstract class CAMPAIGN_RESPONSE {
+  const created_at = 'created_at';
+  const updated_at = 'updated_at';
 }
