@@ -42,7 +42,15 @@ class UserTableSeeder extends Seeder {
       'country' => 'US',
       'birthdate' => '12/17/91',
       'first_name' => 'First',
-      'last_name' => 'Last'
+      'last_name' => 'Last',
+      'campaigns' => array(
+        array(
+          'nid' => 100,
+          'rbid' => 10,
+          'quantity' => 100,
+          '_id' => '5480c950bffebc651c8b456e'
+        )
+      )
     )); 
 
     User::create(array(
