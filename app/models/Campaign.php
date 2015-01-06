@@ -11,7 +11,7 @@ class Campaign extends Eloquent {
    *
    * @var array
    */
-  protected $hidden = array('_id', 'created_at', 'updated_at');
+  protected $hidden = array('_id');
 
   /**
    * Validation rules
@@ -74,12 +74,7 @@ class Campaign extends Eloquent {
    */
   private function formatDate($value) {
     $date = $this->asDateTime($value);
-    if ($value instanceof MongoDate) {
-      return $date->format('Y-m-d H:i:s');
-    }
-    else {
-      return $date;
-    }
+    return $date->format('Y-m-d H:i:s');
   }
 
   /**

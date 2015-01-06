@@ -93,12 +93,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
    */
   private function formatDate($value) {
     $date = $this->asDateTime($value);
-    if ($value instanceof MongoDate) {
-      return $date->format('Y-m-d H:i:s');
-    }
-    else {
-      return $date;
-    }
+    return $date->format('Y-m-d H:i:s');
   }
 
   /**
