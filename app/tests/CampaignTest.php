@@ -6,7 +6,7 @@ class CampaignTest extends TestCase {
    * Migrate database and set up HTTP headers
    *
    * @return void
-  */
+   */
   public function setUp()
   {
     parent::setUp();
@@ -29,7 +29,7 @@ class CampaignTest extends TestCase {
    * GET /users/campaigns
    *
    * @return void
-  */
+   */
   public function testGetCampaignsFromUser()
   {   
     $parameters = array('email' => 'test@dosomething.org',);
@@ -49,7 +49,7 @@ class CampaignTest extends TestCase {
    * POST /campaigns/:nid/signup
    *
    * @return void
-  */
+   */
   public function testSubmitCampaignSignup()
   {   
     // Campaign sid
@@ -71,22 +71,22 @@ class CampaignTest extends TestCase {
   }
 
   /**
-   * Test for submiting a campaign reportback
+   * Test for submiting a campaign report back.
    * POST /campaigns/:nid/reportback
    *
    * @return void
-  */
+   */
   public function testSubmitCampaignReportback()
   {   
     // Campaign reportback data
-    $rbid = array(
-      'rbid' => '235',
-      'quantity' => '3',
-      'why_participated' => "I love helping others",
-      'file_url' => 'happy.jpg'
+    $rb = array(
+      'rbid' => 100,
+      'quantity' => 10,
+      'why_participated' => 'I love helping others',
+      'file_url' => 'http://example.test/example.png'
     );
 
-    $response = $this->call('POST', '1/campaigns/123/reportback', array(), array(), $this->server, json_encode($rbid));
+    $response = $this->call('POST', '1/campaigns/123/reportback', array(), array(), $this->server, json_encode($rb));
     $content = $response->getContent();
     $data = json_decode($content, true);
 
@@ -101,4 +101,47 @@ class CampaignTest extends TestCase {
     $this->assertArrayHasKey('rbid', $data);
   }
 
+  /**
+   * Test for successful update of a campaign report back.
+   * PUT /campaigns/:nid/reportback
+   *
+   * @return void
+   */
+  public function testUpdateCampaignReportback200() {
+    $rb = array(
+      'rbid' => 10,
+      'quantity' => '1'
+    );
+
+    $response = $this->call('PUT', '1/campaigns/100/reportback', array(), array(), $this->server, json_encode($rb));
+    $content = $response->getContent();
+
+    // Response should return a 200
+    $this->assertEquals(200, $response->getStatusCode());
+
+    // Response should be valid JSON
+    $this->assertJson($content);
+  }
+
+  /**
+   * Test for update of a non-existent campaign report back.
+   * PUT /campaigns/:nid/reportback
+   *
+   * @return void
+   */
+  public function testUpdateCampaignReportback401() {
+    $rb = array(
+      'rbid' => 11,
+      'quantity' => '1'
+    );
+
+    $response = $this->call('PUT', '1/campaigns/100/reportback', array(), array(), $this->server, json_encode($rb));
+    $content = $response->getContent();
+
+    // Response should return a 401
+    $this->assertEquals(401, $response->getStatusCode());
+
+    // Response should be valid JSON
+    $this->assertJson($content);
+  }
 }

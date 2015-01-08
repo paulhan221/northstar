@@ -61,7 +61,7 @@ class UserController extends \BaseController {
         $user->save();
 
         $response = array(
-          RESPONSE_PARAMS::created_at => $user->created_at,
+          USER_RESPONSE::created_at => $user->created_at,
           USER_PARAMS::_id => $user->_id
         );
 
@@ -101,7 +101,7 @@ class UserController extends \BaseController {
 
       $user->save();
 
-      $response = array(RESPONSE_PARAMS::updated_at => $user->updated_at);
+      $response = array(USER_RESPONSE::updated_at => $user->updated_at);
 
       return Response::json($response, 202);
     }
@@ -154,10 +154,10 @@ class UserController extends \BaseController {
         $response = array(
           USER_PARAMS::email => $user->email,
           USER_PARAMS::mobile => $user->mobile,
-          RESPONSE_PARAMS::created_at => $user->created_at,
-          RESPONSE_PARAMS::updated_at => $user->updated_at,
+          USER_RESPONSE::created_at => $user->created_at,
+          USER_RESPONSE::updated_at => $user->updated_at,
           USER_PARAMS::_id => $user->_id,
-          RESPONSE_PARAMS::session_token => $token->key
+          USER_RESPONSE::session_token => $token->key
         );
         return Response::json($response, '200');
       }
@@ -241,7 +241,10 @@ abstract class USER_PARAMS {
   }
 };
 
-abstract class RESPONSE_PARAMS {
+/**
+ * Abstract class defining string values for response properties.
+ */
+abstract class USER_RESPONSE {
   const session_token = 'session_token';
   const created_at = 'created_at';
   const updated_at = 'updated_at';
