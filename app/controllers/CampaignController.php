@@ -131,17 +131,8 @@ class CampaignController extends \BaseController {
     else {
       $campaign->rbid = $rbid;
 
-      if (!is_null(Input::get(REPORTBACK_ATTRIBUTE::quantity))) {
-        $campaign->quantity = Input::get(REPORTBACK_ATTRIBUTE::quantity);
-      }
-
-      if (!is_null(Input::get(REPORTBACK_ATTRIBUTE::why_participated))) {
-        $campaign->why_participated = Input::get(REPORTBACK_ATTRIBUTE::why_participated);
-      }
-
-      if (!is_null(Input::get(REPORTBACK_ATTRIBUTE::file_url))) {
-        $campaign->file_url = Input::get(REPORTBACK_ATTRIBUTE::file_url);
-      }
+      $input = array_filter($input, function($val) { return !is_null($val); });
+      $campaign->fill($input);
 
       $campaign = $user->campaigns()->save($campaign);
 
@@ -175,23 +166,18 @@ class CampaignController extends \BaseController {
 
     $token = Request::header('Session');
     $user = Token::userFor($token);
-    $campaign = $user->campaigns()->where(REPORTBACK_ATTRIBUTE::rbid, '=', $rbid)->first();
+    $campaign = $user->campaigns()
+      ->where('nid', '=', $nid)
+      ->where(REPORTBACK_ATTRIBUTE::rbid, '=', $rbid)
+      ->first();
 
     if (!($campaign instanceof Campaign)) {
       return Response::json("Campaign does not exist", 401);
     }
 
-    if (!is_null(Input::get(REPORTBACK_ATTRIBUTE::quantity))) {
-      $campaign->quantity = Input::get(REPORTBACK_ATTRIBUTE::quantity);
-    }
-
-    if (!is_null(Input::get(REPORTBACK_ATTRIBUTE::why_participated))) {
-      $campaign->why_participated = Input::get(REPORTBACK_ATTRIBUTE::why_participated);
-    }
-
-    if (!is_null(Input::get(REPORTBACK_ATTRIBUTE::file_url))) {
-      $campaign->file_url = Input::get(REPORTBACK_ATTRIBUTE::file_url);
-    }
+    $input = Input::only(REPORTBACK_ATTRIBUTE::editableKeys());
+    $input = array_filter($input, function($val) { return !is_null($val); });
+    $campaign->fill($input);
 
     $campaign = $user->campaigns()->save($campaign);
 

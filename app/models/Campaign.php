@@ -7,6 +7,11 @@ class Campaign extends Eloquent {
   protected $primaryKey = "_id";
 
   /**
+   * Guarded attributes
+   */
+  protected $guarded = array('_id');
+
+  /**
    * The attributes excluded from the model's JSON form.
    *
    * @var array
