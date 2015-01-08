@@ -116,10 +116,10 @@ class CampaignController extends \BaseController {
     if (!($campaign instanceof Campaign)) {
       $campaign = new Campaign;
       $campaign->nid = $nid;
-      $campaign->rbid = $rbid;
-      $campaign->quantity = Input::get('quantity');
-      $campaign->why_participated = Input::get('why_participated');
-      $campaign->file_url = Input::get('file_url');
+
+      // Only input non-null values
+      $input = array_filter($input, function($val) { return !is_null($val); });
+      $campaign->fill($input);
       $campaign = $user->campaigns()->save($campaign);
 
       $response = array(
@@ -129,11 +129,9 @@ class CampaignController extends \BaseController {
       $statusCode = 201;
     }
     else {
-      $campaign->rbid = $rbid;
-
+      // Only input non-null values
       $input = array_filter($input, function($val) { return !is_null($val); });
       $campaign->fill($input);
-
       $campaign = $user->campaigns()->save($campaign);
 
       $response = array(

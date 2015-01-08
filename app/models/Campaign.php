@@ -132,6 +132,7 @@ abstract class REPORTBACK_ATTRIBUTE {
   public static function editableKeys()
   {
     return array(
+      REPORTBACK_ATTRIBUTE::rbid,
       REPORTBACK_ATTRIBUTE::file_url,
       REPORTBACK_ATTRIBUTE::quantity,
       REPORTBACK_ATTRIBUTE::why_participated
