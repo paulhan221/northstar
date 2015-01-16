@@ -32,6 +32,11 @@ class UserController extends \BaseController {
     if($user instanceof User) {
       return Response::json($user, 200);
     }
+    else {
+      // @TODO: add a pager to this.
+      $users = User::all();
+      return Response::json($users, 200);
+    }
 
     return Response::json('The resource does not exist', 404);
   }
