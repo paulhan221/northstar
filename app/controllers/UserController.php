@@ -9,34 +9,12 @@ class UserController extends \BaseController {
    * @return Response
   */
   public function index()
-  {   
-    $user = '';
-    $drupal_uid = Input::has(USER_PARAMS::drupal_uid) ? (int) Input::get(USER_PARAMS::drupal_uid) : false;
-    $id = Input::has(USER_PARAMS::_id) ? Input::get(USER_PARAMS::_id) : false;
-    $mobile = Input::has(USER_PARAMS::mobile) ? Input::get(USER_PARAMS::mobile) : false;
-    $email = Input::has(USER_PARAMS::email) ? Input::get(USER_PARAMS::email) : false;
+  {
 
-    if($drupal_uid) {
-      $user = User::where(USER_PARAMS::drupal_uid, $drupal_uid)->first();
-    }
-    elseif($id) {
-      $user = User::where(USER_PARAMS::_id, $id)->first();
-    }
-    elseif($mobile) {
-      $user = User::where(USER_PARAMS::mobile, $mobile)->first();
-    }
-    elseif($email) {
-      $user = User::where(USER_PARAMS::email, $email)->first();
-    }
+    // @TODO: add a pager to this.
+    $users = User::all();
+    return Response::json($users, 200);
 
-    if($user instanceof User) {
-      return Response::json($user, 200);
-    }
-    else {
-      // @TODO: add a pager to this.
-      $users = User::all();
-      return Response::json($users, 200);
-    }
 
     return Response::json('The resource does not exist', 404);
   }
@@ -62,7 +40,7 @@ class UserController extends \BaseController {
             $user->$key = $value;
           }
         }
-        
+
         $user->save();
 
         $response = array(
@@ -75,11 +53,44 @@ class UserController extends \BaseController {
       catch(\Exception $e) {
         return Response::json($e, 401);
       }
-        
+
     }
     else {
       return Response::json($user->messages(), 401);
     }
+
+  }
+
+  /**
+   * Display the specified resource.
+   *
+   * @return Response
+   */
+  public function show()
+  {
+    $user = '';
+    $drupal_uid = Input::has(USER_PARAMS::drupal_uid) ? (int) Input::get(USER_PARAMS::drupal_uid) : false;
+    $id = Input::has(USER_PARAMS::_id) ? Input::get(USER_PARAMS::_id) : false;
+    $mobile = Input::has(USER_PARAMS::mobile) ? Input::get(USER_PARAMS::mobile) : false;
+    $email = Input::has(USER_PARAMS::email) ? Input::get(USER_PARAMS::email) : false;
+
+    if($drupal_uid) {
+      $user = User::where(USER_PARAMS::drupal_uid, $drupal_uid)->first();
+    }
+    elseif($id) {
+      $user = User::where(USER_PARAMS::_id, $id)->first();
+    }
+    elseif($mobile) {
+      $user = User::where(USER_PARAMS::mobile, $mobile)->first();
+    }
+    elseif($email) {
+      $user = User::where(USER_PARAMS::email, $email)->first();
+    }
+
+    if($user instanceof User) {
+      return Response::json($user, 200);
+    }
+    return Response::json('The resource does not exist', 404);
 
   }
 
@@ -142,7 +153,7 @@ class UserController extends \BaseController {
   {
     $input = Input::only(USER_PARAMS::email, USER_PARAMS::mobile, USER_PARAMS::password);
     $user = new User;
-    
+
     if($user->validate($input, true)) {
       $user = User::where(USER_PARAMS::email, '=', Input::get(USER_PARAMS::email))->first();
       if(!($user instanceof User)) {
@@ -151,7 +162,7 @@ class UserController extends \BaseController {
       if(!($user instanceof User)) {
         return Response::json("User is not registered.");
       }
-      
+
       if(Hash::check(Input::get(USER_PARAMS::password) , $user->password)) {
         $token = $user->login();
         $token->user = $user->toArray();
@@ -181,7 +192,7 @@ class UserController extends \BaseController {
    *  Logout a user: remove the specified active token from the database
    *  @param user User
    */
-  public function logout() 
+  public function logout()
   {
     if (!Request::header('Session')) {
       return Response::json('No token given.');
@@ -199,11 +210,11 @@ class UserController extends \BaseController {
     }
     if ($token->delete()){
       return Response::json('User logged out successfully.', 200);
-    }   
+    }
     else {
       return Response::json('User could not log out. Please try again.');
     }
-          
+
   }
 
 }
