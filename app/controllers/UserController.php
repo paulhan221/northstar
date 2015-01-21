@@ -64,29 +64,17 @@ class UserController extends \BaseController {
   /**
    * Display the specified resource.
    *
+   * @param $term - string
+   *   term to search by (eg. mobile, drupal_uid, id, etc)
+   * @param $id - string
+   *  the actual value to search for
+   *
    * @return Response
    */
-  public function show()
+  public function show($term, $id)
   {
     $user = '';
-    $drupal_uid = Input::has(USER_PARAMS::drupal_uid) ? (int) Input::get(USER_PARAMS::drupal_uid) : false;
-    $id = Input::has(USER_PARAMS::_id) ? Input::get(USER_PARAMS::_id) : false;
-    $mobile = Input::has(USER_PARAMS::mobile) ? Input::get(USER_PARAMS::mobile) : false;
-    $email = Input::has(USER_PARAMS::email) ? Input::get(USER_PARAMS::email) : false;
-
-    if($drupal_uid) {
-      $user = User::where(USER_PARAMS::drupal_uid, $drupal_uid)->first();
-    }
-    elseif($id) {
-      $user = User::where(USER_PARAMS::_id, $id)->first();
-    }
-    elseif($mobile) {
-      $user = User::where(USER_PARAMS::mobile, $mobile)->first();
-    }
-    elseif($email) {
-      $user = User::where(USER_PARAMS::email, $email)->first();
-    }
-
+    $user = User::where($term, $id)->first();
     if($user instanceof User) {
       return Response::json($user, 200);
     }
