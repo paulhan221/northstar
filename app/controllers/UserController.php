@@ -1,5 +1,6 @@
 <?php
 
+
 class UserController extends \BaseController {
 
   /**
@@ -10,9 +11,9 @@ class UserController extends \BaseController {
   */
   public function index()
   {
-
-    // @TODO: add a pager to this.
-    $users = User::all();
+    //@TODO: set sensible limit here.
+    $limit = Input::get('limit') ?: 20;
+    $users = User::paginate($limit);
     return Response::json($users, 200);
   }
 
