@@ -26,6 +26,9 @@ class UserTableSeeder extends Seeder {
 
   public function run()
   {
+    // @TODO: Why is this being called... it's called for each unit test.
+    // Without this line, the unit tests fail.
+    DB::table('users')->delete();
     User::create(array(
       '_id' => '5480c950bffebc651c8b456f',
       'email' => 'test@dosomething.org',
