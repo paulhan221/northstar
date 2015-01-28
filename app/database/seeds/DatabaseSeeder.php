@@ -26,11 +26,11 @@ class UserTableSeeder extends Seeder {
 
   public function run()
   {
-    DB::table('users')->delete();
+    $faker = Faker\Factory::create();
 
     User::create(array(
       '_id' => '5480c950bffebc651c8b456f',
-      'email' => 'test@dosomething.org', 
+      'email' => 'test@dosomething.org',
       'mobile' => '5555555555',
       'password' => 'secret',
       'drupal_uid' => 123456,
@@ -51,29 +51,25 @@ class UserTableSeeder extends Seeder {
           '_id' => '5480c950bffebc651c8b456e'
         )
       )
-    )); 
-
-    User::create(array(
-      'email' => 'info@dosomething.org', 
-      'mobile' => '5556669999',
-      'password' => 'secret',
-      'drupal_uid' => 456788,
-      'addr_street1' => '456',
-      'addr_street2' => '33',
-      'addr_city' => 'Example',
-      'addr_state' => 'Testing',
-      'addr_zip' => '555555',
-      'country' => 'US',
-      'birthdate' => '12/17/91',
-      'first_name' => 'John',
-      'last_name' => 'Doe'
     ));
 
-    User::create(array(
-      '_id' =>'5480c950bffebc651c8b4570',
-      'email' => 'delete-test@ds.org',
-      'password' => 'secret'
-    ));
+    foreach(range(1,50) as $index) {
+      User::create([
+        'first_name' => $faker->firstName,
+        'last_name' => $faker->lastName,
+        'email' => $faker->unique()->safeEmail,
+        'mobile' => $faker->unique()->phoneNumber,
+        'password' => 'secret',
+        'birthdate' => $faker->date($format = 'm/d/Y', $max = 'now'),
+        'addr_street1' => $faker->streetAddress,
+        'addr_street2' => $faker->secondaryAddress,
+        'city' => $faker->city,
+        'addr_state' => $faker->state,
+        'addr_zip' => $faker->postcode,
+        'country' => $faker->country,
+      ]);
+    }
+
   }
 
 }
