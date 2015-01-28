@@ -50,6 +50,27 @@ class UserTableSeeder extends Seeder {
         )
       )
     ));
+    User::create(array(
+      'email' => 'info@dosomething.org',
+      'mobile' => '5556669999',
+      'password' => 'secret',
+      'drupal_uid' => 456788,
+      'addr_street1' => '456',
+      'addr_street2' => '33',
+      'addr_city' => 'Example',
+      'addr_state' => 'Testing',
+      'addr_zip' => '555555',
+      'country' => 'US',
+      'birthdate' => '12/17/91',
+      'first_name' => 'John',
+      'last_name' => 'Doe'
+    ));
+    User::create(array(
+      '_id' =>'5480c950bffebc651c8b4570',
+      'email' => 'delete-test@ds.org',
+      'password' => 'secret'
+    ));
+
     if (App::environment('local')) {
       $faker = Faker\Factory::create();
       foreach(range(1,50) as $index) {
