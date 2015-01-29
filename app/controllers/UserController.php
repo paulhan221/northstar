@@ -63,7 +63,7 @@ class UserController extends \BaseController {
    * Display the specified resource.
    *
    * @param $term - string
-   *   term to search by (eg. mobile, drupal_uid, id, etc)
+   *   term to search by (eg. mobile, id, etc)
    * @param $id - string
    *  the actual value to search for
    *
@@ -213,7 +213,6 @@ abstract class USER_PARAMS {
   const email = 'email';
   const mobile = 'mobile';
   const password = 'password';
-  const drupal_uid = 'drupal_uid';
   const address_street1 = 'addr_street1';
   const address_street2 = 'addr_street2';
   const address_city = 'addr_city';
@@ -229,7 +228,6 @@ abstract class USER_PARAMS {
         self::email,
         self::mobile,
         self::password,
-        self::drupal_uid,
         self::address_street1,
         self::address_street2,
         self::address_city,
