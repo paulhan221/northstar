@@ -10,6 +10,7 @@ class CampaignController extends \BaseController {
   */
   public function index()
   {
+    //@TODO: move this down to show method.
     $user = '';
     $id = Input::has('_id') ? Input::get('_id') : false;
     $mobile = Input::has('mobile') ? Input::get('mobile') : false;
