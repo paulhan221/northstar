@@ -34,6 +34,7 @@ class UserTableSeeder extends Seeder {
       'email' => 'test@dosomething.org',
       'mobile' => '5555555555',
       'password' => 'secret',
+      'drupal_uid' => 123456,
       'addr_street1' => '123',
       'addr_street2' => '456',
       'addr_city' => 'Paris',
@@ -50,12 +51,6 @@ class UserTableSeeder extends Seeder {
           'quantity' => 100,
           '_id' => '5480c950bffebc651c8b456e'
         )
-      ),
-      'source' => array(
-        array(
-          'name' => 'us-ds',
-          'id' => '123456'
-        )
       )
     ));
     User::create(array(
@@ -71,24 +66,12 @@ class UserTableSeeder extends Seeder {
       'country' => 'US',
       'birthdate' => '12/17/91',
       'first_name' => 'John',
-      'last_name' => 'Doe',
-      'source' => array(
-        array(
-          'name' => 'us-ca',
-          'id' => '12321'
-        )
-      )
+      'last_name' => 'Doe'
     ));
     User::create(array(
       '_id' =>'5480c950bffebc651c8b4570',
       'email' => 'delete-test@ds.org',
-      'password' => 'secret',
-      'source' => array(
-        array(
-          'name' => 'CGG',
-          'id' => '1111'
-          )
-        )
+      'password' => 'secret'
     ));
 
     if (App::environment('local')) {
@@ -107,12 +90,6 @@ class UserTableSeeder extends Seeder {
           'addr_state' => $faker->state,
           'addr_zip' => $faker->postcode,
           'country' => $faker->country,
-          'source' => array(
-            array(
-              'name' => 'CGG',
-              'id' => $index
-              )
-            )
         ]);
       }
     }

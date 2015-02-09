@@ -9,14 +9,17 @@ class CampaignController extends \BaseController {
    * @return Response
   */
   public function index()
-  {
-    //@TODO: move this down to show method.
+  {   
     $user = '';
+    $drupal_uid = Input::has('drupal_uid') ? (int) Input::get('drupal_uid') : false;
     $id = Input::has('_id') ? Input::get('_id') : false;
     $mobile = Input::has('mobile') ? Input::get('mobile') : false;
     $email = Input::has('email') ? Input::get('email') : false;
 
-    if($id) {
+    if($drupal_uid) {
+      $user = User::where('drupal_uid', $drupal_uid)->first();
+    }
+    elseif($id) {
       $user = User::where('_id', $id)->first();
     }
     elseif($mobile) {
