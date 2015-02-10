@@ -62,7 +62,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
    * Email address mutator that converts the email value to lowercase
    *
    */
-  public function setEmailAttribute($value) 
+  public function setEmailAttribute($value)
   {
     $this->attributes['email'] = strtolower($value);
   }
@@ -124,7 +124,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
    * Define embedded relationship with the Campaign Model
    *
    */
-  public function campaigns() 
+  public function campaigns()
   {
     return $this->embedsMany('Campaign');
   }
@@ -135,7 +135,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
    * @var array
    */
   public function validate($data, $auth = false)
-  { 
+  {
     $rules = ($auth == true) ? $this->auth_rules : $this->rules;
 
     $v = Validator::make($data, $rules);
@@ -165,12 +165,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
    *
    * @return mixed
   */
-  public function login() 
+  public function login()
   {
     $token = Token::getInstance();
     $token->user_id = $this->_id;
     $token->save();
-    
+
     return $token;
   }
 
