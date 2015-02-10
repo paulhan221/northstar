@@ -72,6 +72,18 @@ class UserController extends \BaseController {
   public function show($term, $id)
   {
     $user = '';
+
+    // Is a country set?
+    $country_code = Input::get('country');
+
+    // Default drupal id prefix to "us"
+    if ($term == 'drupal_id' && empty($country_code)) {
+      $id = 'us-' . $id;
+    } elseif($term == 'drupal_id' && !empty($country_code)) {
+      $id = $country_code . '-' . $id;
+    }
+
+    // Find the user.
     $user = User::where($term, $id)->first();
     if($user instanceof User) {
       return Response::json($user, 200);
