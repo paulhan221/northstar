@@ -13,7 +13,7 @@ class CreateUsersTable extends Migration {
 	public function up()
 	{
 		Schema::create('users', function($collection)
-		{	
+		{
 			/* Database-generated ID */
 		    //$collection->index('doc_id');
 
@@ -29,7 +29,7 @@ class CreateUsersTable extends Migration {
 		    $collection->text('password');
 
 		     /* Drupal UID */
-		    $collection->text('drupal_uid');
+		    $collection->text('drupal_id');
 
 		    /* Mailing address */
 		    $collection->text('addr_street1');
@@ -52,7 +52,7 @@ class CreateUsersTable extends Migration {
 
 		     /* List of campaign actions */
 		    $collection->text('campaigns');
-		});	
+		});
 	}
 
 	/**
