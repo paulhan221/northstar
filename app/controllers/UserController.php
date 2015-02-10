@@ -224,6 +224,7 @@ abstract class USER_PARAMS {
   const last_name = 'last_name';
   // Sources
   const drupal_id = 'drupal_id';
+  const cgg_id = 'cgg_id';
 
   public static function editableKeys() {
     return array(
@@ -231,6 +232,7 @@ abstract class USER_PARAMS {
         self::mobile,
         self::password,
         self::drupal_id,
+        self::cgg_id,
         self::address_street1,
         self::address_street2,
         self::address_city,

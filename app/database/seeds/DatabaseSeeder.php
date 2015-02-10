@@ -90,6 +90,7 @@ class UserTableSeeder extends Seeder {
           'addr_state' => $faker->state,
           'addr_zip' => $faker->postcode,
           'country' => $faker->country,
+          'cgg_id' => $index,
         ]);
       }
     }
