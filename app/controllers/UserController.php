@@ -33,6 +33,8 @@ class UserController extends \BaseController {
     if($user->validate($input)) {
 
       try {
+        //@TODO: is there a better way to get this to the mutator?
+        Session::flash('country', $input['country']);
         foreach($input as $key => $value) {
           if(isset($key)) {
             $user->$key = $value;
@@ -63,7 +65,7 @@ class UserController extends \BaseController {
    * Display the specified resource.
    *
    * @param $term - string
-   *   term to search by (eg. mobile, drupal_uid, id, etc)
+   *   term to search by (eg. mobile, drupal_id, id, etc)
    * @param $id - string
    *  the actual value to search for
    *
@@ -72,8 +74,9 @@ class UserController extends \BaseController {
   public function show($term, $id)
   {
     $user = '';
-    $user = User::where($term, $id)->first();
-    if($user instanceof User) {
+    // Find the user.
+    $user = User::where($term, $id)->get();
+    if(is_object($user)) {
       return Response::json($user, 200);
     }
     return Response::json('The resource does not exist', 404);
@@ -213,7 +216,6 @@ abstract class USER_PARAMS {
   const email = 'email';
   const mobile = 'mobile';
   const password = 'password';
-  const drupal_uid = 'drupal_uid';
   const address_street1 = 'addr_street1';
   const address_street2 = 'addr_street2';
   const address_city = 'addr_city';
@@ -223,13 +225,17 @@ abstract class USER_PARAMS {
   const birthdate = 'birthdate';
   const first_name = 'first_name';
   const last_name = 'last_name';
+  // Sources
+  const drupal_id = 'drupal_id';
+  const cgg_id = 'cgg_id';
 
   public static function editableKeys() {
     return array(
         self::email,
         self::mobile,
         self::password,
-        self::drupal_uid,
+        self::drupal_id,
+        self::cgg_id,
         self::address_street1,
         self::address_street2,
         self::address_city,
