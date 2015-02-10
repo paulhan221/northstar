@@ -71,9 +71,19 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
    * Password mutator that hashes the password field
    *
    */
-  public function setPasswordAttribute($value) 
+  public function setPasswordAttribute($value)
   {
     $this->attributes['password'] = Hash::make($value);
+  }
+
+  /**
+   * Drupal id setter mutator, adds country code to drupal id.
+   *
+   */
+  public function setDrupalIdAttribute($value)
+  {
+    $country = (Session::has('country')) ? Session::get('country') : 'us';
+    $this->attributes['drupal_id'] = $country . '-' . $value;
   }
 
   /**
