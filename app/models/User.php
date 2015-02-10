@@ -77,16 +77,6 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
   }
 
   /**
-   * Drupal id setter mutator, adds country code to drupal id.
-   *
-   */
-  public function setDrupalIdAttribute($value)
-  {
-    $country = (Session::has('country')) ? Session::get('country') : 'us';
-    $this->attributes['drupal_id'] = $country . '-' . $value;
-  }
-
-  /**
    * Automatically convert date columns to instances of Carbon
    *
    */
