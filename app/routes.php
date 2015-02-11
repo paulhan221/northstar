@@ -29,7 +29,7 @@ Route::group(array('prefix' => '1', 'before' => 'auth.api'), function()
   Route::post('logout', 'UserController@logout');
 
   Route::resource('users', 'UserController');
-  Route::get('users/campaigns/{term}/{id}', 'CampaignController@show');
+  Route::get('users/{term}/{id}/campaigns', 'CampaignController@show');
   Route::get('users/{term}/{id}', 'UserController@show');
 
 });
