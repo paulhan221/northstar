@@ -28,7 +28,7 @@ class CampaignController extends \BaseController {
     $user = '';
 
     // Type cast id fields as ints.
-    if (strpos($term,'_id') !== false) {
+    if (strpos($term,'_id') !== false && $term !== '_id') {
       $id = (int) $id;
     }
 
