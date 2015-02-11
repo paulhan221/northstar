@@ -26,6 +26,12 @@ class CampaignController extends \BaseController {
   public function show($term, $id)
   {
     $user = '';
+
+    // Type cast id fields as ints.
+    if (strpos($term,'_id') !== false) {
+      $id = (int) $id;
+    }
+
     // Find the user.
     $user = User::where($term, $id)->first();
     if($user instanceof User) {
