@@ -10,31 +10,34 @@ class CampaignController extends \BaseController {
   */
   public function index()
   {
-    //@TODO: move this to the show controller, and change to @term & @id search.
+
+  }
+
+  /**
+   * Returns a user's campaigns
+   *
+   * @param $term - string
+   *   term to search by (eg. mobile, drupal_id, id, etc)
+   * @param $id - string
+   *  the actual value to search for
+   *
+   * @return Response
+   */
+  public function show($term, $id)
+  {
     $user = '';
-    $drupal_id = Input::has('drupal_id') ? (int) Input::get('drupal_id') : false;
-    $id = Input::has('_id') ? Input::get('_id') : false;
-    $mobile = Input::has('mobile') ? Input::get('mobile') : false;
-    $email = Input::has('email') ? Input::get('email') : false;
 
-    if($drupal_id) {
-      $user = User::where('drupal_id', $drupal_id)->first();
-    }
-    elseif($id) {
-      $user = User::where('_id', $id)->first();
-    }
-    elseif($mobile) {
-      $user = User::where('mobile', $mobile)->first();
-    }
-    elseif($email) {
-      $user = User::where('email', $email)->first();
+    // Type cast id fields as ints.
+    if (strpos($term,'_id') !== false && $term !== '_id') {
+      $id = (int) $id;
     }
 
+    // Find the user.
+    $user = User::where($term, $id)->first();
     if($user instanceof User) {
       $campaigns = $user->campaigns;
       return Response::json($campaigns, 200);
     }
-
     return Response::json('The resource does not exist', 404);
   }
 

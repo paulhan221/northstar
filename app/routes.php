@@ -28,8 +28,8 @@ Route::group(array('prefix' => '1', 'before' => 'auth.api'), function()
   Route::post('login', 'UserController@login');
   Route::post('logout', 'UserController@logout');
 
-  Route::get('users/campaigns', 'CampaignController@index');
   Route::resource('users', 'UserController');
+  Route::get('users/{term}/{id}/campaigns', 'CampaignController@show');
   Route::get('users/{term}/{id}', 'UserController@show');
 
 });
