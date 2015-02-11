@@ -65,7 +65,7 @@ class UserController extends \BaseController {
    * Display the specified resource.
    *
    * @param $term - string
-   *   term to search by (eg. mobile, drupal_id, id, etc)
+   *   term to search by (eg. mobile, drupal_id, id, email, etc)
    * @param $id - string
    *  the actual value to search for
    *
@@ -74,6 +74,12 @@ class UserController extends \BaseController {
   public function show($term, $id)
   {
     $user = '';
+
+    // Type cast id fields as ints.
+    if (strpos($term,'_id') !== false && $term !== '_id') {
+      $id = (int) $id;
+    }
+
     // Find the user.
     $user = User::where($term, $id)->get();
     if(is_object($user)) {
