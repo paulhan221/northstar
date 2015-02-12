@@ -82,7 +82,7 @@ class UserController extends \BaseController {
 
     // Find the user.
     $user = User::where($term, $id)->get();
-    if(is_object($user)) {
+    if(!$user->isEmpty()) {
       return Response::json($user, 200);
     }
     return Response::json('The resource does not exist', 404);
