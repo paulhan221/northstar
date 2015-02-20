@@ -36,7 +36,7 @@ class UserController extends \BaseController {
         //@TODO: is there a better way to get this to the mutator?
         Session::flash('country', $input['country']);
         foreach($input as $key => $value) {
-          if(isset($key)) {
+          if(isset($value)) {
             $user->$key = $value;
           }
         }
