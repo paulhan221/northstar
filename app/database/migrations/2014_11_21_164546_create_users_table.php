@@ -20,10 +20,10 @@ class CreateUsersTable extends Migration {
 		    $collection->text('mobile');
 
 			/* Email address - forced to lowercase */
-		    $collection->unique('email');
+		    $collection->sparse('email');
 
 		    /* Mobile phone number */
-		    $collection->text('mobile');
+		    $collection->sparse('mobile');
 
 		    /* Password */
 		    $collection->text('password');
