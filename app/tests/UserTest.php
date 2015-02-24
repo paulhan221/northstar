@@ -31,9 +31,8 @@ class UserTest extends TestCase {
    * @return void
   */
   public function testGetDataFromUser()
-  {   
-    $parameters = array('email' => 'test@dosomething.org',);
-    $response = $this->call('GET', '1/users', $parameters, array(), $this->server);
+  {
+    $response = $this->call('GET', '1/users/email/test@dosomething.org', array(), array(), $this->server);
     $content = $response->getContent();
 
     // The response should return a 200 OK status code
