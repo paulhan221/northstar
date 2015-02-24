@@ -31,9 +31,8 @@ class CampaignTest extends TestCase {
    * @return void
    */
   public function testGetCampaignsFromUser()
-  {   
-    $parameters = array('email' => 'test@dosomething.org',);
-    $response = $this->call('GET', '1/users/campaigns', $parameters, array(), $this->server);
+  {
+    $response = $this->call('GET', '1/users/email/test@dosomething.org/campaigns', array(), array(), $this->server);
     $content = $response->getContent();
 
     // The response should return a 200 OK status code
