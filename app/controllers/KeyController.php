@@ -24,11 +24,12 @@ class KeyController extends \BaseController {
    */
   public function store()
   {
+    // Get the app name from submission.
     $app_name = Input::get('app_name');
     $key = new ApiKey();
     $key->app_id = snake_case(str_replace(' ', '', $app_name));
     $key->api_key = str_random(40);
-
+    // Save new key.
     $key->save();
 
     return Response::json($key, 200);
