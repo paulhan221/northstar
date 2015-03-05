@@ -8,6 +8,7 @@ server  ENV["SERVER_NAME"], :app, :web
 set :user, "dosomething"
 set :group, "dosomething"
 set :use_sudo, false
+ssh_options[:verbose] = :debug
 set :gateway, "ec2-user@ec2-52-1-92-62.compute-1.amazonaws.com"
 
 set :repository, "."
