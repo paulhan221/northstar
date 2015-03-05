@@ -8,6 +8,7 @@ server  ENV["SERVER_NAME"], :app, :web
 set :user, "dosomething"
 set :group, "dosomething"
 set :use_sudo, false
+set :gateway, "ip-10-100-60-124.ec2.internal"
 
 set :repository, "."
 set :scm, :none
