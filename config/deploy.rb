@@ -8,7 +8,7 @@ server  ENV["SERVER_NAME"], :app, :web
 set :user, "dosomething"
 set :group, "dosomething"
 set :use_sudo, false
-set :gateway, "ec2-52-1-92-62.compute-1.amazonaws.com"
+set :gateway, "ec2-user@ec2-52-1-92-62.compute-1.amazonaws.com"
 
 set :repository, "."
 set :scm, :none
