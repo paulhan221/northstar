@@ -1,3 +1,4 @@
+
 box: blisteringherb/scholarship@0.0.6
 build:
     # The steps that will be executed on build
@@ -24,6 +25,9 @@ deploy:
         code: |-
           export CAP_PRIVATE_KEY=`mktemp`
           echo -e $WERCKER_APP_KEY_PRIVATE > $CAP_PRIVATE_KEY
+    - script:
+        name: print public key
+        code: echo $WERCKER_APP_KEY_PUBLIC
     - cap
   after-steps:
       - hipchat-notify:
