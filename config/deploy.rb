@@ -8,7 +8,11 @@ server  ENV["SERVER_NAME"], :app, :web
 set :user, "dosomething"
 set :group, "dosomething"
 set :use_sudo, false
-set :gateway, ENV["GATEWAY"]
+
+gateway = ENV["GATEWAY"]
+unless gateway.nil?
+  set :gateway, ENV["GATEWAY"]
+end
 
 set :repository, "."
 set :scm, :none
