@@ -28,37 +28,46 @@ class UserController extends \BaseController {
   {
     $input = Input::only(USER_PARAMS::editableKeys());
 
-    $user = new User;
+    // Does this user exist already?
+    $user = User::where('email', '=', $input['email'])
+                    ->orWhere('mobile', '=', $input['mobile'])
+                    ->first();
 
-    if($user->validate($input)) {
+    // If there is no user found, create a new one.
+    if (!$user) {
+      $user = new User;
 
-      try {
-        //@TODO: is there a better way to get this to the mutator?
-        Session::flash('country', $input['country']);
-        foreach($input as $key => $value) {
-          if(!empty($value)) {
-            $user->$key = $value;
-          }
+      // This validation might not be needed, the only validation happening right now
+      // is for unique email or phone numbers, and that should return a user
+      // from the query above.
+      if ($user->validate($input)) {
+        $user->validate($input);
+      } else {
+        return Response::json($user->messages(), 401);
+      }
+    }
+    // Update or create the user from all the input.
+    try {
+      //@TODO: is there a better way to get this to the mutator?
+      Session::flash('country', $input['country']);
+      foreach($input as $key => $value) {
+        if(!empty($value)) {
+          $user->$key = $value;
         }
-
-        $user->save();
-
-        $response = array(
-          USER_RESPONSE::created_at => $user->created_at,
-          USER_PARAMS::_id => $user->_id
-        );
-
-        return Response::json($response, 201);
-      }
-      catch(\Exception $e) {
-        return Response::json($e, 401);
       }
 
-    }
-    else {
-      return Response::json($user->messages(), 401);
-    }
+      $user->save();
 
+      $response = array(
+        USER_RESPONSE::created_at => $user->created_at,
+        USER_PARAMS::_id => $user->_id
+      );
+
+      return Response::json($response, 201);
+    }
+    catch(\Exception $e) {
+      return Response::json($e, 401);
+    }
   }
 
   /**
