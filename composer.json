@@ -19,9 +19,9 @@
 			"app/database/seeds",
 			"app/tests/TestCase.php"
 		],
-    "psr-4": {
-      "Northstar\\": "app/Northstar"
-    }
+		"psr-4": {
+			"Northstar\\": "app/Northstar"
+		}
 	},
 	"scripts": {
 		"post-install-cmd": [
