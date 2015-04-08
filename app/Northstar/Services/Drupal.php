@@ -27,7 +27,7 @@ class DrupalAPI {
 
   public function campaigns($id = NULL)
   {
-    // Get all campaigns
+    // Get all campaigns if there's no id set.
     if (!$id) {
       $response = $this->client->get('campaigns.json');
     }
