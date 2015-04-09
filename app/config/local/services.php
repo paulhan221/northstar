@@ -15,8 +15,9 @@
 return array(
 
   'drupal' => array(
-    'url' => 'http://staging.beta.dosomething.org/',
+    'url' => 'http://dev.dosomething.org',
     'version' => 'v1',
+    'port' => '8888',
   ),
 
 );

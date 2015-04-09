@@ -7,10 +7,9 @@ class DrupalAPI {
   public function __construct()
   {
     $base_url = \Config::get('services.drupal.url');
-    // Ideally this will connect to your local vagrant box.
-    // if (\App::environment('local')) {
-      // $base_url .=  ":" . \Config::get('services.drupal.port');
-    // }
+    if (\App::environment('local')) {
+      $base_url .=  ":" . \Config::get('services.drupal.port');
+    }
     $base_url .= '/api';
     $version = \Config::get('services.drupal.version');
     $client = new \GuzzleHttp\Client([
@@ -30,6 +29,9 @@ class DrupalAPI {
     // Get all campaigns if there's no id set.
     if (!$id) {
       $response = $this->client->get('campaigns.json');
+    }
+    else {
+      $response = $this->client->get('content/' . $id . '.json');
     }
     return $response->json();
   }
