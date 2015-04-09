@@ -12,6 +12,13 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
   protected $primaryKey = "_id";
 
+  protected $fillable =
+    ['email', 'mobile', 'password',
+     'first_name', 'last_name', 'birthdate', 'interests',
+     'addr_street1', 'addr_street2', 'addr_city', 'addr_state', 'addr_zip', 'country',
+     'cgg_id', 'drupal_id', 'agg_id'
+    ];
+
   /**
    * The database collection used by the model.
    *
