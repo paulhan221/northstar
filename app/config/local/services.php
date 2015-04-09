@@ -1,7 +1,5 @@
 <?php
 
-return array(
-
   /*
   |--------------------------------------------------------------------------
   | Third Party Services
@@ -14,21 +12,10 @@ return array(
   |
   */
 
-  'mailgun' => array(
-    'domain' => '',
-    'secret' => '',
-  ),
+return array(
 
-  'mandrill' => array(
-    'secret' => '',
-  ),
-
-  'stripe' => array(
-    'model'  => 'User',
-    'secret' => '',
-  ),
   'drupal' => array(
-    'url' => getenv('DRUPAL_API_URL'),
+    'url' => 'http://staging.beta.dosomething.org/',
     'version' => 'v1',
   ),
 

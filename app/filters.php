@@ -52,7 +52,7 @@ Route::filter('auth.basic', function()
 });
 
 
-Route::filter('auth.token', function() 
+Route::filter('auth.token', function()
 {
   if(!Request::header('Session')) {
     return Response::json("No token found.");
@@ -64,7 +64,7 @@ Route::filter('auth.token', function()
 });
 
 
-Route::filter('auth.api', function() 
+Route::filter('auth.api', function()
 {
   $app_id = Request::header('X-DS-Application-Id');
   $api_key = Request::header('X-DS-REST-API-Key');
