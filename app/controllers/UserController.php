@@ -158,29 +158,28 @@ class UserController extends \BaseController {
    */
   public function login()
   {
-    $input = Input::only(USER_PARAMS::email, USER_PARAMS::mobile, USER_PARAMS::password);
+    $input = Input::only('email', 'mobile', 'password');
     $user = new User;
 
     if($user->validate($input, true)) {
-      $user = User::where(USER_PARAMS::email, '=', Input::get(USER_PARAMS::email))->first();
-      if(!($user instanceof User)) {
-        $user = User::where(USER_PARAMS::mobile, '=', Input::get(USER_PARAMS::mobile))->first();
-      }
+        $user = User::where('email', '=', $input['email'])
+                    ->orWhere('mobile', '=', $input['mobile'])
+                    ->first();
       if(!($user instanceof User)) {
         return Response::json("User is not registered.");
       }
 
-      if(Hash::check(Input::get(USER_PARAMS::password) , $user->password)) {
+      if(Hash::check($input['password'] , $user->password)) {
         $token = $user->login();
         $token->user = $user->toArray();
 
         $response = array(
-          USER_PARAMS::email => $user->email,
-          USER_PARAMS::mobile => $user->mobile,
-          USER_RESPONSE::created_at => $user->created_at,
-          USER_RESPONSE::updated_at => $user->updated_at,
-          USER_PARAMS::_id => $user->_id,
-          USER_RESPONSE::session_token => $token->key
+          'email' => $user->email,
+          'mobile' => $user->mobile,
+          'created_at' => $user->created_at,
+          'updated_at' => $user->updated_at,
+          '_id' => $user->_id,
+          'session_token' => $token->key
         );
         return Response::json($response, '200');
       }
