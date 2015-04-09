@@ -26,11 +26,12 @@ class UserController extends \BaseController {
    */
   public function store()
   {
-    $input = Input::only(USER_PARAMS::editableKeys());
+    $check = Input::only('email', 'mobile');
+    $input = Input::all();
 
     // Does this user exist already?
-    $user = User::where('email', '=', $input['email'])
-                    ->orWhere('mobile', '=', $input['mobile'])
+    $user = User::where('email', '=', $check['email'])
+                    ->orWhere('mobile', '=', $check['mobile'])
                     ->first();
 
     // If there is no user found, create a new one.
@@ -49,7 +50,9 @@ class UserController extends \BaseController {
     // Update or create the user from all the input.
     try {
       //@TODO: is there a better way to get this to the mutator?
-      Session::flash('country', $input['country']);
+      if (Input::has('country')) {
+        Session::flash('country', $input['country']);
+      }
       foreach($input as $key => $value) {
         if(!empty($value)) {
           $user->$key = $value;
@@ -59,8 +62,8 @@ class UserController extends \BaseController {
       $user->save();
 
       $response = array(
-        USER_RESPONSE::created_at => $user->created_at,
-        USER_PARAMS::_id => $user->_id
+        'created_at' => $user->created_at,
+        '_id' => $user->_id
       );
 
       return Response::json($response, 201);
@@ -107,9 +110,9 @@ class UserController extends \BaseController {
    */
   public function update($id)
   {
-    $input = Input::only(USER_PARAMS::editableKeys());
+    $input = Input::all();
 
-    $user = User::where(USER_PARAMS::_id, $id)->first();
+    $user = User::where('_id', $id)->first();
 
     if($user instanceof User) {
       foreach($input as $key => $value) {
@@ -121,7 +124,7 @@ class UserController extends \BaseController {
 
       $user->save();
 
-      $response = array(USER_RESPONSE::updated_at => $user->updated_at);
+      $response = array('updated_at' => $user->updated_at);
 
       return Response::json($response, 202);
     }
@@ -137,7 +140,7 @@ class UserController extends \BaseController {
    */
   public function destroy($id)
   {
-    $user = User::where(USER_PARAMS::_id, $id)->first();
+    $user = User::where('_id', $id)->first();
 
     if ($user instanceof User) {
       $user->delete();
@@ -221,54 +224,4 @@ class UserController extends \BaseController {
 
   }
 
-}
-
-abstract class USER_PARAMS {
-  // Params that cannot be modified by the user
-  const _id = "_id";
-
-  // Editable params
-  const email = 'email';
-  const mobile = 'mobile';
-  const password = 'password';
-  const address_street1 = 'addr_street1';
-  const address_street2 = 'addr_street2';
-  const address_city = 'addr_city';
-  const address_state = 'addr_state';
-  const address_zip = 'addr_zip';
-  const country = 'country';
-  const birthdate = 'birthdate';
-  const first_name = 'first_name';
-  const last_name = 'last_name';
-  // Sources
-  const drupal_id = 'drupal_id';
-  const cgg_id = 'cgg_id';
-
-  public static function editableKeys() {
-    return array(
-        self::email,
-        self::mobile,
-        self::password,
-        self::drupal_id,
-        self::cgg_id,
-        self::address_street1,
-        self::address_street2,
-        self::address_city,
-        self::address_state,
-        self::address_zip,
-        self::country,
-        self::birthdate,
-        self::first_name,
-        self::last_name
-    );
-  }
-};
-
-/**
- * Abstract class defining string values for response properties.
- */
-abstract class USER_RESPONSE {
-  const session_token = 'session_token';
-  const created_at = 'created_at';
-  const updated_at = 'updated_at';
 }
