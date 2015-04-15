@@ -54,7 +54,11 @@ class UserController extends \BaseController {
         Session::flash('country', $input['country']);
       }
       foreach($input as $key => $value) {
-        if(!empty($value)) {
+        if ($key == 'interests'){
+          $interests = array_map('trim', explode(',', $value));
+          $user->push('interests', $interests, true);
+        }
+        elseif (!empty($value)) {
           $user->$key = $value;
         }
       }
@@ -116,8 +120,12 @@ class UserController extends \BaseController {
 
     if($user instanceof User) {
       foreach($input as $key => $value) {
+        if ($key == 'interests'){
+          $interests = array_map('trim', explode(',', $value));
+          $user->push('interests', $interests, true);
+        }
         // Only update attribute if value is non-null.
-        if(isset($key) && !is_null($value)) {
+        elseif(isset($key) && !is_null($value)) {
           $user->$key = $value;
         }
       }
