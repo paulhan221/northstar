@@ -55,7 +55,7 @@ class UserController extends \BaseController {
       }
       foreach($input as $key => $value) {
         if ($key == 'interests'){
-          $interests = explode(',', trim($value));
+          $interests = array_map('trim', explode(',', $value));
           $user->push('interests', $interests, true);
         }
         elseif (!empty($value)) {
@@ -70,7 +70,7 @@ class UserController extends \BaseController {
         '_id' => $user->_id
       );
 
-      return Response::json($user, 201);
+      return Response::json($response, 201);
     }
     catch(\Exception $e) {
       return Response::json($e, 401);
@@ -121,11 +121,11 @@ class UserController extends \BaseController {
     if($user instanceof User) {
       foreach($input as $key => $value) {
         if ($key == 'interests'){
-          $interests = explode(',', trim($value));
+          $interests = array_map('trim', explode(',', $value));
           $user->push('interests', $interests, true);
         }
         // Only update attribute if value is non-null.
-        if(isset($key) && !is_null($value)) {
+        elseif(isset($key) && !is_null($value)) {
           $user->$key = $value;
         }
       }
