@@ -54,6 +54,11 @@ class UserController extends \BaseController {
         Session::flash('country', $input['country']);
       }
       foreach($input as $key => $value) {
+
+        if ($key == 'interests'){
+          $interests = explode(',', trim($value));
+          $user->push('interests', $interests, true);
+        }
         if(!empty($value)) {
           $user->$key = $value;
         }
@@ -66,7 +71,7 @@ class UserController extends \BaseController {
         '_id' => $user->_id
       );
 
-      return Response::json($response, 201);
+      return Response::json($user, 201);
     }
     catch(\Exception $e) {
       return Response::json($e, 401);
