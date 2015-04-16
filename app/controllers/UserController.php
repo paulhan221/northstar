@@ -62,6 +62,20 @@ class UserController extends \BaseController {
           $user->$key = $value;
         }
       }
+      // Do we need to forward this user to drupal?
+      if ($user->email && !$user->drupal_id) {
+        try {
+          $drupal = new Northstar\Services\Drupal\DrupalAPI;
+          $response = $drupal->register($user);
+          $user->drupal_id = $response['uid'];
+          return Response::json($response, 200);
+        } catch (Exception $e) {
+          // @TODO: figure out what to do if a user isn't created.
+          // This could be a failure for so many reasons
+          // User is already registered/email taken
+          // Or just a general failure - do we try again?
+        }
+      }
 
       $user->save();
 
