@@ -168,11 +168,13 @@ class UserController extends \BaseController {
   {
     $input = Input::only('email', 'mobile', 'password');
     $user = new User;
-
     if($user->validate($input, true)) {
-        $user = User::where('email', '=', $input['email'])
-                    ->orWhere('mobile', '=', $input['mobile'])
-                    ->first();
+      if (Input::has('email')) {
+        $user = User::where('email', '=', $input['email'])->first();
+      }
+      elseif (Input::has('mobile')) {
+        $user = User::where('mobile', '=', $input['mobile'])->first();
+      }
       if(!($user instanceof User)) {
         return Response::json("User is not registered.");
       }
