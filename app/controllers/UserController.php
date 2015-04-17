@@ -30,9 +30,11 @@ class UserController extends \BaseController {
     $input = Input::all();
 
     // Does this user exist already?
-    $user = User::where('email', '=', $check['email'])
-                    ->orWhere('mobile', '=', $check['mobile'])
-                    ->first();
+    if (Input::has('email')) {
+      $user = User::where('email', '=', $check['email'])->first();
+    } elseif (Input::has('mobile')) {
+      $user = User::where('mobile', '=', $check['mobile'])->first();
+    }
 
     // If there is no user found, create a new one.
     if (!$user) {
@@ -57,9 +59,22 @@ class UserController extends \BaseController {
         if ($key == 'interests'){
           $interests = array_map('trim', explode(',', $value));
           $user->push('interests', $interests, true);
-        }
-        elseif (!empty($value)) {
+        } elseif (!empty($value)) {
           $user->$key = $value;
+        }
+      }
+      // Do we need to forward this user to drupal?
+      if ($user->email && !$user->drupal_id) {
+        try {
+          $drupal = new Northstar\Services\Drupal\DrupalAPI;
+          $response = $drupal->register($user);
+          $user->drupal_id = $response['uid'];
+          return Response::json($response, 200);
+        } catch (Exception $e) {
+          // @TODO: figure out what to do if a user isn't created.
+          // This could be a failure for so many reasons
+          // User is already registered/email taken
+          // Or just a general failure - do we try again?
         }
       }
 

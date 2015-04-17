@@ -35,4 +35,18 @@ class DrupalAPI {
     }
     return $response->json();
   }
+
+  /**
+   * Forward registration to drupal.
+   */
+  public function register($user)
+  {
+    $user->birthdate = date('Y-m-d', strtotime($user->birthdate));
+    $user->user_registration_source = $user->source;
+    $response = $this->client->post('users', [
+      'body' => json_encode($user),
+      ]);
+    return $response->json();
+
+  }
 }
