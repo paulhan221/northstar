@@ -80,12 +80,7 @@ class UserController extends \BaseController {
 
       $user->save();
 
-      $response = array(
-        'created_at' => $user->created_at,
-        '_id' => $user->_id
-      );
-
-      return Response::json($response, 201);
+      return Response::json($user, 201);
     }
     catch(\Exception $e) {
       return Response::json($e, 401);
@@ -198,15 +193,7 @@ class UserController extends \BaseController {
         $token = $user->login();
         $token->user = $user->toArray();
 
-        $response = array(
-          'email' => $user->email,
-          'mobile' => $user->mobile,
-          'created_at' => $user->created_at,
-          'updated_at' => $user->updated_at,
-          '_id' => $user->_id,
-          'session_token' => $token->key
-        );
-        return Response::json($response, '200');
+        return Response::json($user, '200');
       }
       else {
         return Response::json("Incorrect password.", 412);
