@@ -51,10 +51,6 @@ class UserController extends \BaseController {
     }
     // Update or create the user from all the input.
     try {
-      //@TODO: is there a better way to get this to the mutator?
-      if (Input::has('country')) {
-        Session::flash('country', $input['country']);
-      }
       foreach($input as $key => $value) {
         if ($key == 'interests'){
           $interests = array_map('trim', explode(',', $value));
