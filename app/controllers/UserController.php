@@ -76,7 +76,8 @@ class UserController extends \BaseController {
 
       $user->save();
 
-      return Response::json($user, 201);
+      // Log the user in.
+      return $this->login();
     }
     catch(\Exception $e) {
       return Response::json($e, 401);
@@ -189,7 +190,9 @@ class UserController extends \BaseController {
         $token = $user->login();
         $token->user = $user->toArray();
 
-        return Response::json($user, '200');
+        // Return the session token with the user.
+        $user->session_token = $token->key;
+        return Response::json($user, 200);
       }
       else {
         return Response::json("Incorrect password.", 412);
