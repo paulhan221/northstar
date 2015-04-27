@@ -53,6 +53,7 @@ class UserController extends \BaseController {
     try {
       foreach($input as $key => $value) {
         if ($key == 'interests'){
+          // Remove spaces, split on commas.
           $interests = array_map('trim', explode(',', $value));
           $user->push('interests', $interests, true);
         } elseif (!empty($value)) {
