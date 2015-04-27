@@ -65,7 +65,6 @@ class UserController extends \BaseController {
           $drupal = new Northstar\Services\Drupal\DrupalAPI;
           $response = $drupal->register($user);
           $user->drupal_id = $response['uid'];
-          return Response::json($response, 200);
         } catch (Exception $e) {
           // @TODO: figure out what to do if a user isn't created.
           // This could be a failure for so many reasons
