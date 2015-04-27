@@ -50,13 +50,13 @@ class CampaignController extends \BaseController {
   */
   public function signup($id)
   {
-    $input = Input::only(SIGNUP_ATTRIBUTE::sid);
+    $input = Input::only('sid');
     $campaign = new Campaign;
     if (!$campaign->validate($input)) {
       return Response::json($campaign->getValidationMessages(), 401);
     }
     else {
-      $sid = Input::get(SIGNUP_ATTRIBUTE::sid);
+      $sid = Input::get('sid');
       if (!$sid) {
         return Response::json("Campaign SID not provided", 401);
       }
@@ -80,8 +80,8 @@ class CampaignController extends \BaseController {
     $campaign->sid = $sid;
     $campaign = $user->campaigns()->save($campaign);
     $response = array(
-      CAMPAIGN_RESPONSE::created_at => $campaign->created_at,
-      SIGNUP_ATTRIBUTE::sid => $campaign->sid
+      'created_at' => $campaign->created_at,
+      'sid' => $campaign->sid
     );
 
     return Response::json($response, 201);
@@ -96,13 +96,13 @@ class CampaignController extends \BaseController {
   */
   public function reportback($id)
   {
-    $input = Input::only(REPORTBACK_ATTRIBUTE::editableKeys());
+    $input = Input::only('rbid', 'file_url', 'quantity', 'why_participated');
     $campaign = new Campaign;
     if (!$campaign->validate($input)) {
       return Response::json($campaign->getValidationMessages(), 401);
     }
 
-    $rbid = Input::get(REPORTBACK_ATTRIBUTE::rbid);
+    $rbid = Input::get('rbid');
     if (!$rbid) {
       return Response::json("Campaign RBID not provided", 401);
     }
@@ -126,9 +126,9 @@ class CampaignController extends \BaseController {
       $campaign->fill($input);
       $campaign = $user->campaigns()->save($campaign);
 
-      $response = array(
-        CAMPAIGN_RESPONSE::created_at => $campaign->created_at,
-      );
+      $response = [
+        'created_at' => $campaign->created_at,
+      ];
 
       $statusCode = 201;
     }
@@ -138,12 +138,12 @@ class CampaignController extends \BaseController {
       $campaign->fill($input);
       $campaign = $user->campaigns()->save($campaign);
 
-      $response = array(
-        CAMPAIGN_RESPONSE::updated_at => $campaign->updated_at,
-      );
+      $response = [
+        'updated_at' => $campaign->updated_at,
+      ];
     }
 
-    $response[REPORTBACK_ATTRIBUTE::rbid] = $campaign->rbid;
+    $response['rbid'] = $campaign->rbid;
 
     return Response::json($response, $statusCode);
   }
@@ -156,7 +156,7 @@ class CampaignController extends \BaseController {
    */
   public function updateReportback($id)
   {
-    $rbid = Input::get(REPORTBACK_ATTRIBUTE::rbid);
+    $rbid = Input::get('rbid');
     if (!$rbid) {
       return Response::json("Campaign RBID not provided", 401);
     }
@@ -170,33 +170,25 @@ class CampaignController extends \BaseController {
     $user = Token::userFor($token);
     $campaign = $user->campaigns()
       ->where('nid', '=', $nid)
-      ->where(REPORTBACK_ATTRIBUTE::rbid, '=', $rbid)
+      ->where('rbid', '=', $rbid)
       ->first();
 
     if (!($campaign instanceof Campaign)) {
       return Response::json("Campaign does not exist", 401);
     }
 
-    $input = Input::only(REPORTBACK_ATTRIBUTE::editableKeys());
+    $input = Input::only('rbid', 'file_url', 'quantity', 'why_participated');
     $input = array_filter($input, function($val) { return !is_null($val); });
     $campaign->fill($input);
 
     $campaign = $user->campaigns()->save($campaign);
 
     $response = array(
-      CAMPAIGN_RESPONSE::updated_at => $campaign->updated_at,
-      REPORTBACK_ATTRIBUTE::rbid => $campaign->rbid
+      'updated_at' => $campaign->updated_at,
+      'rbid' => $campaign->rbid
     );
 
     return Response::json($response, 200);
   }
 
-}
-
-/**
- * Abstract class defining string values for response properties.
- */
-abstract class CAMPAIGN_RESPONSE {
-  const created_at = 'created_at';
-  const updated_at = 'updated_at';
 }
