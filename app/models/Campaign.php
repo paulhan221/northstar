@@ -4,7 +4,6 @@ use Jenssegers\Mongodb\Model as Eloquent;
 
 class Campaign extends Eloquent {
 
-  protected $primaryKey = "_id";
 
   /**
    * Guarded attributes
