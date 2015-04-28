@@ -3,17 +3,6 @@
 class CampaignController extends \BaseController {
 
   /**
-   * Display a listing of the resource.
-   * GET users/campaigns
-   *
-   * @return Response
-  */
-  public function index()
-  {
-
-  }
-
-  /**
    * Returns a user's campaigns
    *
    * @param $term - string
