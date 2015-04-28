@@ -15,21 +15,20 @@ class Campaign extends Eloquent {
    *
    * @var array
    */
-  protected $hidden = array('_id');
+  protected $hidden = ['_id'];
 
   /**
    * Validation rules
    */
-  private $rules = array(
+  private $rules = [
     'rbid' => 'integer',
     'file_url' => 'url',
     'quantity' => 'integer',
-
     'sid' => 'integer',
-  );
+  ];
 
   /**
-   * Messages returned from a failed validation.
+   * Bag of messages returned from a failed validation.
    */
   private $validationMessages;
 
@@ -38,7 +37,7 @@ class Campaign extends Eloquent {
    */
   public function getDates()
   {
-    return array('created_at', 'updated_at');
+    return ['created_at', 'updated_at'];
   }
 
   /**
