@@ -32,7 +32,7 @@ class CampaignTest extends TestCase {
    */
   public function testGetCampaignsFromUser()
   {
-    $response = $this->call('GET', '1/users/email/test@dosomething.org/campaigns', array(), array(), $this->server);
+    $response = $this->call('GET', 'v1/users/email/test@dosomething.org/campaigns', array(), array(), $this->server);
     $content = $response->getContent();
 
     // The response should return a 200 OK status code
@@ -54,7 +54,7 @@ class CampaignTest extends TestCase {
     // Campaign sid
     $sid = array('sid' => '235');
 
-    $response = $this->call('POST', '1/campaigns/123/signup', array(), array(), $this->server, json_encode($sid));
+    $response = $this->call('POST', 'v1/campaigns/123/signup', array(), array(), $this->server, json_encode($sid));
     $content = $response->getContent();
     $data = json_decode($content, true);
 
@@ -85,7 +85,7 @@ class CampaignTest extends TestCase {
       'file_url' => 'http://example.test/example.png'
     );
 
-    $response = $this->call('POST', '1/campaigns/123/reportback', array(), array(), $this->server, json_encode($rb));
+    $response = $this->call('POST', 'v1/campaigns/123/reportback', array(), array(), $this->server, json_encode($rb));
     $content = $response->getContent();
     $data = json_decode($content, true);
 
@@ -112,7 +112,7 @@ class CampaignTest extends TestCase {
       'quantity' => '1'
     );
 
-    $response = $this->call('PUT', '1/campaigns/100/reportback', array(), array(), $this->server, json_encode($rb));
+    $response = $this->call('PUT', 'v1/campaigns/100/reportback', array(), array(), $this->server, json_encode($rb));
     $content = $response->getContent();
 
     // Response should return a 200
@@ -134,7 +134,7 @@ class CampaignTest extends TestCase {
       'quantity' => '1'
     );
 
-    $response = $this->call('PUT', '1/campaigns/100/reportback', array(), array(), $this->server, json_encode($rb));
+    $response = $this->call('PUT', 'v1/campaigns/100/reportback', array(), array(), $this->server, json_encode($rb));
     $content = $response->getContent();
 
     // Response should return a 401
