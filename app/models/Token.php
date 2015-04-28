@@ -2,7 +2,7 @@
 
 use Jenssegers\Mongodb\Model as Eloquent;
 
-class Token extends ELoquent {
+class Token extends Eloquent {
 
   protected $collection = 'tokens';
 

@@ -4,7 +4,6 @@ use Jenssegers\Mongodb\Model as Eloquent;
 
 class Campaign extends Eloquent {
 
-  protected $primaryKey = "_id";
 
   /**
    * Guarded attributes
@@ -16,31 +15,29 @@ class Campaign extends Eloquent {
    *
    * @var array
    */
-  protected $hidden = array('_id');
+  protected $hidden = ['_id'];
 
   /**
    * Validation rules
    */
-  private $rules = array(
-    REPORTBACK_ATTRIBUTE::rbid => 'integer',
-    REPORTBACK_ATTRIBUTE::file_url => 'url',
-    REPORTBACK_ATTRIBUTE::quantity => 'integer',
-
-    SIGNUP_ATTRIBUTE::sid => 'integer',
-  );
+  private $rules = [
+    'rbid' => 'integer',
+    'file_url' => 'url',
+    'quantity' => 'integer',
+    'sid' => 'integer',
+  ];
 
   /**
-   * Messages returned from a failed validation.
+   * Bag of messages returned from a failed validation.
    */
   private $validationMessages;
 
   /**
    * Automatically convert date columns to instances of Carbon
-   *
    */
   public function getDates()
   {
-    return array('created_at', 'updated_at');
+    return ['created_at', 'updated_at'];
   }
 
   /**
@@ -74,7 +71,7 @@ class Campaign extends Eloquent {
   /**
    * Formats date if its a MongoDate.
    *
-   * @param $value date attribute value
+   * @param $value mixed - date attribute value
    * @return String
    */
   private function formatDate($value) {
@@ -101,7 +98,7 @@ class Campaign extends Eloquent {
   }
 
   public function setQuantityAttribute($value) {
-    $this->attributes[REPORTBACK_ATTRIBUTE::quantity] = (int) $value;
+    $this->attributes['quantity'] = (int) $value;
   }
 
   public function getRbidAttribute($value) {
@@ -109,7 +106,7 @@ class Campaign extends Eloquent {
   }
 
   public function setRbidAttribute($value) {
-    $this->attributes[REPORTBACK_ATTRIBUTE::rbid] = (int) $value;
+    $this->attributes['rbid'] = (int) $value;
   }
 
   public function getSidAttribute($value) {
@@ -117,29 +114,7 @@ class Campaign extends Eloquent {
   }
 
   public function setSidAttribute($value) {
-    $this->attributes[SIGNUP_ATTRIBUTE::sid] = (int) $value;
+    $this->attributes['sid'] = (int) $value;
   }
 
-}
-
-abstract class REPORTBACK_ATTRIBUTE {
-  const rbid = 'rbid';
-
-  const file_url = 'file_url';
-  const quantity = 'quantity';
-  const why_participated = 'why_participated';
-
-  public static function editableKeys()
-  {
-    return array(
-      REPORTBACK_ATTRIBUTE::rbid,
-      REPORTBACK_ATTRIBUTE::file_url,
-      REPORTBACK_ATTRIBUTE::quantity,
-      REPORTBACK_ATTRIBUTE::why_participated
-    );
-  }
-}
-
-abstract class SIGNUP_ATTRIBUTE {
-  const sid = 'sid';
 }

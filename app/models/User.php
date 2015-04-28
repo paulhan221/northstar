@@ -10,8 +10,6 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
   use UserTrait, RemindableTrait;
 
-  protected $primaryKey = "_id";
-
   protected $fillable =
     ['email', 'mobile', 'password',
      'first_name', 'last_name', 'birthdate', 'interests',
@@ -96,7 +94,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
   /**
    * Formats date if its a MongoDate.
    *
-   * @param $value date attribute value
+   * @param $value mixed - date attribute value
    * @return String
    */
   private function formatDate($value) {

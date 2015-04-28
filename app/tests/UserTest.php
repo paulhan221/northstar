@@ -32,7 +32,7 @@ class UserTest extends TestCase {
   */
   public function testGetDataFromUser()
   {
-    $response = $this->call('GET', '1/users/email/test@dosomething.org', array(), array(), $this->server);
+    $response = $this->call('GET', 'v1/users/email/test@dosomething.org', array(), array(), $this->server);
     $content = $response->getContent();
 
     // The response should return a 200 OK status code
@@ -50,7 +50,7 @@ class UserTest extends TestCase {
   */
   public function testGetData()
   {
-    $response = $this->call('GET', '1/users');
+    $response = $this->call('GET', 'v1/users');
     $content = $response->getContent();
 
     // The response should return a 404 Not Found status code
@@ -72,7 +72,7 @@ class UserTest extends TestCase {
       'password' => 'secret',
     );
 
-    $response = $this->call('POST', '1/users', array(), array(), $this->server, json_encode($user));
+    $response = $this->call('POST', 'v1/users', array(), array(), $this->server, json_encode($user));
     $content = $response->getContent();
     $data = json_decode($content, true);
 
@@ -100,7 +100,7 @@ class UserTest extends TestCase {
       'email' => 'newemail@dosomething.org'
     );
 
-    $response = $this->call('PUT', '1/users/5480c950bffebc651c8b456f', array(), array(), $this->server, json_encode($user));
+    $response = $this->call('PUT', 'v1/users/5480c950bffebc651c8b456f', array(), array(), $this->server, json_encode($user));
     $content = $response->getContent();
     $data = json_decode($content, true);
 
@@ -128,18 +128,14 @@ class UserTest extends TestCase {
       'password' => 'secret'
     );
 
-    $response = $this->call('POST', '1/login', array(), array(), $this->server, json_encode($credentials));
+    $response = $this->call('POST', 'v1/login', array(), array(), $this->server, json_encode($credentials));
     $content = $response->getContent();
-    $data = json_decode($content, true);
 
     // The response should return a 200 Created status code
     $this->assertEquals(200, $response->getStatusCode());
 
     // Response should be valid JSON
     $this->assertJson($content);
-
-    // Response should return session token column
-    $this->assertArrayHasKey('session_token', $data);
   }
 
   /**
@@ -150,7 +146,7 @@ class UserTest extends TestCase {
   */
   public function testLogout()
   {   
-    $response = $this->call('POST', '1/logout', array(), array(), $this->server);
+    $response = $this->call('POST', 'v1/logout', array(), array(), $this->server);
     $content = $response->getContent();
     $data = json_decode($content, true);
 
@@ -169,7 +165,7 @@ class UserTest extends TestCase {
    */
   public function testDelete()
   {
-    $response = $this->call('DELETE', '1/users/5480c950bffebc651c8b4570', array(), array(), $this->server, array());
+    $response = $this->call('DELETE', 'v1/users/5480c950bffebc651c8b4570', array(), array(), $this->server, array());
 
     $this->assertEquals(204, $response->getStatusCode());
   }
@@ -181,7 +177,7 @@ class UserTest extends TestCase {
    * @return void
    */
   public function testDeleteNoResource() {
-    $response = $this->call('DELETE', '1/users/DUMMY_ID', array(), array(), $this->server, array());
+    $response = $this->call('DELETE', 'v1/users/DUMMY_ID', array(), array(), $this->server, array());
 
     $this->assertEquals(404, $response->getStatusCode());
   }
