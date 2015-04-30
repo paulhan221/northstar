@@ -1,21 +1,31 @@
 <?php
 
+use Northstar\Services\Drupal\DrupalAPI;
+
 class CampaignController extends \BaseController {
 
   /**
+   * Drupal API wrapper.
+   * @var DrupalAPI
+   */
+  protected $drupal;
+
+  public function __construct()
+  {
+    $this->drupal = new DrupalAPI;
+  }
+
+  /**
    * Returns a user's campaigns
+   * GET /users/:term/:id/campaigns
    *
-   * @param $term - string
-   *   term to search by (eg. mobile, drupal_id, id, etc)
-   * @param $id - string
-   *  the actual value to search for
+   * @param $term string - Term to search by (eg. mobile, drupal_id, id, etc)
+   * @param $id   string - The value to search for
    *
    * @return Response
    */
   public function show($term, $id)
   {
-    $user = '';
-
     // Type cast id fields as ints.
     if (strpos($term,'_id') !== false && $term !== '_id') {
       $id = (int) $id;
@@ -32,45 +42,62 @@ class CampaignController extends \BaseController {
 
 
   /**
-   * Store a newly created campaign signup in storage.
-   * POST /campaigns/:nid/signup
+   * Sign user up for a given campaign.
+   * POST /campaigns/:id/signup
    *
+   * @param $campaign_id - Drupal campaign node ID
    * @return Response
-  */
-  public function signup($id)
+   */
+  public function signup($campaign_id)
   {
-    $input = Input::only('sid');
+    // Build request object
+    $request = Input::all();
+    $request['campaign_id'] = $campaign_id;
+
+    // Validate request
+    $validator = Validator::make($request, [
+      'campaign_id' => ['required', 'integer'],
+      'user' => ['sometimes', 'exists:users,_id'],
+      'source' => ['required']
+    ]);
+
+    if($validator->fails()) {
+      return Response::json($validator->messages(), 401);
+    }
+
+    // If given a Northstar user ID, get that user. Otherwise, use
+    // the currently authenticated Northstar user.
+    if($request['user']) {
+      $user = User::find($request['user']);
+    } else {
+      $token = Request::header('Session');
+      $user = Token::userFor($token);
+    }
+
+    // Check if campaign signup already exists.
+    $campaign = $user->campaigns()->where('nid', $campaign_id)->first();
+
+    if ($campaign) {
+      return Response::json("Campaign signup already exists", 401);
+    }
+
+    // Return an error if the user doesn't exist.
+    if(!$user->drupal_id) {
+      return Response::json('The user must have a Drupal ID to sign up for a campaign.', 401);
+    }
+
+    // Create a Drupal signup via Drupal API, and store SID in Northstar.
+    $sid = $this->drupal->campaignSignup($user->drupal_id, $campaign_id, Input::get('source'));
+
+    // Save reference to the signup on the user object.
     $campaign = new Campaign;
-    if (!$campaign->validate($input)) {
-      return Response::json($campaign->getValidationMessages(), 401);
-    }
-    else {
-      $sid = Input::get('sid');
-      if (!$sid) {
-        return Response::json("Campaign SID not provided", 401);
-      }
-    }
-
-    $nid = (int) $id;
-    if (!$nid) {
-      return Response::json("Campaign node ID not provided", 401);
-    }
-
-    $token = Request::header('Session');
-    $user = Token::userFor($token);
-    $campaign = $user->campaigns()->where('nid', '=', $nid)->first();
-
-    if ($campaign instanceof Campaign) {
-      return Response::json("Campaign already exists", 401);
-    }
-
-    $campaign = new Campaign;
-    $campaign->nid = $nid;
+    $campaign->nid = $campaign_id;
     $campaign->sid = $sid;
     $campaign = $user->campaigns()->save($campaign);
+
     $response = array(
+      'sid' => $campaign->sid,
       'created_at' => $campaign->created_at,
-      'sid' => $campaign->sid
     );
 
     return Response::json($response, 201);

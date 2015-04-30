@@ -52,4 +52,28 @@ class DrupalAPI {
       return;
     }
   }
+
+  /**
+   * Create a new campaign signup on the Drupal site.
+   * @param $drupal_id    String - UID of user on the Drupal site
+   * @param $campaign_id  String - NID of campaign on the Drupal site
+   * @param $source       String - Sign up source (e.g. web, iPhone, etc.)
+   *
+   * @return String - Signup ID
+   */
+  public function campaignSignup($drupal_id, $campaign_id, $source)
+  {
+    $payload = [
+      'uid' => $drupal_id,
+      'source' => $source
+    ];
+
+    $response = $this->client->post('campaigns/' . $campaign_id . '/signup', [
+      'body' => json_encode($payload)
+    ]);
+
+    dd($response);
+
+    return $response->sid;
+  }
 }
