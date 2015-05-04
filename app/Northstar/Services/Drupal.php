@@ -47,7 +47,7 @@ class DrupalAPI {
         'body' => json_encode($user),
         ]);
       return $response->json();
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
       // whatever.
       return;
     }
