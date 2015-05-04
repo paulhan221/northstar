@@ -117,6 +117,7 @@ class UserController extends \BaseController {
    * Update the specified resource in storage.
    * PUT /users
    *
+   * @param $id - User ID
    * @return Response
    */
   public function update($id)
@@ -151,6 +152,7 @@ class UserController extends \BaseController {
    * Delete a user resource.
    * DELETE /users/:id
    *
+   * @param $id - User ID
    * @return Response
    */
   public function destroy($id)
@@ -206,8 +208,8 @@ class UserController extends \BaseController {
   }
 
   /**
-   *  Logout a user: remove the specified active token from the database
-   *  @param user User
+   * Logout a user by removing the currently authenticated user token from the database.
+   * @return Response
    */
   public function logout()
   {

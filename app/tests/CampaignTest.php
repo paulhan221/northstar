@@ -51,10 +51,12 @@ class CampaignTest extends TestCase {
    */
   public function testSubmitCampaignSignup()
   {   
-    // Campaign sid
-    $sid = array('sid' => '235');
+    $payload = [
+      'user' => '5480c950bffebc651c8b456f',  // Test user ID
+      'source' => 'test'
+    ];
 
-    $response = $this->call('POST', 'v1/campaigns/123/signup', array(), array(), $this->server, json_encode($sid));
+    $response = $this->call('POST', 'v1/campaigns/123/signup', [], [], $this->server, json_encode($payload));
     $content = $response->getContent();
     $data = json_decode($content, true);
 

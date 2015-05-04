@@ -76,8 +76,8 @@ class UserTest extends TestCase {
     $content = $response->getContent();
     $data = json_decode($content, true);
 
-    // The response should return a 201 Created status code
-    $this->assertEquals(201, $response->getStatusCode());
+    // The response should return a 200 Okay status code
+    $this->assertEquals(200, $response->getStatusCode());
 
     // Response should be valid JSON
     $this->assertJson($content);

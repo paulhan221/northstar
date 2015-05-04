@@ -6,6 +6,11 @@ use Illuminate\Auth\Reminders\RemindableTrait;
 use Illuminate\Auth\Reminders\RemindableInterface;
 use Jenssegers\Mongodb\Model as Eloquent;
 
+/**
+ * Class User
+ *
+ * @method static where()
+ */
 class User extends Eloquent implements UserInterface, RemindableInterface {
 
   use UserTrait, RemindableTrait;
@@ -128,7 +133,9 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
   /**
    * Determines validation rules for user registration and authentication
    *
-   * @var array
+   * @param $data - User data to be validated
+   * @param bool $auth - Whether validation should use authentication ruleset
+   * @return bool - Success/failure of validation
    */
   public function validate($data, $auth = false)
   {
@@ -168,6 +175,19 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     $token->save();
 
     return $token;
+  }
+
+  /**
+   * Get the currently authenticated user from the session token.
+   *
+   * @return User
+   */
+  public static function current()
+  {
+    $token = Request::header('Session');
+    $user = Token::userFor($token);
+
+    return $user;
   }
 
 }

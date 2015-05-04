@@ -1,27 +1,26 @@
 <?php namespace Northstar\Services\Drupal;
 
+use GuzzleHttp\Client;
+use Config;
+
 class DrupalAPI {
 
   protected $client;
 
   public function __construct()
   {
-    $base_url = \Config::get('services.drupal.url');
-    if (\App::environment('local')) {
-      $base_url .=  ":" . \Config::get('services.drupal.port');
-    }
-    $base_url .= '/api';
-    $version = \Config::get('services.drupal.version');
-    $client = new \GuzzleHttp\Client([
-      'base_url' => [$base_url . '/{version}/', ['version' => $version]],
-      'defaults' => array(
+    $base_url = Config::get('services.drupal.url');
+    $version = Config::get('services.drupal.version');
+
+    $this->client = new Client([
+      'base_url' => [$base_url . '/api/{version}/', ['version' => $version]],
+      'defaults' => [
         'headers' => [
           'Content-Type' => 'application/json',
           'Accept' => 'application/json'
-          ]
-        ),
+        ]
+      ],
     ]);
-    $this->client = $client;
   }
 
   public function campaigns($id = NULL)
@@ -48,9 +47,32 @@ class DrupalAPI {
         'body' => json_encode($user),
         ]);
       return $response->json();
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
       // whatever.
       return;
     }
+  }
+
+  /**
+   * Create a new campaign signup on the Drupal site.
+   * @param $drupal_id    String - UID of user on the Drupal site
+   * @param $campaign_id  String - NID of campaign on the Drupal site
+   * @param $source       String - Sign up source (e.g. web, iPhone, etc.)
+   *
+   * @return String - Signup ID
+   */
+  public function campaignSignup($drupal_id, $campaign_id, $source)
+  {
+    $payload = [
+      'uid' => $drupal_id,
+      'source' => $source
+    ];
+
+    // @TODO: This request must be authenticated as the relevant user.
+    $response = $this->client->post('campaigns/' . $campaign_id . '/signup', [
+      'body' => json_encode($payload)
+    ]);
+
+    return $response->sid;
   }
 }

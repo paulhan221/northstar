@@ -12,12 +12,11 @@
   |
   */
 
-return array(
+return [
 
-  'drupal' => array(
-    'url' => 'http://dev.dosomething.org',
+  'drupal' => [
+    'url' => 'http://dev.dosomething.org:8888',
     'version' => 'v1',
-    'port' => '8888',
-  ),
+  ],
 
-);
+];
