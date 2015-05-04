@@ -57,7 +57,6 @@ class CampaignController extends \BaseController {
     // Validate request
     $validator = Validator::make($request, [
       'campaign_id' => ['required', 'integer'],
-      'user' => ['sometimes', 'exists:users,_id'],
       'source' => ['required']
     ]);
 
@@ -65,14 +64,8 @@ class CampaignController extends \BaseController {
       return Response::json($validator->messages(), 401);
     }
 
-    // If given a Northstar user ID, get that user. Otherwise, use
-    // the currently authenticated Northstar user.
-    if($request['user']) {
-      $user = User::find($request['user']);
-    } else {
-      $token = Request::header('Session');
-      $user = Token::userFor($token);
-    }
+    // Get the currently authenticated Northstar user.
+    $user = User::current();
 
     // Check if campaign signup already exists.
     $campaign = $user->campaigns()->where('nid', $campaign_id)->first();
