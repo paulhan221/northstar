@@ -68,11 +68,10 @@ class DrupalAPI {
       'source' => $source
     ];
 
+    // @TODO: This request must be authenticated as the relevant user.
     $response = $this->client->post('campaigns/' . $campaign_id . '/signup', [
       'body' => json_encode($payload)
     ]);
-
-    dd($response);
 
     return $response->sid;
   }

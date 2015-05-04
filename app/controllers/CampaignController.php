@@ -50,6 +50,9 @@ class CampaignController extends \BaseController {
    */
   public function signup($campaign_id)
   {
+    // @TODO: Not yet fully implemented, return error for now.
+    return Response::json('Not yet implemented.', 501);
+
     // Build request object
     $request = Input::all();
     $request['campaign_id'] = $campaign_id;
