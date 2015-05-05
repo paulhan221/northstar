@@ -37,20 +37,20 @@ class DrupalAPI {
 
   /**
    * Forward registration to drupal.
+   * @param $user - User to be registered on Drupal site
+   * @return int - Created Drupal user UID
    */
-  public function register($d_user)
+  public function register($user)
   {
-    try {
-      $d_user->birthdate = date('Y-m-d', strtotime($user->birthdate));
-      $d_user->user_registration_source = $user->source;
-      $response = $this->client->post('users', [
-        'body' => json_encode($user),
-        ]);
-      return $response->json();
-    } catch (\Exception $e) {
-      // whatever.
-      return;
-    }
+    // Format user object for consumption by Drupal API.
+    $user->birthdate = date('Y-m-d', strtotime($user->birthdate));
+    $user->user_registration_source = $user->source;
+
+    $response = $this->client->post('users', [
+      'body' => json_encode($user),
+    ]);
+
+    return $response->uid;
   }
 
   /**
