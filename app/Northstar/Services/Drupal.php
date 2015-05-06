@@ -105,6 +105,9 @@ class DrupalAPI {
    */
   public function register($user)
   {
+    $payload = $user->toArray();
+    dd($payload);
+
     // Format user object for consumption by Drupal API.
     $user->birthdate = date('Y-m-d', strtotime($user->birthdate));
     $user->user_registration_source = $user->source;
@@ -143,13 +146,13 @@ class DrupalAPI {
     ]);
 
     $body = $response->json();
-    $sid = $body[0];
+    $signup_id = $body[0];
 
-    if(!$sid) {
+    if(!$signup_id) {
       // @TODO: Drupal API returns false if signup already exists. What is a graceful way of handling this?
       throw new \Exception('Could not create signup.');
     }
 
-    return $sid;
+    return $signup_id;
   }
 }

@@ -29,6 +29,8 @@ class UserController extends \BaseController {
     $check = Input::only('email', 'mobile');
     $input = Input::all();
 
+    $user = false;
+
     // Does this user exist already?
     if (Input::has('email')) {
       $user = User::where('email', '=', $check['email'])->first();
@@ -64,9 +66,10 @@ class UserController extends \BaseController {
       if ($user->email && !$user->drupal_id) {
         try {
           $drupal = new Northstar\Services\Drupal\DrupalAPI;
-          $uid = $drupal->register($user);
-          $user->drupal_id = $uid;
+          $drupal_id = $drupal->register($user);
+          $user->drupal_id = $drupal_id;
         } catch (Exception $e) {
+          dd('error');
           // @TODO: figure out what to do if a user isn't created.
           // This could be a failure for so many reasons
           // User is already registered/email taken
@@ -76,8 +79,11 @@ class UserController extends \BaseController {
 
       $user->save();
 
-      // Log the user in.
-      return $this->login();
+      // Log the user in & attach their session token to response.
+      $token = $user->login();
+      $user->session_token = $token->key;
+
+      return $user;
     }
     catch(\Exception $e) {
       return Response::json($e, 401);
