@@ -23,6 +23,13 @@ class DrupalAPI {
     ]);
   }
 
+  /**
+   * Get list of campaigns, or individual campaign information.
+   * @see https://github.com/DoSomething/dosomething/wiki/API#campaigns
+   *
+   * @param int $id - Optional campaign ID to get information on.
+   * @return mixed
+   */
   public function campaigns($id = NULL)
   {
     // Get all campaigns if there's no id set.
@@ -35,9 +42,13 @@ class DrupalAPI {
     return $response->json();
   }
 
+
   /**
-   * Forward registration to drupal.
-   * @param $user - User to be registered on Drupal site
+   * Forward registration to Drupal.
+   * @see: https://github.com/DoSomething/dosomething/wiki/API#create-a-user
+   *
+   * @param \User $user - User to be registered on Drupal site
+   *
    * @return int - Created Drupal user UID
    */
   public function register($user)
@@ -55,20 +66,21 @@ class DrupalAPI {
 
   /**
    * Create a new campaign signup on the Drupal site.
-   * @param $drupal_id    String - UID of user on the Drupal site
-   * @param $campaign_id  String - NID of campaign on the Drupal site
-   * @param $source       String - Sign up source (e.g. web, iPhone, etc.)
+   * @see: https://github.com/DoSomething/dosomething/wiki/API#campaign-signup
+   *
+   * @param String  $user_id     - UID of user on the Drupal site
+   * @param String $campaign_id  - NID of campaign on the Drupal site
+   * @param String $source       - Sign up source (e.g. web, iPhone, etc.)
    *
    * @return String - Signup ID
    */
-  public function campaignSignup($drupal_id, $campaign_id, $source)
+  public function campaignSignup($user_id, $campaign_id, $source)
   {
     $payload = [
-      'uid' => $drupal_id,
+      'uid' => $user_id,
       'source' => $source
     ];
 
-    // @TODO: This request must be authenticated as the relevant user.
     $response = $this->client->post('campaigns/' . $campaign_id . '/signup', [
       'body' => json_encode($payload)
     ]);
