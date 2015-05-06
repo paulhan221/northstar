@@ -2,6 +2,7 @@
 
 use GuzzleHttp\Client;
 use Config;
+use Cache;
 
 class DrupalAPI {
 
@@ -21,6 +22,57 @@ class DrupalAPI {
         ]
       ],
     ]);
+  }
+
+  /**
+   * Returns a token for making authenticated requests to the Drupal API.
+   *
+   * @return Array - Cookie & token for authenticated requests
+   */
+  private function authenticate()
+  {
+    $authentication = Cache::remember('drupal.authentication', 30, function() {
+      $payload = [
+        'username' => getenv('DRUPAL_API_USERNAME'),
+        'password' => getenv('DRUPAL_API_PASSWORD')
+      ];
+
+      $response = $this->client->post('auth/login', [
+        'body' => json_encode($payload)
+      ]);
+
+      $body = $response->json();
+
+      $session_name = $body['session_name'];
+      $session_value = $body['sessid'];
+
+      return [
+        'cookie' => [$session_name => $session_value],
+        'token' => $body['token']
+      ];
+    });
+
+    return $authentication;
+  }
+
+  /**
+   * Get the CSRF token for the authenticated API session.
+   *
+   * @return String - token
+   */
+  private function getAuthenticationToken()
+  {
+    return $this->authenticate()['token'];
+  }
+
+  /**
+   * Get the cookie for the authenticated API session.
+   *
+   * @return Array - cookie key/value
+   */
+  private function getAuthenticationCookie()
+  {
+    return $this->authenticate()['cookie'];
   }
 
   /**
@@ -68,11 +120,12 @@ class DrupalAPI {
    * Create a new campaign signup on the Drupal site.
    * @see: https://github.com/DoSomething/dosomething/wiki/API#campaign-signup
    *
-   * @param String  $user_id     - UID of user on the Drupal site
-   * @param String $campaign_id  - NID of campaign on the Drupal site
-   * @param String $source       - Sign up source (e.g. web, iPhone, etc.)
+   * @param String $user_id - UID of user on the Drupal site
+   * @param String $campaign_id - NID of campaign on the Drupal site
+   * @param String $source - Sign up source (e.g. web, iPhone, etc.)
    *
    * @return String - Signup ID
+   * @throws \Exception
    */
   public function campaignSignup($user_id, $campaign_id, $source)
   {
@@ -82,9 +135,21 @@ class DrupalAPI {
     ];
 
     $response = $this->client->post('campaigns/' . $campaign_id . '/signup', [
-      'body' => json_encode($payload)
+      'body' => json_encode($payload),
+      'cookies' => $this->getAuthenticationCookie(),
+      'headers' => [
+        'X-CSRF-Token' => $this->getAuthenticationToken()
+      ]
     ]);
 
-    return $response->sid;
+    $body = $response->json();
+    $sid = $body[0];
+
+    if(!$sid) {
+      // @TODO: Drupal API returns false if signup already exists. What is a graceful way of handling this?
+      throw new \Exception('Could not create signup.');
+    }
+
+    return $sid;
   }
 }
