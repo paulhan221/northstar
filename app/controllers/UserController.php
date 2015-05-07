@@ -29,6 +29,8 @@ class UserController extends \BaseController {
     $check = Input::only('email', 'mobile');
     $input = Input::all();
 
+    $user = false;
+
     // Does this user exist already?
     if (Input::has('email')) {
       $user = User::where('email', '=', $check['email'])->first();
@@ -64,8 +66,8 @@ class UserController extends \BaseController {
       if ($user->email && !$user->drupal_id) {
         try {
           $drupal = new Northstar\Services\Drupal\DrupalAPI;
-          $response = $drupal->register($user);
-          $user->drupal_id = $response['uid'];
+          $drupal_id = $drupal->register($user);
+          $user->drupal_id = $drupal_id;
         } catch (Exception $e) {
           // @TODO: figure out what to do if a user isn't created.
           // This could be a failure for so many reasons
@@ -76,8 +78,11 @@ class UserController extends \BaseController {
 
       $user->save();
 
-      // Log the user in.
-      return $this->login();
+      // Log the user in & attach their session token to response.
+      $token = $user->login();
+      $user->session_token = $token->key;
+
+      return $user;
     }
     catch(\Exception $e) {
       return Response::json($e, 401);
@@ -166,74 +171,6 @@ class UserController extends \BaseController {
     }
 
     return Response::json("The resource does not exist", 404);
-  }
-
-  /**
-   * Authenticate a registered user
-   *
-   * @return Response
-   */
-  public function login()
-  {
-    $input = Input::only('email', 'mobile', 'password');
-    $user = new User;
-    if($user->validate($input, true)) {
-      if (Input::has('email')) {
-        $user = User::where('email', '=', $input['email'])->first();
-      }
-      elseif (Input::has('mobile')) {
-        $user = User::where('mobile', '=', $input['mobile'])->first();
-      }
-      if(!($user instanceof User)) {
-        return Response::json("User is not registered.");
-      }
-
-      if(Hash::check($input['password'] , $user->password)) {
-        $token = $user->login();
-        $token->user = $user->toArray();
-
-        // Return the session token with the user.
-        $user->session_token = $token->key;
-        return Response::json($user, 200);
-      }
-      else {
-        return Response::json("Incorrect password.", 412);
-      }
-
-    }
-    else {
-      return Response::json($user->messages(), 401);
-    }
-
-  }
-
-  /**
-   * Logout a user by removing the currently authenticated user token from the database.
-   * @return Response
-   */
-  public function logout()
-  {
-    if (!Request::header('Session')) {
-      return Response::json('No token given.');
-    }
-
-    $input_token = Request::header('Session');
-    $token = Token::where('key', '=', $input_token)->first();
-    $user = Token::userFor($input_token);
-
-    if (empty($token)) {
-      return Response::json('No active session found.');
-    }
-    if ($token->user_id !== $user->_id) {
-      Response::json('You do not own this token.');
-    }
-    if ($token->delete()){
-      return Response::json('User logged out successfully.', 200);
-    }
-    else {
-      return Response::json('User could not log out. Please try again.');
-    }
-
   }
 
 }

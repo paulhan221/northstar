@@ -43,16 +43,13 @@ class CampaignController extends \BaseController {
 
   /**
    * Sign user up for a given campaign.
-   * POST /campaigns/:id/signup
+   * POST /campaigns/:campaign_id/signup
    *
    * @param $campaign_id - Drupal campaign node ID
    * @return Response
    */
   public function signup($campaign_id)
   {
-    // @TODO: Not yet fully implemented, return error for now.
-    return Response::json('Not yet implemented.', 501);
-
     // Build request object
     $request = Input::all();
     $request['campaign_id'] = $campaign_id;
@@ -71,7 +68,7 @@ class CampaignController extends \BaseController {
     $user = User::current();
 
     // Check if campaign signup already exists.
-    $campaign = $user->campaigns()->where('nid', $campaign_id)->first();
+    $campaign = $user->campaigns()->where('drupal_id', $campaign_id)->first();
 
     if ($campaign) {
       return Response::json("Campaign signup already exists", 401);
@@ -83,16 +80,16 @@ class CampaignController extends \BaseController {
     }
 
     // Create a Drupal signup via Drupal API, and store SID in Northstar.
-    $sid = $this->drupal->campaignSignup($user->drupal_id, $campaign_id, Input::get('source'));
+    $signup_id = $this->drupal->campaignSignup($user->drupal_id, $campaign_id, Input::get('source'));
 
     // Save reference to the signup on the user object.
     $campaign = new Campaign;
-    $campaign->nid = $campaign_id;
-    $campaign->sid = $sid;
+    $campaign->drupal_id = $campaign_id;
+    $campaign->signup_id = $signup_id;
     $campaign = $user->campaigns()->save($campaign);
 
     $response = array(
-      'sid' => $campaign->sid,
+      'signup_id' => $campaign->signup_id,
       'created_at' => $campaign->created_at,
     );
 
@@ -108,56 +105,9 @@ class CampaignController extends \BaseController {
   */
   public function reportback($id)
   {
-    $input = Input::only('rbid', 'file_url', 'quantity', 'why_participated');
-    $campaign = new Campaign;
-    if (!$campaign->validate($input)) {
-      return Response::json($campaign->getValidationMessages(), 401);
-    }
+    return Response::json('Not yet implemented.', 501);
 
-    $rbid = Input::get('rbid');
-    if (!$rbid) {
-      return Response::json("Campaign RBID not provided", 401);
-    }
-
-    $nid = (int) $id;
-    if (!$nid) {
-      return Response::json("Campaign node ID not provided", 401);
-    }
-
-    $statusCode = 200;
-    $token = Request::header('Session');
-    $user = Token::userFor($token);
-    $campaign = $user->campaigns()->where('nid', '=', $nid)->first();
-
-    if (!($campaign instanceof Campaign)) {
-      $campaign = new Campaign;
-      $campaign->nid = $nid;
-
-      // Only input non-null values
-      $input = array_filter($input, function($val) { return !is_null($val); });
-      $campaign->fill($input);
-      $campaign = $user->campaigns()->save($campaign);
-
-      $response = [
-        'created_at' => $campaign->created_at,
-      ];
-
-      $statusCode = 201;
-    }
-    else {
-      // Only input non-null values
-      $input = array_filter($input, function($val) { return !is_null($val); });
-      $campaign->fill($input);
-      $campaign = $user->campaigns()->save($campaign);
-
-      $response = [
-        'updated_at' => $campaign->updated_at,
-      ];
-    }
-
-    $response['rbid'] = $campaign->rbid;
-
-    return Response::json($response, $statusCode);
+    // ...
   }
 
   /**
@@ -168,39 +118,9 @@ class CampaignController extends \BaseController {
    */
   public function updateReportback($id)
   {
-    $rbid = Input::get('rbid');
-    if (!$rbid) {
-      return Response::json("Campaign RBID not provided", 401);
-    }
+    return Response::json('Not yet implemented.', 501);
 
-    $nid = (int) $id;
-    if (!$nid) {
-      return Response::json("Campaign node ID not provided", 401);
-    }
-
-    $token = Request::header('Session');
-    $user = Token::userFor($token);
-    $campaign = $user->campaigns()
-      ->where('nid', '=', $nid)
-      ->where('rbid', '=', $rbid)
-      ->first();
-
-    if (!($campaign instanceof Campaign)) {
-      return Response::json("Campaign does not exist", 401);
-    }
-
-    $input = Input::only('rbid', 'file_url', 'quantity', 'why_participated');
-    $input = array_filter($input, function($val) { return !is_null($val); });
-    $campaign->fill($input);
-
-    $campaign = $user->campaigns()->save($campaign);
-
-    $response = array(
-      'updated_at' => $campaign->updated_at,
-      'rbid' => $campaign->rbid
-    );
-
-    return Response::json($response, 200);
+    // ...
   }
 
 }

@@ -27,8 +27,8 @@ Route::group(array('prefix' => 'v1', 'before' => 'auth.api'), function()
   });
 
   // Sessions.
-  Route::post('login', 'UserController@login');
-  Route::post('logout', 'UserController@logout');
+  Route::post('login', 'AuthController@login');
+  Route::post('logout', 'AuthController@logout');
 
   // Users.
   Route::resource('users', 'UserController');

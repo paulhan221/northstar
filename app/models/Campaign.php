@@ -21,10 +21,10 @@ class Campaign extends Eloquent {
    * Validation rules
    */
   private $rules = [
-    'rbid' => 'integer',
+    'reportback_id' => 'integer',
     'file_url' => 'url',
     'quantity' => 'integer',
-    'sid' => 'integer',
+    'signup_id' => 'integer',
   ];
 
   /**
