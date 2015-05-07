@@ -6,7 +6,7 @@ class UserTest extends TestCase {
    * Migrate database and set up HTTP headers
    *
    * @return void
-  */
+   */
   public function setUp()
   {
     parent::setUp();
@@ -25,11 +25,11 @@ class UserTest extends TestCase {
 
 
   /**
-   * Test for retrieving a user 
+   * Test for retrieving a user
    * GET /users
    *
    * @return void
-  */
+   */
   public function testGetDataFromUser()
   {
     $response = $this->call('GET', 'v1/users/email/test@dosomething.org', array(), array(), $this->server);
@@ -37,17 +37,17 @@ class UserTest extends TestCase {
 
     // The response should return a 200 OK status code
     $this->assertEquals(200, $response->getStatusCode());
-    
+
     // Response should be valid JSON
     $this->assertJson($content);
   }
 
   /**
-   * Test for retrieving a nonexistant User 
+   * Test for retrieving a nonexistant User
    * GET /users
    *
    * @return void
-  */
+   */
   public function testGetData()
   {
     $response = $this->call('GET', 'v1/users');
@@ -58,11 +58,11 @@ class UserTest extends TestCase {
   }
 
   /**
-   * Test for registering a new user 
+   * Test for registering a new user
    * POST /users
    *
    * @return void
-  */
+   */
   public function testRegisterUser()
   {
     // Create a new user object
@@ -88,11 +88,11 @@ class UserTest extends TestCase {
   }
 
   /**
-   * Test for updating an existing user 
+   * Test for updating an existing user
    * PUT /users
    *
    * @return void
-  */
+   */
   public function testUpdateUser()
   {
     // Create a new user object
@@ -112,49 +112,6 @@ class UserTest extends TestCase {
 
     // Response should return updated at and id columns
     $this->assertArrayHasKey('updated_at', $data);
-  }
-
-  /**
-   * Test for logging in a user
-   * POST /login
-   *
-   * @return void
-  */
-  public function testLogin()
-  {   
-    // User login info
-    $credentials = array(
-      'email' => 'test@dosomething.org',
-      'password' => 'secret'
-    );
-
-    $response = $this->call('POST', 'v1/login', array(), array(), $this->server, json_encode($credentials));
-    $content = $response->getContent();
-
-    // The response should return a 200 Created status code
-    $this->assertEquals(200, $response->getStatusCode());
-
-    // Response should be valid JSON
-    $this->assertJson($content);
-  }
-
-  /**
-   * Test for logging out a user
-   * POST /logout
-   *
-   * @return void
-  */
-  public function testLogout()
-  {   
-    $response = $this->call('POST', 'v1/logout', array(), array(), $this->server);
-    $content = $response->getContent();
-    $data = json_decode($content, true);
-
-    // The response should return a 200 Created status code
-    $this->assertEquals(200, $response->getStatusCode());
-
-    // Response should be valid JSON
-    $this->assertJson($content);
   }
 
   /**
