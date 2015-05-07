@@ -61,7 +61,8 @@ class UserController extends \BaseController {
         }
       }
       // Do we need to forward this user to drupal?
-      if ($user->email && !$user->drupal_id) {
+      // If query string exists, make a drupal user. 
+      if (Input::has('create_drupal_user') && !$user->drupal_id) {
         try {
           $drupal = new Northstar\Services\Drupal\DrupalAPI;
           $response = $drupal->register($user);
