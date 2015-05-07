@@ -106,14 +106,13 @@ class DrupalAPI {
   public function register($user)
   {
     $payload = $user->toArray();
-    dd($payload);
 
     // Format user object for consumption by Drupal API.
-    $user->birthdate = date('Y-m-d', strtotime($user->birthdate));
-    $user->user_registration_source = $user->source;
+    $payload['birthdate'] = date('Y-m-d', strtotime($user->birthdate));
+    $payload['user_registration_source'] = $user->source;
 
     $response = $this->client->post('users', [
-      'body' => json_encode($user),
+      'body' => json_encode($payload),
     ]);
 
     return $response->uid;
