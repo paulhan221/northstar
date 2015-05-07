@@ -69,7 +69,6 @@ class UserController extends \BaseController {
           $drupal_id = $drupal->register($user);
           $user->drupal_id = $drupal_id;
         } catch (Exception $e) {
-          dd('error');
           // @TODO: figure out what to do if a user isn't created.
           // This could be a failure for so many reasons
           // User is already registered/email taken
