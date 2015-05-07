@@ -39,12 +39,17 @@ class AuthTest extends TestCase {
 
     $response = $this->call('POST', 'v1/login', array(), array(), $this->server, json_encode($credentials));
     $content = $response->getContent();
+    $data = json_decode($content, true);
 
     // The response should return a 200 Created status code
     $this->assertEquals(200, $response->getStatusCode());
 
     // Response should be valid JSON
     $this->assertJson($content);
+
+    // Response should include user ID & session token
+    $this->assertArrayHasKey('_id', $data);
+    $this->assertArrayHasKey('session_token', $data);
   }
 
   /**
