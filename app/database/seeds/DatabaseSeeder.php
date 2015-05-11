@@ -33,8 +33,10 @@ class UserTableSeeder extends Seeder {
     // @TODO: Why is this being called... it's called for each unit test.
     // Without this line, the unit tests fail.
     DB::table('users')->delete();
-    User::create(array(
-      '_id' => '5480c950bffebc651c8b456f',
+
+    // Non-signed up user
+    User::create([
+      '_id' => '5430e850dt8hbc541c37tt3d',
       'email' => 'test@dosomething.org',
       'mobile' => '5555555555',
       'password' => 'secret',
@@ -48,15 +50,33 @@ class UserTableSeeder extends Seeder {
       'birthdate' => '12/17/91',
       'first_name' => 'First',
       'last_name' => 'Last',
-      'campaigns' => array(
-        array(
-          'nid' => 100,
-          'rbid' => 10,
-          'quantity' => 100,
-          '_id' => '5480c950bffebc651c8b456e'
-        )
-      )
-    ));
+    ]);
+
+    // Signed up user
+    User::create([
+      '_id' => '5480c950bffebc651c8b456f',
+      'email' => 'test2@dosomething.org',
+      'mobile' => '5554445555',
+      'password' => 'secret',
+      'drupal_id' => 123457,
+      'addr_street1' => '123',
+      'addr_street2' => '456',
+      'addr_city' => 'Paris',
+      'addr_state' => 'Florida',
+      'addr_zip' => '555555',
+      'country' => 'US',
+      'birthdate' => '12/17/91',
+      'first_name' => 'First',
+      'last_name' => 'Last',
+      'campaigns' => [
+        [
+          '_id' => '5480c950bffebc651c8b456e',
+          'drupal_id' => 123,
+          'signup_id' => 100
+        ]
+      ]
+    ]);
+
     User::create(array(
       'email' => 'info@dosomething.org',
       'mobile' => '5556669999',
@@ -72,6 +92,7 @@ class UserTableSeeder extends Seeder {
       'first_name' => 'John',
       'last_name' => 'Doe'
     ));
+
     User::create(array(
       '_id' =>'5480c950bffebc651c8b4570',
       'email' => 'delete-test@ds.org',
