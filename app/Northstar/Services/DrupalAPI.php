@@ -1,7 +1,6 @@
-<?php namespace Northstar\Services\Drupal;
+<?php namespace Northstar\Services;
 
 use GuzzleHttp\Client;
-use Intervention\Image\ImageManagerStatic as Image;
 use Config;
 use Cache;
 
@@ -166,7 +165,7 @@ class DrupalAPI {
    * @param Array $contents - Contents of reportback
    *    @option String quantity - Quantity of reportback
    *    @option String why_participated - Why the user participated in this campaign
-   *    @option Symfony\Component\HttpFoundation\File\UploadedFile file - Reportback image
+   *    @option String file - Reportback image as a Data URL
    * @return String - Reportback ID
    * @throws \Exception
    *

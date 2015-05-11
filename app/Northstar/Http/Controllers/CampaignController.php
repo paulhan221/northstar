@@ -1,8 +1,13 @@
-<?php
+<?php namespace Northstar\Http\Controllers;
 
-use Northstar\Services\Drupal\DrupalAPI;
+use Northstar\Services\DrupalAPI;
+use Northstar\Models\User;
+use Northstar\Models\Campaign;
+use Validator;
+use Response;
+use Input;
 
-class CampaignController extends \BaseController {
+class CampaignController extends BaseController {
 
   /**
    * Drupal API wrapper.

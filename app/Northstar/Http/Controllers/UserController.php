@@ -1,7 +1,11 @@
-<?php
+<?php namespace Northstar\Http\Controllers;
 
+use Northstar\Services\DrupalAPI;
+use Northstar\Models\User;
+use Input;
+use Response;
 
-class UserController extends \BaseController {
+class UserController extends BaseController {
 
   /**
    * Display a listing of the resource.
@@ -63,10 +67,10 @@ class UserController extends \BaseController {
         }
       }
       // Do we need to forward this user to drupal?
-      // If query string exists, make a drupal user. 
+      // If query string exists, make a drupal user.
       if (Input::has('create_drupal_user') && !$user->drupal_id) {
         try {
-          $drupal = new Northstar\Services\Drupal\DrupalAPI;
+          $drupal = new DrupalAPI;
           $drupal_id = $drupal->register($user);
           $user->drupal_id = $drupal_id;
         } catch (Exception $e) {

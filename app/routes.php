@@ -21,22 +21,22 @@ Route::group(array('prefix' => 'v1', 'before' => 'auth.api'), function()
 {
   // Campaigns.
   Route::group(array('before' => 'auth.token'), function() {
-    Route::post('campaigns/{id}/signup', 'CampaignController@signup');
-    Route::post('campaigns/{id}/reportback', 'CampaignController@reportback');
-    Route::put('campaigns/{id}/reportback', 'CampaignController@updateReportback');
+    Route::post('campaigns/{id}/signup', 'Northstar\Http\Controllers\CampaignController@signup');
+    Route::post('campaigns/{id}/reportback', 'Northstar\Http\Controllers\CampaignController@reportback');
+    Route::put('campaigns/{id}/reportback', 'Northstar\Http\Controllers\CampaignController@updateReportback');
   });
 
   // Sessions.
-  Route::post('login', 'AuthController@login');
-  Route::post('logout', 'AuthController@logout');
+  Route::post('login', 'Northstar\Http\Controllers\AuthController@login');
+  Route::post('logout', 'Northstar\Http\Controllers\AuthController@logout');
 
   // Users.
-  Route::resource('users', 'UserController');
-  Route::get('users/{term}/{id}/campaigns', 'CampaignController@show');
-  Route::get('users/{term}/{id}', 'UserController@show');
+  Route::resource('users', 'Northstar\Http\Controllers\UserController');
+  Route::get('users/{term}/{id}/campaigns', 'Northstar\Http\Controllers\CampaignController@show');
+  Route::get('users/{term}/{id}', 'Northstar\Http\Controllers\UserController@show');
 
   // Api Keys.
-  Route::resource('keys', 'KeyController');
+  Route::resource('keys', 'Northstar\Http\Controllers\KeyController');
 
 });
 

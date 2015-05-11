@@ -1,4 +1,4 @@
-<?php
+<?php namespace Northstar\Models;
 
 use Jenssegers\Mongodb\Model as Eloquent;
 

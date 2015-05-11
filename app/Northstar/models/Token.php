@@ -1,4 +1,4 @@
-<?php
+<?php namespace Northstar\Models;
 
 use Jenssegers\Mongodb\Model as Eloquent;
 
@@ -11,9 +11,9 @@ class Token extends Eloquent {
   public static function randomKey($size) {
     do {
       $key = openssl_random_pseudo_bytes ( $size , $strongEnough );
-    } 
+    }
     while( !$strongEnough );
-    
+
     $key = str_replace( '+', '', base64_encode($key) );
     $key = str_replace( '/', '', $key );
 
