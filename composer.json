@@ -10,6 +10,10 @@
 		"phpunit/phpunit": "4.0.*",
 		"guzzlehttp/guzzle": "~5.2"
 	},
+  "require-dev": {
+    "fzaninotto/faker": "~1.4",
+    "mockery/mockery": "^0.9.4"
+  },
 	"autoload": {
 		"classmap": [
 			"app/commands",
@@ -37,8 +41,5 @@
 	"config": {
 		"preferred-install": "dist"
 	},
-	"minimum-stability": "stable",
-	"require-dev": {
-		"fzaninotto/faker": "~1.4"
-	}
+	"minimum-stability": "stable"
 }

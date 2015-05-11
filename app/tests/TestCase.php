@@ -16,4 +16,19 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase {
 		return require __DIR__.'/../../bootstrap/start.php';
 	}
 
+  /**
+   * Mock a class, and register with the IoC container.
+   *
+   * @param $class String - Class name to mock
+   * @return \Mockery\MockInterface
+   */
+  public function mock($class)
+  {
+    $mock = Mockery::mock($class);
+
+    $this->app->instance($class, $mock);
+
+    return $mock;
+  }
+
 }

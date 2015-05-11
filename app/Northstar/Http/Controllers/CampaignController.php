@@ -15,9 +15,9 @@ class CampaignController extends BaseController {
    */
   protected $drupal;
 
-  public function __construct()
+  public function __construct(DrupalAPI $drupal)
   {
-    $this->drupal = new DrupalAPI;
+    $this->drupal = $drupal;
   }
 
   /**
