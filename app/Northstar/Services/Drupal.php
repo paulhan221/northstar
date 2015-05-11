@@ -1,6 +1,7 @@
 <?php namespace Northstar\Services\Drupal;
 
 use GuzzleHttp\Client;
+use Intervention\Image\ImageManagerStatic as Image;
 use Config;
 use Cache;
 
@@ -153,5 +154,49 @@ class DrupalAPI {
     }
 
     return $signup_id;
+  }
+
+
+  /**
+   * Create or update a user's reportback on the Drupal site.
+   * @see: https://github.com/DoSomething/dosomething/wiki/API#campaign-reportback
+   *
+   * @param String $user_id - UID of user on the Drupal site
+   * @param String $campaign_id - NID of campaign on the Drupal site
+   * @param Array $contents - Contents of reportback
+   *    @option String quantity - Quantity of reportback
+   *    @option String why_participated - Why the user participated in this campaign
+   *    @option Symfony\Component\HttpFoundation\File\UploadedFile file - Reportback image
+   * @return String - Reportback ID
+   * @throws \Exception
+   *
+   */
+  public function campaignReportback($user_id, $campaign_id, $contents)
+  {
+    $payload = [
+      'uid' => $user_id,
+      'quantity' => $contents['quantity'],
+      'why_participated' => $contents['why_participated'],
+      'file' => $contents['file'],
+      'filename' => 'test123456.jpg',
+      'caption' => $contents['caption']
+    ];
+
+    $response = $this->client->post('campaigns/' . $campaign_id . '/reportback', [
+      'body' => json_encode($payload),
+      'cookies' => $this->getAuthenticationCookie(),
+      'headers' => [
+        'X-CSRF-Token' => $this->getAuthenticationToken()
+      ]
+    ]);
+
+    $body = $response->json();
+    $reportback_id = $body[0];
+
+    if(!$reportback_id) {
+      throw new \Exception('Could not create/update reportback.');
+    }
+
+    return $reportback_id;
   }
 }

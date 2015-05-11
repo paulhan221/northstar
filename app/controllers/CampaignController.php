@@ -67,6 +67,11 @@ class CampaignController extends \BaseController {
     // Get the currently authenticated Northstar user.
     $user = User::current();
 
+    // Return an error if the user doesn't exist.
+    if(!$user->drupal_id) {
+      return Response::json('The user must have a Drupal ID to sign up for a campaign.', 401);
+    }
+
     // Check if campaign signup already exists.
     $campaign = $user->campaigns()->where('drupal_id', $campaign_id)->first();
 
@@ -74,13 +79,8 @@ class CampaignController extends \BaseController {
       return Response::json("Campaign signup already exists", 401);
     }
 
-    // Return an error if the user doesn't exist.
-    if(!$user->drupal_id) {
-      return Response::json('The user must have a Drupal ID to sign up for a campaign.', 401);
-    }
-
-    // Create a Drupal signup via Drupal API, and store SID in Northstar.
-    $signup_id = $this->drupal->campaignSignup($user->drupal_id, $campaign_id, Input::get('source'));
+    // Create a Drupal signup via Drupal API, and store signup ID in Northstar.
+    $signup_id = $this->drupal->campaignSignup($user->drupal_id, $campaign_id, $request['source']);
 
     // Save reference to the signup on the user object.
     $campaign = new Campaign;
@@ -99,24 +99,65 @@ class CampaignController extends \BaseController {
 
   /**
    * Store a newly created campaign report back in storage.
-   * POST /campaigns/:nid/reportback
+   * POST /campaigns/:campaign_id/reportback
    *
    * @return Response
   */
-  public function reportback($id)
+  public function reportback($campaign_id)
   {
-    return Response::json('Not yet implemented.', 501);
+    // Build request object
+    $request = Input::all();
+    $request['campaign_id'] = $campaign_id;
 
-    // ...
+    // Validate request
+    $validator = Validator::make($request, [
+      'campaign_id' => ['required', 'integer'],
+      'quantity' => ['required', 'integer'],
+      'why_participated' => ['required'],
+      'file' => ['required', 'string'], // Data URL!
+      'caption' => ['string']
+    ]);
+
+    if($validator->fails()) {
+      return Response::json($validator->messages(), 401);
+    }
+
+    // Get the currently authenticated Northstar user.
+    $user = User::current();
+
+    // Return an error if the user doesn't exist.
+    if(!$user->drupal_id) {
+      return Response::json('The user must have a Drupal ID to submit a reportback.', 401);
+    }
+
+    // Check if campaign signup already exists.
+    $campaign = $user->campaigns()->where('drupal_id', $campaign_id)->first();
+
+    if (!$campaign) {
+      return Response::json("User is not signed up for this campaign yet.", 401);
+    }
+
+    // Create a reportback via the Drupal API, and store reportback ID in Northstar
+    $reportback_id = $this->drupal->campaignReportback($user->drupal_id, $campaign_id, [
+      'quantity' => $request['quantity'],
+      'why_participated' => $request['why_participated'],
+      'file' => $request['file'],
+      'caption' => $request['caption']
+    ]);
+
+    $campaign->reportback_id = $reportback_id;
+    $campaign->save();
+
+    return Response::json(['reportback_id' => $reportback_id, 'created_at' => $campaign->updated_at], 201);
   }
 
   /**
    * Update a campaign report back in storage.
-   * PUT /campaigns/:nid/reportback
+   * PUT /campaigns/:campaign_id/reportback
    *
    * @return Response
    */
-  public function updateReportback($id)
+  public function updateReportback($campaign_id)
   {
     return Response::json('Not yet implemented.', 501);
 
