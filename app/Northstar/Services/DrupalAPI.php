@@ -1,7 +1,6 @@
-<?php namespace Northstar\Services\Drupal;
+<?php namespace Northstar\Services;
 
 use GuzzleHttp\Client;
-use Intervention\Image\ImageManagerStatic as Image;
 use Config;
 use Cache;
 

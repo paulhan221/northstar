@@ -1,6 +1,6 @@
 <?php
 
-use Northstar\Services\Drupal\DrupalAPI;
+use Northstar\Services\DrupalAPI;
 
 class CampaignController extends \BaseController {
 
