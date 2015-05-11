@@ -1,7 +1,10 @@
-<?php
+<?php namespace Northstar\Http\Controllers;
 
+use Northstar\Models\ApiKey;
+use Input;
+use Response;
 
-class KeyController extends \BaseController {
+class KeyController extends BaseController {
 
   /**
    * Display a listing of the resource.

@@ -1,5 +1,9 @@
 <?php
 
+use Northstar\Models\User;
+use Northstar\Models\ApiKey;
+use Northstar\Models\Token;
+
 class DatabaseSeeder extends Seeder {
 
   /**

@@ -1,4 +1,4 @@
-<?php
+<?php namespace Northstar\Http\Controllers;
 
 class HomeController extends BaseController {
 

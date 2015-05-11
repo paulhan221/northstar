@@ -1,6 +1,13 @@
-<?php
+<?php namespace Northstar\Http\Controllers;
 
-class AuthController extends \BaseController {
+use Northstar\Models\User;
+use Northstar\Models\Token;
+use Input;
+use Hash;
+use Response;
+use Request;
+
+class AuthController extends BaseController {
 
   /**
    * Authenticate a registered user

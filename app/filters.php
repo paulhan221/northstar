@@ -1,5 +1,8 @@
 <?php
 
+use Northstar\Models\ApiKey;
+use Northstar\Models\Token;
+
 /*
 |--------------------------------------------------------------------------
 | Application & Route Filters

@@ -1,5 +1,7 @@
 <?php
 
+use Northstar\Models\Token;
+
 class AuthTest extends TestCase {
 
   /**

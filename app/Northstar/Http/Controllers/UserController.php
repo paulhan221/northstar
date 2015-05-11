@@ -1,8 +1,11 @@
-<?php
+<?php namespace Northstar\Http\Controllers;
 
 use Northstar\Services\DrupalAPI;
+use Northstar\Models\User;
+use Input;
+use Response;
 
-class UserController extends \BaseController {
+class UserController extends BaseController {
 
   /**
    * Display a listing of the resource.
