@@ -18,4 +18,4 @@ You may run unit tests using PHPUnit:
     $ vendor/bin/phpunit
 
 ### License
-&copy;2015 DoSomething.org. Northstar is free software, and may be redistributed under the terms specified in the [LICENSE](https://github.com/DFurnes/northstar/blob/dev/LICENSE) file. The name and logo for DoSomething.org are trademarks of Do Something, Inc and may not be used without permission.
+&copy;2015 DoSomething.org. Northstar is free software, and may be redistributed under the terms specified in the [LICENSE](https://github.com/DoSomething/northstar/blob/dev/LICENSE) file. The name and logo for DoSomething.org are trademarks of Do Something, Inc and may not be used without permission.
