@@ -5,14 +5,14 @@ set :application, "user-api"
 set :deploy_to, ENV["DEPLOY_PATH"]
 server  ENV["SERVER_NAME"], :app, :web
 
-set :user, "dosomething"
-set :group, "dosomething"
-set :use_sudo, false
-
 gateway = ENV["GATEWAY"]
 unless gateway.nil?
   set :gateway, ENV["GATEWAY"]
 end
+
+set :user, "dosomething"
+set :group, "dosomething"
+set :use_sudo, false
 
 set :repository, "."
 set :scm, :none
@@ -24,14 +24,12 @@ ssh_options[:keys] = [ENV["CAP_PRIVATE_KEY"]]
 default_run_options[:shell] = '/bin/bash'
 
 namespace :deploy do
-  folders = %w{cache logs meta sessions system views}
+  folders = %w{logs dumps system}
 
   task :link_folders do
-    run "ln -nfs #{shared_path}/.env.php #{release_path}/"
-    run "ln -nfs #{shared_path}/content #{release_path}/public"
-    run "ln -nfs #{shared_path}/pages #{release_path}/public/pages"
+    run "ln -nfs #{shared_path}/.env #{release_path}/"
     folders.each do |folder|
-      run "ln -nfs #{shared_path}/#{folder} #{release_path}/app/storage/#{folder}"
+      run "ln -nfs #{shared_path}/#{folder} #{release_path}/storage/#{folder}"
     end
   end
 
@@ -39,8 +37,13 @@ namespace :deploy do
     run "cd #{release_path} && php artisan migrate --force"
   end
 
+  task :artisan_cache_clear do
+    run "cd #{release_path} && php artisan cache:clear"
+  end
+
 end
 
 after "deploy:update", "deploy:cleanup"
 after "deploy:symlink", "deploy:link_folders"
-
+after "deploy:link_folders", "deploy:artisan_migrate"
+after "deploy:artisan_migrate", "deploy:artisan_cache_clear"
