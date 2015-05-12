@@ -12,28 +12,28 @@
 */
 
 Route::get('/', function () {
-  return Redirect::to('https://github.com/DoSomething/api');
+    return Redirect::to('https://github.com/DoSomething/api');
 });
 
 // https://api.dosomething.org/v1/
 Route::group(array('prefix' => 'v1', 'before' => 'auth.api'), function () {
-  // Campaigns.
-  Route::group(array('before' => 'auth.token'), function () {
-    Route::post('campaigns/{id}/signup', 'CampaignController@signup');
-    Route::post('campaigns/{id}/reportback', 'CampaignController@reportback');
-    Route::put('campaigns/{id}/reportback', 'CampaignController@updateReportback');
-  });
+    // Campaigns.
+    Route::group(array('before' => 'auth.token'), function () {
+        Route::post('campaigns/{id}/signup', 'CampaignController@signup');
+        Route::post('campaigns/{id}/reportback', 'CampaignController@reportback');
+        Route::put('campaigns/{id}/reportback', 'CampaignController@updateReportback');
+    });
 
-  // Sessions.
-  Route::post('login', 'AuthController@login');
-  Route::post('logout', 'AuthController@logout');
+    // Sessions.
+    Route::post('login', 'AuthController@login');
+    Route::post('logout', 'AuthController@logout');
 
-  // Users.
-  Route::resource('users', 'UserController');
-  Route::get('users/{term}/{id}/campaigns', 'CampaignController@show');
-  Route::get('users/{term}/{id}', 'UserController@show');
+    // Users.
+    Route::resource('users', 'UserController');
+    Route::get('users/{term}/{id}/campaigns', 'CampaignController@show');
+    Route::get('users/{term}/{id}', 'UserController@show');
 
-  // Api Keys.
-  Route::resource('keys', 'KeyController');
+    // Api Keys.
+    Route::resource('keys', 'KeyController');
 });
 

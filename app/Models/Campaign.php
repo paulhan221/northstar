@@ -6,126 +6,125 @@ use Validator;
 class Campaign extends Eloquent
 {
 
+    /**
+     * Guarded attributes
+     */
+    protected $guarded = array('_id');
 
-  /**
-   * Guarded attributes
-   */
-  protected $guarded = array('_id');
+    /**
+     * The attributes excluded from the model's JSON form.
+     *
+     * @var array
+     */
+    protected $hidden = ['_id'];
 
-  /**
-   * The attributes excluded from the model's JSON form.
-   *
-   * @var array
-   */
-  protected $hidden = ['_id'];
+    /**
+     * Validation rules
+     */
+    private $rules = [
+        'reportback_id' => 'integer',
+        'file_url' => 'url',
+        'quantity' => 'integer',
+        'signup_id' => 'integer',
+    ];
 
-  /**
-   * Validation rules
-   */
-  private $rules = [
-    'reportback_id' => 'integer',
-    'file_url' => 'url',
-    'quantity' => 'integer',
-    'signup_id' => 'integer',
-  ];
+    /**
+     * Bag of messages returned from a failed validation.
+     */
+    private $validationMessages;
 
-  /**
-   * Bag of messages returned from a failed validation.
-   */
-  private $validationMessages;
-
-  /**
-   * Automatically convert date columns to instances of Carbon
-   */
-  public function getDates()
-  {
-    return ['created_at', 'updated_at'];
-  }
-
-  /**
-   * Validate input based on this model's rules.
-   *
-   * @param $data
-   * @return bool
-   */
-  public function validate($data)
-  {
-    $v = Validator::make($data, $this->rules);
-
-    if ($v->fails()) {
-      $this->validationMessages = $v->messages()->all();
-      return false;
+    /**
+     * Automatically convert date columns to instances of Carbon
+     */
+    public function getDates()
+    {
+        return ['created_at', 'updated_at'];
     }
 
-    return true;
-  }
+    /**
+     * Validate input based on this model's rules.
+     *
+     * @param $data
+     * @return bool
+     */
+    public function validate($data)
+    {
+        $v = Validator::make($data, $this->rules);
 
-  /**
-   * Get validation messages.
-   *
-   * @return array
-   */
-  public function getValidationMessages()
-  {
-    return $this->validationMessages;
-  }
+        if ($v->fails()) {
+            $this->validationMessages = $v->messages()->all();
+            return false;
+        }
 
-  /**
-   * Formats date if its a MongoDate.
-   *
-   * @param $value mixed - date attribute value
-   * @return String
-   */
-  private function formatDate($value)
-  {
-    $date = $this->asDateTime($value);
-    return $date->format('Y-m-d H:i:s');
-  }
+        return true;
+    }
 
-  /**
-   * Accessor for created_at date. Formats to Y-m-d H:i:s.
-   */
-  public function getCreatedAtAttribute($value)
-  {
-    return $this->formatDate($value);
-  }
+    /**
+     * Get validation messages.
+     *
+     * @return array
+     */
+    public function getValidationMessages()
+    {
+        return $this->validationMessages;
+    }
 
-  /**
-   * Accessor for updated_at date. Formats to Y-m-d H:i:s.
-   */
-  public function getUpdatedAtAttribute($value)
-  {
-    return $this->formatDate($value);
-  }
+    /**
+     * Formats date if its a MongoDate.
+     *
+     * @param $value mixed - date attribute value
+     * @return String
+     */
+    private function formatDate($value)
+    {
+        $date = $this->asDateTime($value);
+        return $date->format('Y-m-d H:i:s');
+    }
 
-  public function getQuantityAttribute($value)
-  {
-    return (int)$value;
-  }
+    /**
+     * Accessor for created_at date. Formats to Y-m-d H:i:s.
+     */
+    public function getCreatedAtAttribute($value)
+    {
+        return $this->formatDate($value);
+    }
 
-  public function setQuantityAttribute($value)
-  {
-    $this->attributes['quantity'] = (int)$value;
-  }
+    /**
+     * Accessor for updated_at date. Formats to Y-m-d H:i:s.
+     */
+    public function getUpdatedAtAttribute($value)
+    {
+        return $this->formatDate($value);
+    }
 
-  public function getRbidAttribute($value)
-  {
-    return (int)$value;
-  }
+    public function getQuantityAttribute($value)
+    {
+        return (int)$value;
+    }
 
-  public function setRbidAttribute($value)
-  {
-    $this->attributes['rbid'] = (int)$value;
-  }
+    public function setQuantityAttribute($value)
+    {
+        $this->attributes['quantity'] = (int)$value;
+    }
 
-  public function getSidAttribute($value)
-  {
-    return (int)$value;
-  }
+    public function getRbidAttribute($value)
+    {
+        return (int)$value;
+    }
 
-  public function setSidAttribute($value)
-  {
-    $this->attributes['sid'] = (int)$value;
-  }
+    public function setRbidAttribute($value)
+    {
+        $this->attributes['rbid'] = (int)$value;
+    }
+
+    public function getSidAttribute($value)
+    {
+        return (int)$value;
+    }
+
+    public function setSidAttribute($value)
+    {
+        $this->attributes['sid'] = (int)$value;
+    }
 
 }
