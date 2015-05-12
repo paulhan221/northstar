@@ -53,9 +53,8 @@ class UserTest extends TestCase
         $response = $this->call('GET', 'v1/users');
         $content = $response->getContent();
 
-        // The response should return 200
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertJson($content);
+        // The response should return 404
+        $this->assertEquals(404, $response->getStatusCode());
     }
 
     /**
