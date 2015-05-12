@@ -4,8 +4,8 @@ use Northstar\Services\DrupalAPI;
 use Northstar\Models\User;
 use Northstar\Models\Campaign;
 use Illuminate\Http\Request;
-use Response;
-use Input;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CampaignController extends Controller
 {
@@ -39,11 +39,13 @@ class CampaignController extends Controller
 
         // Find the user.
         $user = User::where($term, $id)->first();
-        if ($user instanceof User) {
-            $campaigns = $user->campaigns;
-            return Response::json($campaigns, 200);
+
+        if (!$user) {
+            throw new NotFoundHttpException('The resource does not exist');
         }
-        return Response::json('The resource does not exist', 404);
+
+        $campaigns = $user->campaigns;
+        return response()->json($campaigns, 200);
     }
 
 
@@ -53,6 +55,7 @@ class CampaignController extends Controller
      *
      * @param $campaign_id - Drupal campaign node ID
      * @param Request $request
+     *
      * @return Response
      */
     public function signup($campaign_id, Request $request)
@@ -67,14 +70,14 @@ class CampaignController extends Controller
 
         // Return an error if the user doesn't exist.
         if (!$user->drupal_id) {
-            return Response::json('The user must have a Drupal ID to sign up for a campaign.', 401);
+            throw new HttpException(401, 'The user must have a Drupal ID to sign up for a campaign.');
         }
 
         // Check if campaign signup already exists.
         $campaign = $user->campaigns()->where('drupal_id', $campaign_id)->first();
 
         if ($campaign) {
-            return Response::json("Campaign signup already exists", 401);
+            throw new HttpException(401, 'Campaign signup already exists.');
         }
 
         // Create a Drupal signup via Drupal API, and store signup ID in Northstar.
@@ -91,7 +94,7 @@ class CampaignController extends Controller
             'created_at' => $campaign->created_at,
         );
 
-        return Response::json($response, 201);
+        return response()->json($response, 201);
     }
 
 
@@ -101,13 +104,13 @@ class CampaignController extends Controller
      *
      * @param $campaign_id - Drupal campaign node ID
      * @param Request $request
+     *
      * @return Response
      */
     public function reportback($campaign_id, Request $request)
     {
         // Validate request body
         $this->validate($request, [
-            'campaign_id' => ['required', 'integer'],
             'quantity' => ['required', 'integer'],
             'why_participated' => ['required'],
             'file' => ['required', 'string'], // Data URL!
@@ -119,14 +122,14 @@ class CampaignController extends Controller
 
         // Return an error if the user doesn't exist.
         if (!$user->drupal_id) {
-            return Response::json('The user must have a Drupal ID to submit a reportback.', 401);
+            throw new HttpException(401, 'The user must have a Drupal ID to submit a reportback.');
         }
 
         // Check if campaign signup already exists.
         $campaign = $user->campaigns()->where('drupal_id', $campaign_id)->first();
 
         if (!$campaign) {
-            return Response::json("User is not signed up for this campaign yet.", 401);
+            throw new HttpException(401, 'User is not signed up for this campaign yet.');
         }
 
         // Create a reportback via the Drupal API, and store reportback ID in Northstar
@@ -140,7 +143,7 @@ class CampaignController extends Controller
         $campaign->reportback_id = $reportback_id;
         $campaign->save();
 
-        return Response::json(['reportback_id' => $reportback_id, 'created_at' => $campaign->updated_at], 201);
+        return response()->json(['reportback_id' => $reportback_id, 'created_at' => $campaign->updated_at], 201);
     }
 
     /**
@@ -151,7 +154,7 @@ class CampaignController extends Controller
      */
     public function updateReportback($campaign_id)
     {
-        return Response::json('Not yet implemented.', 501);
+        throw new HttpException(501, 'Not yet implemented.');
 
         // ...
     }
