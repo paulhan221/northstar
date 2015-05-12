@@ -13,7 +13,7 @@
 
 Route::get('/', function()
 {
-  return View::make('hello');
+  return Redirect::to('https://github.com/DoSomething/api');
 });
 
 // https://api.dosomething.org/1/
