@@ -3,7 +3,7 @@
 use Northstar\Services\DrupalAPI;
 use Northstar\Models\User;
 use Northstar\Models\Campaign;
-use Validator;
+use Illuminate\Http\Request;
 use Response;
 use Input;
 
@@ -52,23 +52,15 @@ class CampaignController extends Controller
      * POST /campaigns/:campaign_id/signup
      *
      * @param $campaign_id - Drupal campaign node ID
+     * @param Request $request
      * @return Response
      */
-    public function signup($campaign_id)
+    public function signup($campaign_id, Request $request)
     {
-        // Build request object
-        $request = Input::all();
-        $request['campaign_id'] = $campaign_id;
-
-        // Validate request
-        $validator = Validator::make($request, [
-            'campaign_id' => ['required', 'integer'],
+        // Validate request body
+        $this->validate($request, [
             'source' => ['required']
         ]);
-
-        if ($validator->fails()) {
-            return Response::json($validator->messages(), 401);
-        }
 
         // Get the currently authenticated Northstar user.
         $user = User::current();
@@ -86,7 +78,7 @@ class CampaignController extends Controller
         }
 
         // Create a Drupal signup via Drupal API, and store signup ID in Northstar.
-        $signup_id = $this->drupal->campaignSignup($user->drupal_id, $campaign_id, $request['source']);
+        $signup_id = $this->drupal->campaignSignup($user->drupal_id, $campaign_id, $request->input('source'));
 
         // Save reference to the signup on the user object.
         $campaign = new Campaign;
@@ -107,26 +99,20 @@ class CampaignController extends Controller
      * Store a newly created campaign report back in storage.
      * POST /campaigns/:campaign_id/reportback
      *
+     * @param $campaign_id - Drupal campaign node ID
+     * @param Request $request
      * @return Response
      */
-    public function reportback($campaign_id)
+    public function reportback($campaign_id, Request $request)
     {
-        // Build request object
-        $request = Input::all();
-        $request['campaign_id'] = $campaign_id;
-
-        // Validate request
-        $validator = Validator::make($request, [
+        // Validate request body
+        $this->validate($request, [
             'campaign_id' => ['required', 'integer'],
             'quantity' => ['required', 'integer'],
             'why_participated' => ['required'],
             'file' => ['required', 'string'], // Data URL!
             'caption' => ['string']
         ]);
-
-        if ($validator->fails()) {
-            return Response::json($validator->messages(), 401);
-        }
 
         // Get the currently authenticated Northstar user.
         $user = User::current();
@@ -145,10 +131,10 @@ class CampaignController extends Controller
 
         // Create a reportback via the Drupal API, and store reportback ID in Northstar
         $reportback_id = $this->drupal->campaignReportback($user->drupal_id, $campaign_id, [
-            'quantity' => $request['quantity'],
-            'why_participated' => $request['why_participated'],
-            'file' => $request['file'],
-            'caption' => $request['caption']
+            'quantity' => $request->input('quantity'),
+            'why_participated' => $request->input('why_participated'),
+            'file' => $request->input('file'),
+            'caption' => $request->input('caption')
         ]);
 
         $campaign->reportback_id = $reportback_id;
