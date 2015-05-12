@@ -1,10 +1,6 @@
 {
-  "name": "laravel/laravel",
-  "description": "The Laravel Framework.",
-  "keywords": [
-    "framework",
-    "laravel"
-  ],
+  "name": "dosomething/northstar",
+  "description": "The DoSomething.org user & activity API.",
   "license": "MIT",
   "type": "project",
   "require": {
