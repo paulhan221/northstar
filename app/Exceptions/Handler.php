@@ -46,8 +46,10 @@ class Handler extends ExceptionHandler
             }
 
             $response = [
-                'code' => $code,
-                'error' => $e->getMessage()
+                'error' => [
+                    'code' => $code,
+                    'message' => $e->getMessage()
+                ]
             ];
 
             // Show more information if we're in debug mode
