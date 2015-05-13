@@ -133,12 +133,7 @@ class CampaignController extends Controller
         }
 
         // Create a reportback via the Drupal API, and store reportback ID in Northstar
-        $reportback_id = $this->drupal->campaignReportback($user->drupal_id, $campaign_id, [
-            'quantity' => $request->input('quantity'),
-            'why_participated' => $request->input('why_participated'),
-            'file' => $request->input('file'),
-            'caption' => $request->input('caption')
-        ]);
+        $reportback_id = $this->drupal->campaignReportback($user->drupal_id, $campaign_id, $request->all());
 
         $campaign->reportback_id = $reportback_id;
         $campaign->save();
