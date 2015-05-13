@@ -25,7 +25,7 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $e)
     {
-        return parent::report($e);
+        parent::report($e);
     }
 
     /**
@@ -37,6 +37,32 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+        // If client requests it, render exception as JSON object
+        if ($request->ajax() || $request->wantsJson()) {
+            $code = 500;
+
+            if($this->isHttpException($e)) {
+                $code = $e->getStatusCode();
+            }
+
+            $response = [
+                'error' => [
+                    'code' => $code,
+                    'message' => $e->getMessage()
+                ]
+            ];
+
+            // Show more information if we're in debug mode
+            if(config('app.debug')) {
+                $response['debug'] = [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ];
+            }
+
+            return response()->json($response, $code);
+        }
+
         return parent::render($request, $e);
     }
 

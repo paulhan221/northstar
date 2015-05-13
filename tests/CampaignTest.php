@@ -27,6 +27,7 @@ class CampaignTest extends TestCase
         // Prepare server headers
         $this->server = array(
             'CONTENT_TYPE' => 'application/json',
+            'HTTP_Accept' => 'application/json',
             'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
             'HTTP_Session' => User::find('5430e850dt8hbc541c37tt3d')->login()->key
@@ -34,6 +35,7 @@ class CampaignTest extends TestCase
 
         $this->signedUpServer = array(
             'CONTENT_TYPE' => 'application/json',
+            'HTTP_Accept' => 'application/json',
             'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
             'HTTP_Session' => User::find('5480c950bffebc651c8b456f')->login()->key
