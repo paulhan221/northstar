@@ -16,12 +16,12 @@ Route::get('/', function () {
 });
 
 // https://api.dosomething.org/v1/
-Route::group(array('prefix' => 'v1', 'before' => 'auth.api'), function () {
+Route::group(array('prefix' => 'v1', 'middleware' => 'auth.api'), function () {
     // Campaigns.
-    Route::group(array('before' => 'auth.token'), function () {
-        Route::post('campaigns/{id}/signup', 'CampaignController@signup');
-        Route::post('campaigns/{id}/reportback', 'CampaignController@reportback');
-        Route::put('campaigns/{id}/reportback', 'CampaignController@updateReportback');
+    Route::group(array('middleware' => 'auth.token'), function () {
+        Route::post('campaigns/{campaign_id}/signup', 'CampaignController@signup');
+        Route::post('campaigns/{campaign_id}/reportback', 'CampaignController@reportback');
+        Route::put('campaigns/{campaign_id}/reportback', 'CampaignController@updateReportback');
     });
 
     // Sessions.

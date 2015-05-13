@@ -2,7 +2,7 @@
 
 use Northstar\Models\Token;
 use Closure;
-use Request;
+use Response;
 
 class AuthenticateToken
 {
@@ -16,7 +16,7 @@ class AuthenticateToken
      */
     public function handle($request, Closure $next)
     {
-        $token = Request::header('Session');
+        $token = $request->header('Session');
         if (!$token) {
             return Response::json("No token found.");
         }
