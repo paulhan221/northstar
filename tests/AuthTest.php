@@ -19,6 +19,7 @@ class AuthTest extends TestCase
 
         $this->server = array(
             'CONTENT_TYPE' => 'application/json',
+            'HTTP_Accept' => 'application/json',
             'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
             'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz0='
