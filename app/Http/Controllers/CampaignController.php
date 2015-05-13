@@ -101,6 +101,7 @@ class CampaignController extends Controller
     /**
      * Store a newly created campaign report back in storage.
      * POST /campaigns/:campaign_id/reportback
+     * PUT  /campaigns/:campaign_id/reportback
      *
      * @param $campaign_id - Drupal campaign node ID
      * @param Request $request
@@ -139,19 +140,6 @@ class CampaignController extends Controller
         $campaign->save();
 
         return response()->json(['reportback_id' => $reportback_id, 'created_at' => $campaign->updated_at], 201);
-    }
-
-    /**
-     * Update a campaign report back in storage.
-     * PUT /campaigns/:campaign_id/reportback
-     *
-     * @return Response
-     */
-    public function updateReportback($campaign_id)
-    {
-        throw new HttpException(501, 'Not yet implemented.');
-
-        // ...
     }
 
 }

@@ -60,6 +60,32 @@ class UserTableSeeder extends Seeder
             ]
         ]);
 
+        // Reported back user
+        User::create([
+            '_id' => 'bf1039b0271bcc636aa5477a',
+            'email' => 'test2@dosomething.org',
+            'mobile' => '5554445555',
+            'password' => 'secret',
+            'drupal_id' => 123457,
+            'addr_street1' => '123',
+            'addr_street2' => '456',
+            'addr_city' => 'Paris',
+            'addr_state' => 'Florida',
+            'addr_zip' => '555555',
+            'country' => 'US',
+            'birthdate' => '12/17/91',
+            'first_name' => 'First',
+            'last_name' => 'Last',
+            'campaigns' => [
+                [
+                    '_id' => '3f10c910251bcc636aa5477a',
+                    'drupal_id' => 123,
+                    'signup_id' => 101,
+                    'reportback_id' => 125
+                ]
+            ]
+        ]);
+
         User::create(array(
             'email' => 'info@dosomething.org',
             'mobile' => '5556669999',

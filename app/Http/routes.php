@@ -21,7 +21,7 @@ Route::group(array('prefix' => 'v1', 'middleware' => 'auth.api'), function () {
     Route::group(array('middleware' => 'auth.token'), function () {
         Route::post('campaigns/{campaign_id}/signup', 'CampaignController@signup');
         Route::post('campaigns/{campaign_id}/reportback', 'CampaignController@reportback');
-        Route::put('campaigns/{campaign_id}/reportback', 'CampaignController@updateReportback');
+        Route::put('campaigns/{campaign_id}/reportback', 'CampaignController@reportback');
     });
 
     // Sessions.
