@@ -1,5 +1,6 @@
 <?php namespace Northstar\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Northstar\Services\DrupalAPI;
 use Northstar\Models\User;
 use Input;
@@ -27,12 +28,13 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      * POST /users
      *
+     * @param Request $request
      * @return Response
      */
-    public function store()
+    public function store(Request $request)
     {
-        $check = Input::only('email', 'mobile');
-        $input = Input::all();
+        $check = $request->only('email', 'mobile');
+        $input = $request->all();
 
         $user = false;
 
@@ -50,11 +52,10 @@ class UserController extends Controller
             // This validation might not be needed, the only validation happening right now
             // is for unique email or phone numbers, and that should return a user
             // from the query above.
-            if ($user->validate($input)) {
-                $user->validate($input);
-            } else {
-                return Response::json($user->messages(), 401);
-            }
+            $this->validate($request, [
+                'email' => 'email|unique:users',
+                'mobile' => 'unique:users'
+            ]);
         }
         // Update or create the user from all the input.
         try {
