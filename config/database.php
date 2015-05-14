@@ -48,12 +48,12 @@ return [
 
         'mongodb' => array(
             'driver' => 'mongodb',
-            'host' => getenv('DB_HOST') ? getenv('DB_HOST') : 'localhost',
-            'port' => getenv('DB_PORT') ? getenv('DB_PORT') : 27017,
-            'username' => getenv('DB_USERNAME') ? getenv('DB_USERNAME') : '',
-            'password' => getenv('DB_PASSWORD') ? getenv('DB_PASSWORD') : '',
-            'database' => getenv('DB_NAME') ? getenv('DB_NAME') : 'userapi',
-            'options'  => array('replicaSet' => getenv('DB_REPL_SET_NAME') ? getenv('DB_REPL_SET_NAME') : 'rs0'),
+            'host' => env('DB_HOST', 'localhost'),
+            'port' => env('DB_PORT', 27017),
+            'username' => env('DB_USERNAME', ''),
+            'password' => env('DB_PASSWORD', ''),
+            'database' => env('DB_NAME', 'userapi'),
+            'options'  => env('DB_REPL_SET_NAME') ? ['replicaSet' => env('DB_REPL_SET_NAME', 'rs0')] : []
         ),
 
     ],
