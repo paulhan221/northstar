@@ -64,10 +64,10 @@ class UserController extends Controller
             // Do we need to forward this user to drupal?
             // If query string exists, make a drupal user.
             // @TODO: we can't create a Drupal user without an email. Do we just create an @mobile one like we had done previously?
-            if (Input::has('create_drupal_user') && !$user->drupal_id) {
+            if (Input::has('create_drupal_user') && Input::has('password') && !$user->drupal_id) {
                 try {
                     $drupal = new DrupalAPI;
-                    $drupal_id = $drupal->register($user);
+                    $drupal_id = $drupal->register($user, Input::get('password'));
                     $user->drupal_id = $drupal_id;
                 } catch (\Exception $e) {
                     // If user already exists, find the user to get the uid.

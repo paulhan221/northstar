@@ -100,16 +100,18 @@ class DrupalAPI
      * @see: https://github.com/DoSomething/dosomething/wiki/API#create-a-user
      *
      * @param \User $user - User to be registered on Drupal site
+     * @param String $password - Password to register with
      *
      * @return int - Created Drupal user UID
      */
-    public function register($user)
+    public function register($user, $password)
     {
         $payload = $user->toArray();
 
         // Format user object for consumption by Drupal API.
         $payload['birthdate'] = date('Y-m-d', strtotime($user->birthdate));
         $payload['user_registration_source'] = $user->source;
+        $payload['password'] = $password;
 
         $response = $this->client->post('users', [
             'body' => json_encode($payload),
