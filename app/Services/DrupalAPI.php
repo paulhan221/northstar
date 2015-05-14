@@ -115,7 +115,37 @@ class DrupalAPI
             'body' => json_encode($payload),
         ]);
 
-        return $response->uid;
+        $json = $response->json();
+        return $json['uid'];
+    }
+
+    /**
+     * Get a user uid by email.
+     * @see: https://github.com/DoSomething/dosomething/wiki/API#find-a-user
+     *
+     * @param String $email - Email of user to search for
+     * @return String - Drupal User ID
+     * @throws \Exception
+     */
+    public function getUidByEmail($email)
+    {
+        $response = $this->client->get('users', [
+            'query' => [
+                'parameters[email]' => $email,
+            ],
+            'cookies' => $this->getAuthenticationCookie(),
+            'headers' => [
+                'X-CSRF-Token' => $this->getAuthenticationToken(),
+            ],
+        ]);
+
+        $json = $response->json();
+        if (sizeof($json) > 0) {
+            return $json[0]['uid'];
+        }
+        else {
+            throw new \Exception('Drupal user not found.', $response->getStatusCode());
+        }
     }
 
     /**

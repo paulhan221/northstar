@@ -58,27 +58,26 @@ class UserController extends Controller
         }
         // Update or create the user from all the input.
         try {
-            foreach ($input as $key => $value) {
-                if ($key == 'interests') {
-                    // Remove spaces, split on commas.
-                    $interests = array_map('trim', explode(',', $value));
-                    $user->push('interests', $interests, true);
-                } elseif (!empty($value)) {
-                    $user->$key = $value;
-                }
-            }
+            $user->fill($input);
+
             // Do we need to forward this user to drupal?
             // If query string exists, make a drupal user.
+            // @TODO: we can't create a Drupal user without an email. Do we just create an @mobile one like we had done previously?
             if (Input::has('create_drupal_user') && !$user->drupal_id) {
                 try {
                     $drupal = new DrupalAPI;
                     $drupal_id = $drupal->register($user);
                     $user->drupal_id = $drupal_id;
-                } catch (Exception $e) {
-                    // @TODO: figure out what to do if a user isn't created.
-                    // This could be a failure for so many reasons
-                    // User is already registered/email taken
-                    // Or just a general failure - do we try again?
+                } catch (\Exception $e) {
+                    // If user already exists, find the user to get the uid.
+                    if ($e->getCode() == 403) {
+                        try {
+                            $drupal_id = $drupal->getUidByEmail($user->email);
+                            $user->drupal_id = $drupal_id;
+                        } catch (\Exception $e) {
+                            // @TODO: still ok to just continue and allow the user to be saved?
+                        }
+                    }
                 }
             }
 

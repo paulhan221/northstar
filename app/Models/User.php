@@ -83,6 +83,16 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
+     * Interests mutator converting comma-delimited string to an array
+     *
+     */
+    public function setInterestsAttribute($value)
+    {
+        $interests = array_map('trim', explode(',', $value));
+        $this->push('interests', $interests, true);
+    }
+
+    /**
      * Password mutator that hashes the password field
      *
      */
