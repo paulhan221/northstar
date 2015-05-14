@@ -101,6 +101,7 @@ class CampaignController extends Controller
     /**
      * Store a newly created campaign report back in storage.
      * POST /campaigns/:campaign_id/reportback
+     * PUT  /campaigns/:campaign_id/reportback
      *
      * @param $campaign_id - Drupal campaign node ID
      * @param Request $request
@@ -135,23 +136,16 @@ class CampaignController extends Controller
         // Create a reportback via the Drupal API, and store reportback ID in Northstar
         $reportback_id = $this->drupal->campaignReportback($user->drupal_id, $campaign_id, $request->all());
 
+        // Set status code based on whether `reportback_id` field already exists or not
+        $statusCode = 201;
+        if($campaign->reportback_id) {
+            $statusCode = 200;
+        }
+
         $campaign->reportback_id = $reportback_id;
         $campaign->save();
 
-        return response()->json(['reportback_id' => $reportback_id, 'created_at' => $campaign->updated_at], 201);
-    }
-
-    /**
-     * Update a campaign report back in storage.
-     * PUT /campaigns/:campaign_id/reportback
-     *
-     * @return Response
-     */
-    public function updateReportback($campaign_id)
-    {
-        throw new HttpException(501, 'Not yet implemented.');
-
-        // ...
+        return response()->json(['reportback_id' => $reportback_id, 'created_at' => $campaign->updated_at], $statusCode);
     }
 
 }
