@@ -32,11 +32,6 @@ class CampaignController extends Controller
      */
     public function show($term, $id)
     {
-        // Type cast id fields as ints.
-        if (strpos($term, '_id') !== false && $term !== '_id') {
-            $id = (int)$id;
-        }
-
         // Find the user.
         $user = User::where($term, $id)->first();
 

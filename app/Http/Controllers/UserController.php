@@ -105,13 +105,6 @@ class UserController extends Controller
      */
     public function show($term, $id)
     {
-        $user = '';
-
-        // Type cast id fields as ints.
-        if (strpos($term, '_id') !== false && $term !== '_id') {
-            $id = (int)$id;
-        }
-
         // Find the user.
         $user = User::where($term, $id)->get();
         if (!$user->isEmpty()) {

@@ -43,6 +43,24 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     protected $hidden = ['password'];
 
     /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'drupal_id' => 'integer',
+        'cgg_id' => 'integer'
+    ];
+
+    /**
+     * The attributes which should be stored as MongoDate objects.
+     * @see https://github.com/jenssegers/laravel-mongodb#dates
+     *
+     * @var array
+     */
+    protected $dates = ['created_at', 'updated_at'];
+
+    /**
      * Validation rules
      *
      * @var array
@@ -99,43 +117,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = Hash::make($value);
-    }
-
-    /**
-     * Automatically convert date columns to instances of Carbon
-     *
-     */
-    public function getDates()
-    {
-        return array('created_at', 'updated_at');
-    }
-
-    /**
-     * Formats date if its a MongoDate.
-     *
-     * @param $value mixed - date attribute value
-     * @return String
-     */
-    private function formatDate($value)
-    {
-        $date = $this->asDateTime($value);
-        return $date->format('Y-m-d H:i:s');
-    }
-
-    /**
-     * Accessor for created_at date. Formats to Y-m-d H:i:s.
-     */
-    public function getCreatedAtAttribute($value)
-    {
-        return $this->formatDate($value);
-    }
-
-    /**
-     * Accessor for updated_at date. Formats to Y-m-d H:i:s.
-     */
-    public function getUpdatedAtAttribute($value)
-    {
-        return $this->formatDate($value);
     }
 
     /**
