@@ -29,10 +29,11 @@ deploy:
           echo -e $WERCKER_APP_KEY_PRIVATE > $CAP_PRIVATE_KEY
     - cap
   after-steps:
-      - hipchat-notify:
-          token: $HIPCHAT_TOKEN
-          room-id: $HIPCHAT_ROOM_ID
-          from-name: wercker
+      - iansmith9876/pretty-slack-notify:
+          team: dosomething
+          token: $SLACK_TOKEN
+          channel: $SLACK_ROOM
+          username: george
       - script:
           name: Run Runscope tests
           code: curl $RUNSCOPE_TRIGGER_URL
