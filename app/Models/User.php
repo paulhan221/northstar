@@ -43,35 +43,22 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     protected $hidden = ['password'];
 
     /**
-     * Validation rules
+     * The attributes that should be casted to native types.
      *
      * @var array
      */
-    private $rules = [
-        'email' => 'email|unique:users',
-        'mobile' => 'unique:users'
+    protected $casts = [
+        'drupal_id' => 'integer',
+        'cgg_id' => 'integer'
     ];
 
     /**
-     * Authentication rules
+     * The attributes which should be stored as MongoDate objects.
+     * @see https://github.com/jenssegers/laravel-mongodb#dates
      *
      * @var array
      */
-    private $auth_rules = [
-        'email' => 'email',
-        'password' => 'required'
-    ];
-
-    private $messages;
-
-    /**
-     * Display validation messages
-     *
-     */
-    public function messages()
-    {
-        return $this->messages;
-    }
+    protected $dates = ['created_at', 'updated_at'];
 
     /**
      * Email address mutator that converts the email value to lowercase
@@ -102,80 +89,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
-     * Automatically convert date columns to instances of Carbon
-     *
-     */
-    public function getDates()
-    {
-        return array('created_at', 'updated_at');
-    }
-
-    /**
-     * Formats date if its a MongoDate.
-     *
-     * @param $value mixed - date attribute value
-     * @return String
-     */
-    private function formatDate($value)
-    {
-        $date = $this->asDateTime($value);
-        return $date->format('Y-m-d H:i:s');
-    }
-
-    /**
-     * Accessor for created_at date. Formats to Y-m-d H:i:s.
-     */
-    public function getCreatedAtAttribute($value)
-    {
-        return $this->formatDate($value);
-    }
-
-    /**
-     * Accessor for updated_at date. Formats to Y-m-d H:i:s.
-     */
-    public function getUpdatedAtAttribute($value)
-    {
-        return $this->formatDate($value);
-    }
-
-    /**
      * Define embedded relationship with the Campaign Model
      *
      */
     public function campaigns()
     {
         return $this->embedsMany('Northstar\Models\Campaign');
-    }
-
-    /**
-     * Determines validation rules for user registration and authentication
-     *
-     * @param $data - User data to be validated
-     * @param bool $auth - Whether validation should use authentication ruleset
-     * @return bool - Success/failure of validation
-     */
-    public function validate($data, $auth = false)
-    {
-        $rules = ($auth == true) ? $this->auth_rules : $this->rules;
-
-        $v = Validator::make($data, $rules);
-
-        $v->sometimes('email', 'required', function ($data) {
-            $mobile = (empty($data->mobile)) ? true : false;
-            return $mobile;
-        });
-
-        $v->sometimes('mobile', 'required', function ($data) {
-            $email = (empty($data->email)) ? true : false;
-            return $email;
-        });
-
-        if ($v->fails()) {
-            $this->messages = $v->messages()->all();
-            return false;
-        }
-
-        return true;
     }
 
     /**

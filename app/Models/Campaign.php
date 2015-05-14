@@ -19,112 +19,22 @@ class Campaign extends Eloquent
     protected $hidden = ['_id'];
 
     /**
-     * Validation rules
+     * The attributes that should be casted to native types.
+     *
+     * @var array
      */
-    private $rules = [
-        'reportback_id' => 'integer',
-        'file_url' => 'url',
+    protected $casts = [
         'quantity' => 'integer',
-        'signup_id' => 'integer',
+        'reportback_id' => 'integer',
+        'signup_id' => 'integer'
     ];
 
     /**
-     * Bag of messages returned from a failed validation.
-     */
-    private $validationMessages;
-
-    /**
-     * Automatically convert date columns to instances of Carbon
-     */
-    public function getDates()
-    {
-        return ['created_at', 'updated_at'];
-    }
-
-    /**
-     * Validate input based on this model's rules.
+     * The attributes which should be stored as MongoDate objects.
+     * @see https://github.com/jenssegers/laravel-mongodb#dates
      *
-     * @param $data
-     * @return bool
+     * @var array
      */
-    public function validate($data)
-    {
-        $v = Validator::make($data, $this->rules);
-
-        if ($v->fails()) {
-            $this->validationMessages = $v->messages()->all();
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Get validation messages.
-     *
-     * @return array
-     */
-    public function getValidationMessages()
-    {
-        return $this->validationMessages;
-    }
-
-    /**
-     * Formats date if its a MongoDate.
-     *
-     * @param $value mixed - date attribute value
-     * @return String
-     */
-    private function formatDate($value)
-    {
-        $date = $this->asDateTime($value);
-        return $date->format('Y-m-d H:i:s');
-    }
-
-    /**
-     * Accessor for created_at date. Formats to Y-m-d H:i:s.
-     */
-    public function getCreatedAtAttribute($value)
-    {
-        return $this->formatDate($value);
-    }
-
-    /**
-     * Accessor for updated_at date. Formats to Y-m-d H:i:s.
-     */
-    public function getUpdatedAtAttribute($value)
-    {
-        return $this->formatDate($value);
-    }
-
-    public function getQuantityAttribute($value)
-    {
-        return (int)$value;
-    }
-
-    public function setQuantityAttribute($value)
-    {
-        $this->attributes['quantity'] = (int)$value;
-    }
-
-    public function getRbidAttribute($value)
-    {
-        return (int)$value;
-    }
-
-    public function setRbidAttribute($value)
-    {
-        $this->attributes['rbid'] = (int)$value;
-    }
-
-    public function getSidAttribute($value)
-    {
-        return (int)$value;
-    }
-
-    public function setSidAttribute($value)
-    {
-        $this->attributes['sid'] = (int)$value;
-    }
+    protected $dates = ['created_at', 'updated_at'];
 
 }
