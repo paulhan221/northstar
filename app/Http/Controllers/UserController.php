@@ -75,7 +75,7 @@ class UserController extends Controller
                     $drupal = new DrupalAPI;
                     $drupal_id = $drupal->register($user);
                     $user->drupal_id = $drupal_id;
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     // If user already exists, find the user to get the uid.
                     if ($e->getCode() == 403) {
                         try {

@@ -129,11 +129,14 @@ class DrupalAPI
      */
     public function getUidByEmail($email)
     {
-        $response = $this->client->get('users?parameters[email]=' . urlencode($email), [
+        $response = $this->client->get('users', [
+            'query' => [
+                'parameters[email]' => $email,
+            ],
             'cookies' => $this->getAuthenticationCookie(),
             'headers' => [
-                'X-CSRF-Token' => $this->getAuthenticationToken()
-            ]
+                'X-CSRF-Token' => $this->getAuthenticationToken(),
+            ],
         ]);
 
         $json = $response->json();
