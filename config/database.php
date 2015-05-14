@@ -53,6 +53,7 @@ return [
             'username' => getenv('DB_USERNAME') ? getenv('DB_USERNAME') : '',
             'password' => getenv('DB_PASSWORD') ? getenv('DB_PASSWORD') : '',
             'database' => getenv('DB_NAME') ? getenv('DB_NAME') : 'userapi',
+            'options'  => array('replicaSet' => getenv('DB_REPL_SET_NAME') ? getenv('DB_REPL_SET_NAME') : 'rs0'),
         ),
 
     ],
