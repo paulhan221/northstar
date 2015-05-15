@@ -28,9 +28,9 @@ class CampaignController extends Controller
      * @param $term string - Term to search by (eg. mobile, drupal_id, id, etc)
      * @param $id   string - The value to search for
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      */
-    public function show($term, $id)
+    public function index($term, $id)
     {
         // Find the user.
         $user = User::where($term, $id)->first();
@@ -43,6 +43,28 @@ class CampaignController extends Controller
         return response()->json($campaigns, 200);
     }
 
+    /**
+     * Display the specified campaign.
+     * GET /campaigns/:campaign_id
+     *
+     * @param int $campaign_id - Campaign ID
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function show($campaign_id)
+    {
+        $user = User::current();
+
+        $campaign = $user->campaigns()->where('drupal_id', $campaign_id)->first();
+
+        if(!$campaign) {
+            throw new NotFoundHttpException('User has not signed up for this campaign.');
+        }
+
+        // @TODO: Use $this->respond method introduced in #125
+        return $campaign;
+    }
+
 
     /**
      * Sign user up for a given campaign.
@@ -51,7 +73,7 @@ class CampaignController extends Controller
      * @param $campaign_id - Drupal campaign node ID
      * @param Request $request
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      */
     public function signup($campaign_id, Request $request)
     {
@@ -101,7 +123,7 @@ class CampaignController extends Controller
      * @param $campaign_id - Drupal campaign node ID
      * @param Request $request
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      */
     public function reportback($campaign_id, Request $request)
     {
