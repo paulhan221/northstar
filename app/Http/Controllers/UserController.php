@@ -67,6 +67,7 @@ class UserController extends Controller
                     $user->$key = $value;
                 }
             }
+
             // Do we need to forward this user to drupal?
             // If query string exists, make a drupal user.
             if (Input::has('create_drupal_user') && !$user->drupal_id) {
