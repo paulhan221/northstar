@@ -84,8 +84,8 @@ class UserTest extends TestCase
         $this->assertJson($content);
 
         // Response should return created at and id columns
-        $this->assertArrayHasKey('created_at', $data);
-        $this->assertArrayHasKey('_id', $data);
+        $this->assertArrayHasKey('created_at', $data['data']);
+        $this->assertArrayHasKey('_id', $data['data']);
     }
 
     /**
@@ -112,7 +112,7 @@ class UserTest extends TestCase
         $this->assertJson($content);
 
         // Response should return updated at and id columns
-        $this->assertArrayHasKey('updated_at', $data);
+        $this->assertArrayHasKey('updated_at', $data['data']);
     }
 
     /**

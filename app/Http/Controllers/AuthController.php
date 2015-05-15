@@ -5,6 +5,7 @@ use Northstar\Models\Token;
 use Illuminate\Http\Request;
 use Hash;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthController extends Controller
 {
@@ -32,7 +33,7 @@ class AuthController extends Controller
         }
 
         if (!($user instanceof User)) {
-            throw new HttpException(404, 'User is not registered.');
+            throw new NotFoundHttpException('User is not registered.');
         } elseif (Hash::check($input['password'], $user->password)) {
             $token = $user->login();
             $token->user = $user->toArray();
@@ -63,7 +64,7 @@ class AuthController extends Controller
         $user = Token::userFor($input_token);
 
         if (empty($token)) {
-            throw new HttpException(404, 'No active session found.');
+            throw new NotFoundHttpException('No active session found.');
         } elseif ($token->user_id !== $user->_id) {
             throw new HttpException(403, 'You do not own this token.');
         } elseif ($token->delete()) {
