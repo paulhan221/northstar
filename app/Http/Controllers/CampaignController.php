@@ -28,7 +28,7 @@ class CampaignController extends Controller
      * @param $term string - Term to search by (eg. mobile, drupal_id, id, etc)
      * @param $id   string - The value to search for
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      * @throws NotFoundHttpException
      */
     public function index($term, $id)
@@ -51,6 +51,7 @@ class CampaignController extends Controller
      * @param int $campaign_id - Campaign ID
      *
      * @return \Illuminate\Http\Response
+     * @throws NotFoundHttpException
      */
     public function show($campaign_id)
     {
@@ -62,8 +63,7 @@ class CampaignController extends Controller
             throw new NotFoundHttpException('User has not signed up for this campaign.');
         }
 
-        // @TODO: Use $this->respond method introduced in #125
-        return $campaign;
+        return $this->respond($campaign);
     }
 
 
@@ -74,7 +74,7 @@ class CampaignController extends Controller
      * @param $campaign_id - Drupal campaign node ID
      * @param Request $request
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      * @throws HttpException
      */
     public function signup($campaign_id, Request $request)
@@ -125,7 +125,7 @@ class CampaignController extends Controller
      * @param $campaign_id - Drupal campaign node ID
      * @param Request $request
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      * @throws HttpException
      */
     public function reportback($campaign_id, Request $request)
