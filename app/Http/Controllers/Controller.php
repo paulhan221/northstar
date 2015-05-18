@@ -17,11 +17,13 @@ abstract class Controller extends BaseController
      * @param string $status - When $data is a message string, this is the name of the object enclosing the message
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function respond($data, $code = 200, $status = 'success') {
+    protected function respond($data, $code = 200, $status = 'success')
+    {
         $response = [];
         if (is_string($data)) {
             $response[$status] = ['message' => $data];
-        } elseif (is_object($data) || is_array($data)) {
+        } elseif ((is_object($data) && !is_a($data, 'Illuminate\Pagination\AbstractPaginator'))
+            || is_array($data)) {
             $response['data'] = $data;
         } else {
             $response = $data;
