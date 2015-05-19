@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Bus\DispatchesCommands;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Database\Eloquent;
+use Input;
 
 abstract class Controller extends BaseController
 {
@@ -22,14 +24,27 @@ abstract class Controller extends BaseController
         $response = [];
         if (is_string($data)) {
             $response[$status] = ['message' => $data];
-        } elseif ((is_object($data) && !is_a($data, 'Illuminate\Pagination\AbstractPaginator'))
-            || is_array($data)) {
+        } elseif (is_object($data) || is_array($data)) {
             $response['data'] = $data;
         } else {
             $response = $data;
         }
 
         return response()->json($response, $code);
+    }
+
+    /**
+     * Method to standardize paginated responses.
+     *
+     * @param $query - Eloquent query
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    protected function respondPaginated($query) {
+        if (is_a($query, 'Illuminate\Database\Eloquent\Builder')) {
+            $limit = Input::get('limit') ?: 20;
+            $response = $query->paginate($limit);
+            return response()->json($response);
+        }
     }
 
 }

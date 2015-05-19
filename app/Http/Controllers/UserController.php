@@ -5,7 +5,6 @@ use Northstar\Services\DrupalAPI;
 use Northstar\Models\User;
 use Input;
 use Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserController extends Controller
@@ -19,10 +18,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        //@TODO: set sensible limit here.
-        $limit = Input::get('limit') ?: 20;
-        $users = User::paginate($limit);
-        return $this->respond($users);
+        $query = User::query();
+        return $this->respondPaginated($query);
     }
 
 
