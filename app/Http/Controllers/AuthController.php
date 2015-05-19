@@ -4,6 +4,8 @@ use Northstar\Models\User;
 use Northstar\Models\Token;
 use Illuminate\Http\Request;
 use Hash;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthController extends Controller
 {
@@ -13,6 +15,7 @@ class AuthController extends Controller
      *
      * @param Request $request
      * @return Response
+     * @throws HttpException
      */
     public function login(Request $request)
     {
@@ -28,19 +31,19 @@ class AuthController extends Controller
         } elseif ($request->has('mobile')) {
             $user = User::where('mobile', '=', $input['mobile'])->first();
         }
-        if (!($user instanceof User)) {
-            return response()->json("User is not registered.");
-        }
 
-        if (Hash::check($input['password'], $user->password)) {
+        if (!($user instanceof User)) {
+            throw new NotFoundHttpException('User is not registered.');
+        } elseif (Hash::check($input['password'], $user->password)) {
             $token = $user->login();
             $token->user = $user->toArray();
 
             // Return the session token with the user.
             $user->session_token = $token->key;
-            return response()->json($user, 200);
+            $data = $user;
+            return $this->respond($user);
         } else {
-            return response()->json("Incorrect password.", 412);
+            throw new HttpException(412, 'Incorrect password.');
         }
 
     }
@@ -48,11 +51,12 @@ class AuthController extends Controller
     /**
      * Logout the current user by invalidating their session token.
      * @return Response
+     * @throws HttpException
      */
     public function logout(Request $request)
     {
         if (!$request->header('Session')) {
-            return response()->json('No token given.');
+            throw new HttpException(422, 'No token given.');
         }
 
         $input_token = $request->header('Session');
@@ -60,15 +64,13 @@ class AuthController extends Controller
         $user = Token::userFor($input_token);
 
         if (empty($token)) {
-            return response()->json('No active session found.');
-        }
-        if ($token->user_id !== $user->_id) {
-            response()->json('You do not own this token.');
-        }
-        if ($token->delete()) {
-            return response()->json('User logged out successfully.', 200);
+            throw new NotFoundHttpException('No active session found.');
+        } elseif ($token->user_id !== $user->_id) {
+            throw new HttpException(403, 'You do not own this token.');
+        } elseif ($token->delete()) {
+            return $this->respond('User logged out successfully.');
         } else {
-            return response()->json('User could not log out. Please try again.');
+            throw new HttpException(400, 'User could not log out. Please try again.');
         }
 
     }

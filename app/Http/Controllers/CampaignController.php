@@ -29,6 +29,7 @@ class CampaignController extends Controller
      * @param $id   string - The value to search for
      *
      * @return \Illuminate\Http\Response
+     * @throws NotFoundHttpException
      */
     public function index($term, $id)
     {
@@ -36,11 +37,11 @@ class CampaignController extends Controller
         $user = User::where($term, $id)->first();
 
         if (!$user) {
-            throw new NotFoundHttpException('The resource does not exist');
+            throw new NotFoundHttpException('The resource does not exist.');
         }
 
         $campaigns = $user->campaigns;
-        return response()->json($campaigns, 200);
+        return $this->respond($campaigns);
     }
 
     /**
@@ -50,6 +51,7 @@ class CampaignController extends Controller
      * @param int $campaign_id - Campaign ID
      *
      * @return \Illuminate\Http\Response
+     * @throws NotFoundHttpException
      */
     public function show($campaign_id)
     {
@@ -61,8 +63,7 @@ class CampaignController extends Controller
             throw new NotFoundHttpException('User has not signed up for this campaign.');
         }
 
-        // @TODO: Use $this->respond method introduced in #125
-        return $campaign;
+        return $this->respond($campaign);
     }
 
 
@@ -74,6 +75,7 @@ class CampaignController extends Controller
      * @param Request $request
      *
      * @return \Illuminate\Http\Response
+     * @throws HttpException
      */
     public function signup($campaign_id, Request $request)
     {
@@ -111,7 +113,7 @@ class CampaignController extends Controller
             'created_at' => $campaign->created_at,
         );
 
-        return response()->json($response, 201);
+        return $this->respond($response, 201);
     }
 
 
@@ -124,6 +126,7 @@ class CampaignController extends Controller
      * @param Request $request
      *
      * @return \Illuminate\Http\Response
+     * @throws HttpException
      */
     public function reportback($campaign_id, Request $request)
     {
@@ -162,7 +165,7 @@ class CampaignController extends Controller
         $campaign->reportback_id = $reportback_id;
         $campaign->save();
 
-        return response()->json(['reportback_id' => $reportback_id, 'created_at' => $campaign->updated_at], $statusCode);
+        return $this->respond(['reportback_id' => $reportback_id, 'created_at' => $campaign->updated_at], $statusCode);
     }
 
 }

@@ -3,6 +3,8 @@
 use Northstar\Models\ApiKey;
 use Input;
 use Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class KeyController extends Controller
 {
@@ -16,7 +18,7 @@ class KeyController extends Controller
     public function index()
     {
         $keys = ApiKey::all();
-        return Response::json($keys, 200);
+        return $this->respond($keys);
     }
 
 
@@ -25,6 +27,7 @@ class KeyController extends Controller
      * POST /keys
      *
      * @return Response
+     * @throws HttpException
      */
     public function store()
     {
@@ -37,25 +40,27 @@ class KeyController extends Controller
             // Save new key.
             $key->save();
 
-            return Response::json($key, 200);
+            return $this->respond($key);
         }
-        return Response::json('Missing required information', 400);
+
+        throw new HttpException(400, 'Missing required information.');
     }
 
     /**
      * Display the specified resource.
      *
      * @return Response
+     * @throws NotFoundHttpException
      */
     public function show($id)
     {
         // Find the user.
         $key = Key::where('id', $id)->get();
         if (!$key->isEmpty()) {
-            return Response::json($key, 200);
+            return $this->respond($key);
         }
-        return Response::json('The resource does not exist', 404);
 
+        throw new NotFoundHttpException('The resource does not exist.');
     }
 
 

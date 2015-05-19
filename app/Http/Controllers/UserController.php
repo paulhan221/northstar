@@ -5,6 +5,7 @@ use Northstar\Services\DrupalAPI;
 use Northstar\Models\User;
 use Input;
 use Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserController extends Controller
 {
@@ -17,10 +18,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        //@TODO: set sensible limit here.
-        $limit = Input::get('limit') ?: 20;
-        $users = User::paginate($limit);
-        return Response::json($users, 200);
+        $query = User::query();
+        return $this->respondPaginated($query);
     }
 
 
@@ -88,9 +87,9 @@ class UserController extends Controller
             $token = $user->login();
             $user->session_token = $token->key;
 
-            return $user;
+            return $this->respond($user);
         } catch (\Exception $e) {
-            return Response::json($e, 401);
+            return $this->respond($e, 401);
         }
     }
 
@@ -103,16 +102,17 @@ class UserController extends Controller
      *  the actual value to search for
      *
      * @return Response
+     * @throws NotFoundHttpException
      */
     public function show($term, $id)
     {
         // Find the user.
         $user = User::where($term, $id)->get();
         if (!$user->isEmpty()) {
-            return Response::json($user, 200);
+            return $this->respond($user);
         }
-        return Response::json('The resource does not exist', 404);
 
+        throw new NotFoundHttpException('The resource does not exist.');
     }
 
 
@@ -122,6 +122,7 @@ class UserController extends Controller
      *
      * @param $id - User ID
      * @return Response
+     * @throws NotFoundHttpException
      */
     public function update($id)
     {
@@ -144,10 +145,10 @@ class UserController extends Controller
 
             $response = array('updated_at' => $user->updated_at);
 
-            return Response::json($response, 202);
+            return $this->respond($response, 202);
         }
 
-        return Response::json("The resource does not exist", 404);
+        throw new NotFoundHttpException('The resource does not exist.');
     }
 
     /**
@@ -156,6 +157,7 @@ class UserController extends Controller
      *
      * @param $id - User ID
      * @return Response
+     * @throws NotFoundHttpException
      */
     public function destroy($id)
     {
@@ -164,10 +166,10 @@ class UserController extends Controller
         if ($user instanceof User) {
             $user->delete();
 
-            return Response::json("No Content", 204);
+            return $this->respond('No Content.', 204);
+        } else {
+            throw new NotFoundHttpException('The resource does not exist.');
         }
-
-        return Response::json("The resource does not exist", 404);
     }
 
 }

@@ -100,8 +100,8 @@ class CampaignTest extends TestCase
         $this->assertJson($content);
 
         // Response should return created at and sid columns
-        $this->assertArrayHasKey('created_at', $data);
-        $this->assertArrayHasKey('signup_id', $data);
+        $this->assertArrayHasKey('created_at', $data['data']);
+        $this->assertArrayHasKey('signup_id', $data['data']);
     }
 
     /**
@@ -133,9 +133,9 @@ class CampaignTest extends TestCase
         $this->assertJson($content);
 
         // Response should return created at and rbid columns
-        $this->assertArrayHasKey('reportback_id', $data);
-        $this->assertArrayHasKey('created_at', $data);
-        $this->assertEquals(100, $data['reportback_id']);
+        $this->assertArrayHasKey('reportback_id', $data['data']);
+        $this->assertArrayHasKey('created_at', $data['data']);
+        $this->assertEquals(100, $data['data']['reportback_id']);
     }
 
     /**
@@ -167,9 +167,9 @@ class CampaignTest extends TestCase
         $this->assertJson($content);
 
         // Response should return created at and rbid columns
-        $this->assertArrayHasKey('reportback_id', $data);
-        $this->assertArrayHasKey('created_at', $data);
-        $this->assertEquals(100, $data['reportback_id']);
+        $this->assertArrayHasKey('reportback_id', $data['data']);
+        $this->assertArrayHasKey('created_at', $data['data']);
+        $this->assertEquals(100, $data['data']['reportback_id']);
     }
 
     /**
