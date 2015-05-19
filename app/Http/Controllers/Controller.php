@@ -42,7 +42,7 @@ abstract class Controller extends BaseController
     protected function respondPaginated($query) {
         if (is_a($query, 'Illuminate\Database\Eloquent\Builder')) {
             $limit = Input::get('limit') ?: 20;
-            $response = $query->paginate($limit);
+            $response = $query->paginate((int)$limit);
             return response()->json($response);
         }
     }
