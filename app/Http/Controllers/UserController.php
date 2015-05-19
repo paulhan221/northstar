@@ -166,7 +166,7 @@ class UserController extends Controller
         if ($user instanceof User) {
             $user->delete();
 
-            return $this->respond('No Content.', 204);
+            return $this->respond('No Content.');
         } else {
             throw new NotFoundHttpException('The resource does not exist.');
         }
