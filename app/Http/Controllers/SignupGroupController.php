@@ -23,9 +23,22 @@ class SignupGroupController extends Controller
 
         if (count($group) == 0) {
             throw new NotFoundHttpException("No users found for the group ID.");
-        }
-        else {
-            return $this->respond($group);
+        } else {
+            // Get the campaign id associated with the signup group ID
+            for ($i = 0; $i < count($group[0]->campaigns); $i++) {
+                $campaign = $group[0]->campaigns[$i];
+                if ($campaign->signup_id == $id || $campaign->signup_source == $id) {
+                    $campaign_id = $campaign->drupal_id;
+                    break;
+                }
+            }
+
+            $response = [
+                'campaign_id' => $campaign_id,
+                'users' => $group
+            ];
+
+            return $this->respond($response);
         }
     }
 
