@@ -21,9 +21,9 @@ class UserTableSeeder extends Seeder
         User::create([
             '_id' => '5430e850dt8hbc541c37tt3d',
             'email' => 'test@dosomething.org',
-            'mobile' => '5555555555',
+            'mobile' => '5555550100',
             'password' => 'secret',
-            'drupal_id' => 123456,
+            'drupal_id' => 100001,
             'addr_street1' => '123',
             'addr_street2' => '456',
             'addr_city' => 'Paris',
@@ -38,10 +38,10 @@ class UserTableSeeder extends Seeder
         // Signed up user
         User::create([
             '_id' => '5480c950bffebc651c8b456f',
-            'email' => 'test2@dosomething.org',
-            'mobile' => '5554445555',
+            'email' => 'test1@dosomething.org',
+            'mobile' => '5555550101',
             'password' => 'secret',
-            'drupal_id' => 123457,
+            'drupal_id' => 100002,
             'addr_street1' => '123',
             'addr_street2' => '456',
             'addr_city' => 'Paris',
@@ -55,7 +55,8 @@ class UserTableSeeder extends Seeder
                 [
                     '_id' => '5480c950bffebc651c8b456e',
                     'drupal_id' => 123,
-                    'signup_id' => 100
+                    'signup_id' => 100,
+                    'signup_source' => 'android'
                 ]
             ]
         ]);
@@ -64,9 +65,9 @@ class UserTableSeeder extends Seeder
         User::create([
             '_id' => 'bf1039b0271bcc636aa5477a',
             'email' => 'test2@dosomething.org',
-            'mobile' => '5554445555',
+            'mobile' => '5555550102',
             'password' => 'secret',
-            'drupal_id' => 123457,
+            'drupal_id' => 100003,
             'addr_street1' => '123',
             'addr_street2' => '456',
             'addr_city' => 'Paris',
@@ -81,14 +82,33 @@ class UserTableSeeder extends Seeder
                     '_id' => '3f10c910251bcc636aa5477a',
                     'drupal_id' => 123,
                     'signup_id' => 101,
+                    'signup_source' => 'ios',
                     'reportback_id' => 125
+                ]
+            ]
+        ]);
+
+        // User invited to campaign
+        User::create([
+            '_id' => 'bf1039b0271bcc636aa5477b',
+            'email' => 'test3@dosomething.org',
+            'mobile' => '5555550102',
+            'password' => 'secret',
+            'drupal_id' => 100004,
+            'birthdate' => '12/17/91',
+            'campaigns' => [
+                [
+                    '_id' => '3f10c910251bcc636aa5477b',
+                    'drupal_id' => 123,
+                    'signup_id' => 102,
+                    'signup_source' => '100'
                 ]
             ]
         ]);
 
         User::create(array(
             'email' => 'info@dosomething.org',
-            'mobile' => '5556669999',
+            'mobile' => '5555550104',
             'password' => 'secret',
             'drupal_id' => 456788,
             'addr_street1' => '456',

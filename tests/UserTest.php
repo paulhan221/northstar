@@ -125,7 +125,7 @@ class UserTest extends TestCase
     {
         $response = $this->call('DELETE', 'v1/users/5480c950bffebc651c8b4570', [], [], [], $this->server, array());
 
-        $this->assertEquals(204, $response->getStatusCode());
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     /**

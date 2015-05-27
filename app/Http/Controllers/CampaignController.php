@@ -106,6 +106,7 @@ class CampaignController extends Controller
         $campaign = new Campaign;
         $campaign->drupal_id = $campaign_id;
         $campaign->signup_id = $signup_id;
+        $campaign->signup_source = $request->input('source');
         $campaign = $user->campaigns()->save($campaign);
 
         $response = array(

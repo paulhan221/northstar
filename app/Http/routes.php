@@ -34,6 +34,9 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth.api'], function () {
     Route::get('users/{term}/{id}/campaigns', 'CampaignController@index');
     Route::get('users/{term}/{id}', 'UserController@show');
 
+    // Signup Groups.
+    Route::get('signup-group/{id}', 'SignupGroupController@show');
+
     // Api Keys.
     Route::resource('keys', 'KeyController');
 });
