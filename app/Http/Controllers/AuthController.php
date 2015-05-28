@@ -68,6 +68,13 @@ class AuthController extends Controller
         } elseif ($token->user_id !== $user->_id) {
             throw new HttpException(403, 'You do not own this token.');
         } elseif ($token->delete()) {
+            // Remove Parse installation ID. Disables push notifications.
+            if ($request->has('parse_installation_ids')) {
+                $removeId = $request->get('parse_installation_ids');
+                $user->pull('parse_installation_ids', $removeId);
+                $user->save();
+            }
+
             return $this->respond('User logged out successfully.');
         } else {
             throw new HttpException(400, 'User could not log out. Please try again.');

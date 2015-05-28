@@ -25,7 +25,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             'race', 'religion',
             'college_name', 'degree_type', 'major_name', 'hs_gradyear', 'hs_name', 'sat_math', 'sat_verbal', 'sat_writing',
             'addr_street1', 'addr_street2', 'addr_city', 'addr_state', 'addr_zip', 'country',
-            'cgg_id', 'drupal_id', 'agg_id', 'source'
+            'cgg_id', 'drupal_id', 'agg_id', 'source',
+            'parse_installation_ids'
         ];
 
     /**
@@ -77,6 +78,15 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     {
         $interests = array_map('trim', explode(',', $value));
         $this->push('interests', $interests, true);
+    }
+
+    /**
+     * Mutator saves Parse installation ids as an array
+     */
+    public function setParseInstallationIdsAttribute($value)
+    {
+        $ids = array_map('trim', explode(',', $value));
+        $this->push('parse_installation_ids', $ids, true);
     }
 
     /**
