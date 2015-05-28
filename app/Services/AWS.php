@@ -1,5 +1,7 @@
 <?php namespace Northstar\Services;
 
+use Storage;
+
 class AWS 
 {
   /**
@@ -8,16 +10,17 @@ class AWS
    * @param string $bucket
    * @param File $file
    */
-  public function storeImage($bucket, $file)
+  // public function storeImage($bucket, $file)
+  public function storeImage($bucket, $id, $file)
+
   { 
-    // @TODO: How do we figure out a unique $id??
-    $id = '?????';
+    $avatar = 'avatar-' . $id;
 
     $extension = $file->guessExtension();
       
     //Use some method to generate your filename here. Here we are just using the ID of the image
     
-    $filename = 'uploads/' . $bucket. '/' . $id . '.' . $extension;
+    $filename = 'uploads/' . $bucket. '/' . $avatar . '.' . $extension;
    
     //Push file to S3
     Storage::disk('s3')->put($filename, file_get_contents($file));
