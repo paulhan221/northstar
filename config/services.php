@@ -19,10 +19,7 @@ return [
         'version' => 'v1',
     ],
 
-    'S3' => [
-        'url' => env('S3_URL'),
-        'key' => env('S3_KEY'),
-        'secret' => env('S3_SECRET'),
-    ],
-
 ];
+
+
+
