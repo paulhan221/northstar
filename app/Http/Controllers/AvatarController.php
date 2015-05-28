@@ -20,23 +20,23 @@ class AvatarController extends Controller
  * POST northstar.com/users/{id}/avatar
  */
 
-  public function store(Request $request, $id) 
+  public function store(Request $request, $id)
   {
     if(!$request->hasFile('photo'))
       return Response::json(['error' => 'No Photo Sent']);
- 
+
     if(!$request->file('photo')->isValid())
       return Response::json(['error' => 'Photo is not valid']);
- 
+
     $file = $request->file('photo');
 
     $v = Validator::make(
       $request->all(),
-      ['photo' => 'required|image|mimes:jpeg,jpg|max:8000']  
-    );  
+      ['photo' => 'required|image|mimes:jpeg,jpg|max:8000']
+    );
 
     if($v->fails())
-      return Response::json(['error' => $v->errors()]);         
+      return Response::json(['error' => $v->errors()]);
 
     // $filename = $this->aws->storeImage('avatars', $file);
     $filename = $this->aws->storeImage('avatars', $id, $file);
