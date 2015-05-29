@@ -22,23 +22,12 @@ class AvatarController extends Controller
 
   public function store(Request $request, $id)
   {
-    if(!$request->hasFile('photo'))
-      return Response::json(['error' => 'No Photo Sent']);
-
-    if(!$request->file('photo')->isValid())
-      return Response::json(['error' => 'Photo is not valid']);
-
     $file = $request->file('photo');
 
-    $v = Validator::make(
-      $request->all(),
-      ['photo' => 'required|image|mimes:jpeg,jpg|max:8000']
-    );
+    $this->validate($request, [
+      'photo' => 'required|image|mimes:jpeg,jpg|max:8000'
+    ]);
 
-    if($v->fails())
-      return Response::json(['error' => $v->errors()]);
-
-    // $filename = $this->aws->storeImage('avatars', $file);
     $filename = $this->aws->storeImage('avatars', $id, $file);
 
     // Save filename to User model
@@ -47,7 +36,7 @@ class AvatarController extends Controller
     $user->save();
 
     // Respond to user with success
-    return response()->json('Photo uploaded!', 200);
+    $this->respond();
   }
 }
 
