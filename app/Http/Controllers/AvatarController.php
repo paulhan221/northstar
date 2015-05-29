@@ -36,7 +36,7 @@ class AvatarController extends Controller
     $user->save();
 
     // Respond to user with success
-    $this->respond();
+    return $this->respond('Photo Uploaded!');
   }
 }
 
