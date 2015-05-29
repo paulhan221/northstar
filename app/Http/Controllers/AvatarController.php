@@ -19,29 +19,24 @@ class AvatarController extends Controller
  * Store a new avatar for a user.
  * POST northstar.com/users/{id}/avatar
  */
-  public function store(User $user, Request $request)
+
+  public function store(Request $request, $id)
   {
-    // dd($request->all());
-
-    // dd(Input::only('photo'));
-
     $file = $request->file('photo');
 
-    $v = Validator::make(
-      $request->all(),
-      ['photo' => 'required|image|mimes:jpeg,jpg|max:8000']
-    );
+    $this->validate($request, [
+      'photo' => 'required|image|mimes:jpeg,jpg|max:8000'
+    ]);
 
-    if($v->fails())
-      return Response::json(['error' => $v->errors()]);
-
-    $filename = $this->aws->storeImage('avatars', $file);
+    $filename = $this->aws->storeImage('avatars', $id, $file);
 
     // Save filename to User model
+    $user = User::where($id)->first();
     $user->avatar = $filename;
     $user->save();
 
     // Respond to user with success
-    return response()->json('Great!', 200);
+    return $this->respond('Photo Uploaded!');
   }
 }
+
