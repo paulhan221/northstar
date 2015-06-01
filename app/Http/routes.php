@@ -33,11 +33,13 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth.api'], function () {
     Route::resource('users', 'UserController');
     Route::get('users/{term}/{id}/campaigns', 'CampaignController@index');
     Route::get('users/{term}/{id}', 'UserController@show');
+    Route::post('users/{id}/avatar', 'AvatarController@store');
 
     // Signup Groups.
     Route::get('signup-group/{id}', 'SignupGroupController@show');
 
     // Api Keys.
     Route::resource('keys', 'KeyController');
+
 });
 
