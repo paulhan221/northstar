@@ -3,9 +3,6 @@
 use Northstar\Services\AWS;
 use Northstar\Models\User;
 use Illuminate\Http\Request;
-use Validator;
-use Input;
-use Response;
 
 class AvatarController extends Controller
 {
