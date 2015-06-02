@@ -19,10 +19,10 @@ Route::get('/', function () {
 Route::group(['prefix' => 'v1', 'middleware' => 'auth.api'], function () {
     // Campaigns.
     Route::group(['middleware' => 'auth.token'], function () {
-        Route::get('campaigns/{campaign_id}', 'CampaignController@show');
-        Route::post('campaigns/{campaign_id}/signup', 'CampaignController@signup');
-        Route::post('campaigns/{campaign_id}/reportback', 'CampaignController@reportback');
-        Route::put('campaigns/{campaign_id}/reportback', 'CampaignController@reportback');
+        Route::get('user/campaigns/{campaign_id}', 'CampaignController@show');
+        Route::post('user/campaigns/{campaign_id}/signup', 'CampaignController@signup');
+        Route::post('user/campaigns/{campaign_id}/reportback', 'CampaignController@reportback');
+        Route::put('user/campaigns/{campaign_id}/reportback', 'CampaignController@reportback');
     });
 
     // Sessions.
