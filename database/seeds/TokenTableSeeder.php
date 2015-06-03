@@ -19,6 +19,11 @@ class TokenTableSeeder extends Seeder
             'key' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz0=',
             'user_id' => '5480c950bffebc651c8b456f'
         ));
+
+        Token::create(array(
+            'key' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz1=',
+            'user_id' => 'bf1039b0271bcc636aa5477c'
+        ));
     }
 
 }

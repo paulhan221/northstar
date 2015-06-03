@@ -70,7 +70,7 @@ class AuthController extends Controller
         } elseif ($token->delete()) {
             // Remove Parse installation ID. Disables push notifications.
             if ($request->has('parse_installation_ids')) {
-                $removeId = $request->get('parse_installation_ids');
+                $removeId = $request->parse_installation_ids;
                 $user->pull('parse_installation_ids', $removeId);
                 $user->save();
             }

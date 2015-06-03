@@ -98,7 +98,8 @@ class UserTest extends TestCase
     {
         // Create a new user object
         $user = array(
-            'email' => 'newemail@dosomething.org'
+            'email' => 'newemail@dosomething.org',
+            'parse_installation_ids' => 'parse-abc123',
         );
 
         $response = $this->call('PUT', 'v1/users/5480c950bffebc651c8b456f', [], [], [], $this->server, json_encode($user));
@@ -113,6 +114,14 @@ class UserTest extends TestCase
 
         // Response should return updated at and id columns
         $this->assertArrayHasKey('updated_at', $data['data']);
+
+        // Verify user data got updated
+        $getResponse = $this->call('GET', 'v1/users/_id/5480c950bffebc651c8b456f', [], [], [], $this->server);
+        $getContent = $getResponse->getContent();
+        $updatedUser = json_decode($getContent, true);
+
+        $this->assertEquals('newemail@dosomething.org', $updatedUser['data'][0]['email']);
+        $this->assertEquals('parse-abc123', $updatedUser['data'][0]['parse_installation_ids'][0]);
     }
 
     /**
