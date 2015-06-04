@@ -1,9 +1,10 @@
 <?php namespace Northstar\Http\Controllers;
 
-use Northstar\Services\DrupalAPI;
-use Northstar\Models\User;
-use Northstar\Models\Campaign;
 use Illuminate\Http\Request;
+use Northstar\Events\UserSignedUp;
+use Northstar\Models\Campaign;
+use Northstar\Models\User;
+use Northstar\Services\DrupalAPI;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -109,9 +110,12 @@ class CampaignController extends Controller
         $campaign->signup_source = $request->input('source');
         $campaign = $user->campaigns()->save($campaign);
 
+        $event_msg = event(new UserSignedUp($campaign));
+
         $response = array(
             'signup_id' => $campaign->signup_id,
             'created_at' => $campaign->created_at,
+            'event_msg' => $event_msg,
         );
 
         return $this->respond($response, 201);
