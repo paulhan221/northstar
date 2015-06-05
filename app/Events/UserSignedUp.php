@@ -17,6 +17,7 @@ class UserSignedUp extends Event {
 	public function __construct(Campaign $campaign)
 	{
 		$this->signup_id = $campaign->signup_id;
+		$this->signup_source = $campaign->signup_source;
 	}
 
 }

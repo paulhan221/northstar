@@ -31,8 +31,11 @@ class SendSignupPushNotification {
 		// $group = User::where('campaigns', 'elemMatch', ['signup_id' => (int)$event->signup_id])
                         //->orWhere('campaigns', 'elemMatch', ['signup_source' => $event->signup_id])->get();
 
-
-    return $group;
+		// I now have access to signup id and sign up source.
+		// - Add check that signup source is a number.
+		// - If it is a number get all the other users in that group (see above);
+		// - Send push notification to those users.
+    return 'signup_id = ' . $event->signup_id . " signup_source = " . $event->signup_source;
 	}
 
 }
