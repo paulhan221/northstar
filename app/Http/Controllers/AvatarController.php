@@ -19,10 +19,10 @@ class AvatarController extends Controller
 
   public function store(Request $request, $id)
   {
-    $file = $request->file('photo');
+    $file = $request->photo_encoded;
 
     $this->validate($request, [
-      'photo' => 'required|image|mimes:jpeg,jpg|max:8000'
+      'photo_encoded' => 'required'
     ]);
 
     $filename = $this->aws->storeImage('avatars', $id, $file);

@@ -15,15 +15,13 @@ class AWS
   {
     $avatar = 'avatar-' . $id;
 
-    $extension = $file->guessExtension();
-
     //Use some method to generate your filename here. Here we are just using the User ID.
-    $filename = 'uploads/' . $bucket. '/' . $avatar . '.' . $extension;
+    $filename = 'uploads/' . $bucket . '/' . $avatar;
 
     //Push file to S3
-    Storage::disk('s3')->put($filename, file_get_contents($file));
+    Storage::disk('s3')->put($filename, $file);
 
-    // return 's3.amazon.com/uploads/{bucket}/{id}.{extension}'
+    // return 's3.amazon.com/uploads/{bucket}/{id}'
     return $filename;
   }
 

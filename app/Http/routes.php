@@ -23,6 +23,8 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth.api'], function () {
         Route::post('user/campaigns/{campaign_id}/signup', 'CampaignController@signup');
         Route::post('user/campaigns/{campaign_id}/reportback', 'CampaignController@reportback');
         Route::put('user/campaigns/{campaign_id}/reportback', 'CampaignController@reportback');
+        Route::post('kudos', 'KudosController@store');
+        Route::delete('kudos', 'KudosController@delete');
     });
 
     // Sessions.
