@@ -26,16 +26,24 @@ class SendSignupPushNotification {
 	 */
 	public function handle(UserSignedUp $event)
 	{
-		// $event->signup_id;
-		// Get signup group.
-		// $group = User::where('campaigns', 'elemMatch', ['signup_id' => (int)$event->signup_id])
-                        //->orWhere('campaigns', 'elemMatch', ['signup_source' => $event->signup_id])->get();
 
-		// I now have access to signup id and sign up source.
-		// - Add check that signup source is a number.
-		// - If it is a number get all the other users in that group (see above);
-		// - Send push notification to those users.
-    return 'signup_id = ' . $event->signup_id . " signup_source = " . $event->signup_source;
+    // @TODO - Make sure group is not empty.
+    // @TODO - We might not need signup_source here, be sure to remove if it is not used.
+
+		// Get signup group.
+		$group = User::where('campaigns', 'elemMatch', ['signup_id' => (int)$event->signup_id])
+                        ->orWhere('campaigns', 'elemMatch', ['signup_source' => $event->signup_id])->get();
+
+    // Loop through the users in the group.
+    foreach ($group as $user) {
+    	// Get this users sign up id.
+    	$user_signup_id = $user->campaigns[0]->signup_id;
+
+    	// Check that this user is not the user that triggered the event.
+    	if ($user_signup_id !== $event->signup_id) {
+    		// Send push notification to this user.
+    	}
+    }
 	}
 
 }
