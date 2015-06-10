@@ -89,7 +89,7 @@ class CampaignTest extends TestCase
         // Mock successful response from Drupal API
         $this->drupalMock->shouldReceive('campaignSignup')->once()->andReturn(100);
 
-        $response = $this->call('POST', 'v1/campaigns/123/signup', [], [], [], $this->server, json_encode($payload));
+        $response = $this->call('POST', 'v1/user/campaigns/123/signup', [], [], [], $this->server, json_encode($payload));
         $content = $response->getContent();
         $data = json_decode($content, true);
 
@@ -122,7 +122,7 @@ class CampaignTest extends TestCase
         // Mock successful response from Drupal API
         $this->drupalMock->shouldReceive('campaignReportback')->once()->andReturn(100);
 
-        $response = $this->call('POST', 'v1/campaigns/123/reportback', [], [], [], $this->signedUpServer, json_encode($payload));
+        $response = $this->call('POST', 'v1/user/campaigns/123/reportback', [], [], [], $this->signedUpServer, json_encode($payload));
         $content = $response->getContent();
         $data = json_decode($content, true);
 
@@ -156,7 +156,7 @@ class CampaignTest extends TestCase
         // Mock successful response from Drupal API
         $this->drupalMock->shouldReceive('campaignReportback')->once()->andReturn(100);
 
-        $response = $this->call('PUT', 'v1/campaigns/123/reportback', [], [], [], $this->reportedBackServer, json_encode($payload));
+        $response = $this->call('PUT', 'v1/user/campaigns/123/reportback', [], [], [], $this->reportedBackServer, json_encode($payload));
         $content = $response->getContent();
         $data = json_decode($content, true);
 
@@ -187,7 +187,7 @@ class CampaignTest extends TestCase
             'caption' => 'Here I am helping others.'
         ];
 
-        $response = $this->call('POST', 'v1/campaigns/123/reportback', [], [], [], $this->server, json_encode($payload));
+        $response = $this->call('POST', 'v1/user/campaigns/123/reportback', [], [], [], $this->server, json_encode($payload));
         $content = $response->getContent();
 
         // Response should return a 501
