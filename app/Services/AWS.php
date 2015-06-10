@@ -43,6 +43,10 @@ class AWS
         $data = base64_decode($file);
         Storage::disk('s3')->put($filename, $data);
 
+        // $filename = $bucket . '/' . 'uploads/' . $avatar . '.jpg';
+        // $image = file_put_contents($filename, $file);
+        // Storage::disk('s3')->put($filename, $image);
+
     }
 
     return 'https://s3.amazonaws.com/' . $filename;
