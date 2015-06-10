@@ -10,19 +10,43 @@ class AWS
    * @param string $bucket
    * @param File $file
    */
-  public function storeImage($bucket, $id, $file)
+  public function storeImage($bucket, $id, $file, $isFile)
 
   {
     $avatar = 'avatar-' . $id;
 
-    //Use some method to generate your filename here. Here we are just using the User ID.
-    $filename = 'uploads/' . $bucket . '/' . $avatar;
+    if ($isFile)
+    {
+        $extension = $file->guessExtension();
+        $filename = $bucket . '/' . 'uploads/' . $avatar . '.' . $extension;
+        Storage::disk('s3')->put($filename, file_get_contents($file));
 
-    //Push file to S3
-    Storage::disk('s3')->put($filename, $file);
+    } else {
+        // $filename = $bucket . '/' . 'uploads/' . $avatar;
+        // Storage::disk('s3')->put($filename, $file);
 
-    // return 's3.amazon.com/uploads/{bucket}/{id}'
-    return $filename;
+        // $data = base64_decode($file);
+        // $filename = $bucket . '/' . 'uploads/' . $avatar . '.png';
+        // $source_img = imagecreatefromstring($data);
+
+        // if ($source_img !== false)
+        // {
+        //     header('Content-Type: image/png');
+        //     imagepng($source_img);
+        //     imagedestroy($source_img);
+        // } else {
+        //     echo 'An error occured.';
+        // }
+        //     Storage::disk('s3')->put($filename, $source_img);
+
+        $filename = $bucket . '/' . 'uploads/' . $avatar . '.jpg';
+        $data = base64_decode($file);
+        Storage::disk('s3')->put($filename, $data);
+
+    }
+
+    return 'https://s3.amazonaws.com/' . $filename;
+
   }
 
 }

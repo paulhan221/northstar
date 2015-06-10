@@ -19,21 +19,28 @@ class AvatarController extends Controller
 
   public function store(Request $request, $id)
   {
-    $file = $request->photo_encoded;
+    if ($request->file('photo'))
+    {
+        $file = $request->file('photo');
+        $isFile = true;
+    } else {
+        $file = $request->photo;
+        $isFile = false;
+    }
 
     $this->validate($request, [
-      'photo_encoded' => 'required'
+      'photo' => 'required'
     ]);
 
-    $filename = $this->aws->storeImage('avatars', $id, $file);
+    $filename = $this->aws->storeImage('profiles-dosomething-org', $id, $file, $isFile);
 
     // Save filename to User model
     $user = User::where($id)->first();
     $user->avatar = $filename;
     $user->save();
 
-    // Respond to user with success
-    return $this->respond('Photo Uploaded!');
+    // Respond to user with success and photo URL
+    return $this->respond(['url' => $filename]);
   }
 }
 

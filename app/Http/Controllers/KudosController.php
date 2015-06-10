@@ -15,7 +15,7 @@ class KudosController extends Controller
 
     public function store(Request $request)
     {
-        $user = User::current();
+        // $user = User::current();
 
         $drupal_id = $user->drupal_id;
 
