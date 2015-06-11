@@ -18,13 +18,16 @@ class Parse
     }
 
 
-    public function sendPushNotification($data)
+    public function sendPushNotification($installation_ids, $data)
     {
-        // $query = ParseInstallation::query();
-        // $query->equalTo("installationId", $users_installation_id );
-        ParsePush::send(array(
-            "channels" => ["PHPTest"],
-            "data" => $data
-        ));
+        // Loop through the installation ids
+        foreach ($installation_ids as $id) {
+            $query = ParseInstallation::query();
+            $query->equalTo("installationId", $id);
+            ParsePush::send(array(
+                "where" => $query,
+                "data" => $data
+            ));
+        }
     }
 }

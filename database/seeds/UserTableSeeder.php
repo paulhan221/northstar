@@ -51,6 +51,7 @@ class UserTableSeeder extends Seeder
             'birthdate' => '12/17/91',
             'first_name' => 'First',
             'last_name' => 'Last',
+            'parse_installation_ids' => 'parse-abc123',
             'campaigns' => [
                 [
                     '_id' => '5480c950bffebc651c8b456e',
