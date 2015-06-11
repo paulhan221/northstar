@@ -3,6 +3,7 @@
 use Parse\ParseObject;
 use Parse\ParseClient;
 use Parse\ParsePush;
+use Parse\ParseInstallation;
 
 class Parse
 {
@@ -19,6 +20,8 @@ class Parse
 
     public function sendPushNotification($data)
     {
+        // $query = ParseInstallation::query();
+        // $query->equalTo("installationId", $users_installation_id );
         ParsePush::send(array(
             "channels" => ["PHPTest"],
             "data" => $data
