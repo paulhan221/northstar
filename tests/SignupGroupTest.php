@@ -37,6 +37,6 @@ class SignupGroupTest extends TestCase
         $this->assertEquals(2, $usersFound);
 
         // Campaign ID should be 123.
-        $this->assertEquals(123, $data['signup_id']);
+        $this->assertEquals(123, $data['campaign_id']);
     }
 }

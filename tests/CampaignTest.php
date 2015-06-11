@@ -75,6 +75,7 @@ class CampaignTest extends TestCase
 
 
     /**
+     * @group signup
      * Test for submiting a campaign signup
      * POST /campaigns/:nid/signup
      *
