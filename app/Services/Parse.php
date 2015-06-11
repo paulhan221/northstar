@@ -8,6 +8,10 @@ use Parse\ParseInstallation;
 class Parse
 {
 
+    /**
+     * Connect to the Parse API
+     *
+     */
     public function __construct()
     {
         $parse_app_id = config('services.parse.parse_app_id');
@@ -17,7 +21,12 @@ class Parse
         ParseClient::initialize($parse_app_id, $parse_api_key, $parse_master_key);
     }
 
-
+    /**
+     * Sends notifications to an array of installation ids.
+     *
+     * @param  Array  $installation_ids
+     * @param  Array  $data
+     */
     public function sendPushNotification($installation_ids, $data)
     {
         // Loop through the installation ids

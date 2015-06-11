@@ -110,6 +110,7 @@ class CampaignController extends Controller
         $campaign->signup_source = $request->input('source');
         $campaign = $user->campaigns()->save($campaign);
 
+        // Fire sign up event.
         event(new UserSignedUp($user));
 
         $response = array(
