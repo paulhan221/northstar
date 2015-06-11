@@ -39,8 +39,10 @@ class SendSignupPushNotification {
       $drupal_id = $user->drupal_id;
       // Check that this user is not the user that triggered the event.
       if ($drupal_id !== $event->drupal_id) {
+        // @TODO - This is placeholder content.
         $data = array("alert" => "I just signed up to your group");
 
+        // Send notifications to the users devices.
         $this->parse->sendPushNotification($user->parse_installation_ids, $data);
       }
     }
