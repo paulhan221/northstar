@@ -106,6 +106,12 @@ class UserTableSeeder extends Seeder
             ]
         ]);
 
+        // Parse user to be logged out
+        User::create(array(
+            '_id' => 'bf1039b0271bcc636aa5477c',
+            'parse_installation_ids' => 'parse-abc123'
+        ));
+
         User::create(array(
             'email' => 'info@dosomething.org',
             'mobile' => '5555550104',
