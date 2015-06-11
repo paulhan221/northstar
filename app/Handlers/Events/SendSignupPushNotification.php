@@ -5,10 +5,6 @@ use Northstar\Models\User;
 
 use Northstar\Services\Parse;
 
-
-// use Illuminate\Queue\InteractsWithQueue;
-// use Illuminate\Contracts\Queue\ShouldBeQueued;
-
 class SendSignupPushNotification {
 
   /**
@@ -34,21 +30,17 @@ class SendSignupPushNotification {
    */
   public function handle(UserSignedUp $event)
   {
-    // @TODO - Make sure group is not empty.
-    // @TODO - We might not need signup_source here, be sure to remove if it is not used.
-
-    // // Get signup group.
+    // Get signup group.
     $group = User::where('campaigns', 'elemMatch', ['signup_id' => (int)$event->signup_id])
             ->orWhere('campaigns', 'elemMatch', ['signup_source' => $event->signup_id])->get();
 
     // Loop through the users in the group.
     foreach ($group as $user) {
-      // Get this users sign up id.
-      $user_signup_id = $user->campaigns[0]->signup_id;
+      $drupal_id = $user->drupal_id;
 
       // Check that this user is not the user that triggered the event.
-      if ($user_signup_id == $event->signup_id) {
-        $data = array("alert" => "Hi!");
+      if ($drupal_id == $event->drupal_id) {
+        $data = array("alert" => "I just signed up to your group");
 
         $this->parse->sendPushNotification($data);
       }

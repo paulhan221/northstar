@@ -75,7 +75,6 @@ class CampaignTest extends TestCase
 
 
     /**
-     * @group signup
      * Test for submiting a campaign signup
      * POST /campaigns/:nid/signup
      *
@@ -85,6 +84,37 @@ class CampaignTest extends TestCase
     {
         $payload = [
             'source' => 'test'
+        ];
+
+        // Mock successful response from Drupal API
+        $this->drupalMock->shouldReceive('campaignSignup')->once()->andReturn(100);
+
+        $response = $this->call('POST', 'v1/user/campaigns/123/signup', [], [], [], $this->server, json_encode($payload));
+        $content = $response->getContent();
+        $data = json_decode($content, true);
+
+        // The response should return a 201 Created status code
+        $this->assertEquals(201, $response->getStatusCode());
+
+        // Response should be valid JSON
+        $this->assertJson($content);
+
+        // Response should return created at and sid columns
+        $this->assertArrayHasKey('created_at', $data['data']);
+        $this->assertArrayHasKey('signup_id', $data['data']);
+    }
+
+    /**
+     * @group signUpGroup
+     * Test for submiting a campaign signup with a group
+     * POST /campaigns/:nid/signup
+     *
+     * @return void
+     */
+    public function testSubmitCampaignGroupSignup()
+    {
+        $payload = [
+            'source' => '100'
         ];
 
         // Mock successful response from Drupal API

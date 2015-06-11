@@ -110,12 +110,11 @@ class CampaignController extends Controller
         $campaign->signup_source = $request->input('source');
         $campaign = $user->campaigns()->save($campaign);
 
-        $event_msg = event(new UserSignedUp($campaign));
+        event(new UserSignedUp($user));
 
         $response = array(
             'signup_id' => $campaign->signup_id,
             'created_at' => $campaign->created_at,
-            'event_msg' => $event_msg,
         );
 
         return $this->respond($response, 201);
