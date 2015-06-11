@@ -22,17 +22,15 @@ class AvatarController extends Controller
     if ($request->file('photo'))
     {
         $file = $request->file('photo');
-        $isFile = true;
     } else {
         $file = $request->photo;
-        $isFile = false;
     }
 
     $this->validate($request, [
       'photo' => 'required'
     ]);
 
-    $filename = $this->aws->storeImage('profiles-dosomething-org', $id, $file, $isFile);
+    $filename = $this->aws->storeImage('avatars', $id, $file);
 
     // Save filename to User model
     $user = User::where($id)->first();

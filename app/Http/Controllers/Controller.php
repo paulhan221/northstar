@@ -30,8 +30,7 @@ abstract class Controller extends BaseController
             $response = $data;
         }
 
-        return response()->json($response, $code);
-    }
+        return response()->json($response, $code, array(), JSON_UNESCAPED_SLASHES);    }
 
     /**
      * Method to standardize paginated responses.
