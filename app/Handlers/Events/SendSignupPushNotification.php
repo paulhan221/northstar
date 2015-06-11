@@ -3,9 +3,7 @@
 use Northstar\Events\UserSignedUp;
 use Northstar\Models\User;
 
-use Parse\ParseObject;
-use Parse\ParseClient;
-use Parse\ParsePush;
+use Northstar\Services\Parse;
 
 
 // use Illuminate\Queue\InteractsWithQueue;
@@ -13,52 +11,48 @@ use Parse\ParsePush;
 
 class SendSignupPushNotification {
 
-	/**
-	 * Create the event handler.
-	 *
-	 * @return void
-	 */
-	public function __construct()
-	{
-		//
-	}
+  /**
+   * Parse API wrapper.
+   * @var Parse
+   */
+  protected $parse;
 
-	/**
-	 * Handle the event.
-	 * @param  UserSignedUp  $event
-	 * @return void
-	 */
-	public function handle(UserSignedUp $event)
-	{
+  /**
+   * Create the event handler.
+   *
+   * @return void
+   */
+  public function __construct(Parse $parse)
+  {
+    $this->parse = $parse;
+  }
 
-		$parse_app_id = config('services.parse.parse_app_id');
-		$parse_api_key = config('services.parse.parse_api_key');
-		$parse_master_key = config('services.parse.parse_master_key');
-
-		ParseClient::initialize($parse_app_id, $parse_api_key, $parse_master_key);
-
+  /**
+   * Handle the event.
+   * @param  UserSignedUp  $event
+   * @return void
+   */
+  public function handle(UserSignedUp $event)
+  {
     // @TODO - Make sure group is not empty.
     // @TODO - We might not need signup_source here, be sure to remove if it is not used.
 
-		// // Get signup group.
-		$group = User::where('campaigns', 'elemMatch', ['signup_id' => (int)$event->signup_id])
-						->orWhere('campaigns', 'elemMatch', ['signup_source' => $event->signup_id])->get();
+    // // Get signup group.
+    $group = User::where('campaigns', 'elemMatch', ['signup_id' => (int)$event->signup_id])
+            ->orWhere('campaigns', 'elemMatch', ['signup_source' => $event->signup_id])->get();
 
     // Loop through the users in the group.
     foreach ($group as $user) {
-    	// Get this users sign up id.
-    	$user_signup_id = $user->campaigns[0]->signup_id;
+      // Get this users sign up id.
+      $user_signup_id = $user->campaigns[0]->signup_id;
 
-    	// Check that this user is not the user that triggered the event.
-    	if ($user_signup_id == $event->signup_id) {
-				$data = array("alert" => "Hi!");
+      // Check that this user is not the user that triggered the event.
+      if ($user_signup_id == $event->signup_id) {
+        $data = array("alert" => "Hi!");
 
-				ParsePush::send(array(
-				  "channels" => ["PHPTest"],
-				  "data" => $data
-				));
-    	}
+        $this->parse->sendPushNotification($data);
+      }
     }
-	}
+  }
 
 }
