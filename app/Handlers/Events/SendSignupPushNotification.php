@@ -31,15 +31,15 @@ class SendSignupPushNotification {
   public function handle(UserSignedUp $event)
   {
     // Get signup group.
-    $group = User::where('campaigns', 'elemMatch', ['signup_id' => (int)$event->signup_id])
-            ->orWhere('campaigns', 'elemMatch', ['signup_source' => $event->signup_id])->get();
+    $group = User::where('campaigns', 'elemMatch', ['signup_id' => (int)$event->campaign->signup_id])
+            ->orWhere('campaigns', 'elemMatch', ['signup_source' => $event->campaign->signup_id])->get();
 
     if (count($group) > 0) {
       // Loop through the users in the group.
       foreach ($group as $user) {
         $drupal_id = $user->drupal_id;
         // Check that this user is not the user that triggered the event.
-        if ($drupal_id !== $event->drupal_id) {
+        if ($drupal_id !== $event->user->drupal_id) {
           // @TODO - This is placeholder content.
           $data = array("alert" => "I just signed up to your group");
 

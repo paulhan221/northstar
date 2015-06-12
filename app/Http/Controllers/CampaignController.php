@@ -111,7 +111,7 @@ class CampaignController extends Controller
         $campaign = $user->campaigns()->save($campaign);
 
         // Fire sign up event.
-        event(new UserSignedUp($user));
+        event(new UserSignedUp($user, $campaign));
 
         $response = array(
             'signup_id' => $campaign->signup_id,
