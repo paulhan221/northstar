@@ -230,4 +230,26 @@ class DrupalAPI
 
         return $reportback_id;
     }
+
+    public function storeKudos($drupal_id, $request)
+    {
+        $payload = [
+            'drupal_id' => $drupal_id,
+            'term_ids' => $request->term_id,
+            'reportback_item_id' => $request->reportback_item_id
+        ];
+
+        $response = $this->client->post('/kudos', [
+            'body' => json_encode($payload)
+            ]);
+
+        $body = $response->json();
+        $kudos = $body[0];
+
+        if (!$kudos) {
+            throw new \Exception('Could not save kudos.');
+        }
+
+        return $kudos;
+    }
 }

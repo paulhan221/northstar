@@ -7,33 +7,36 @@ use Illuminate\Http\Request;
 class AvatarController extends Controller
 {
 
-  public function __construct(AWS $aws)
-  {
-      $this->aws = $aws;
-  }
+    public function __construct(AWS $aws)
+    {
+        $this->aws = $aws;
+    }
 
-/**
- * Store a new avatar for a user.
- * POST northstar.com/users/{id}/avatar
- */
+   /**
+   * Store a new avatar for a user.
+   * POST northstar.com/users/{id}/avatar
+   */
+    public function store(Request $request, $id)
+    {
+        if ($request->file('photo')) {
+            $file = $request->file('photo');
+        } else {
+            $file = $request->photo;
+        }
 
-  public function store(Request $request, $id)
-  {
-    $file = $request->file('photo');
+        $this->validate($request, [
+            'photo' => 'required'
+        ]);
 
-    $this->validate($request, [
-      'photo' => 'required|image|mimes:jpeg,jpg|max:8000'
-    ]);
+        $filename = $this->aws->storeImage('avatars', $id, $file);
 
-    $filename = $this->aws->storeImage('avatars', $id, $file);
+        // Save filename to User model
+        $user = User::where($id)->first();
+        $user->avatar = $filename;
+        $user->save();
 
-    // Save filename to User model
-    $user = User::where($id)->first();
-    $user->avatar = $filename;
-    $user->save();
-
-    // Respond to user with success
-    return $this->respond('Photo Uploaded!');
-  }
+        // Respond to user with success and photo URL
+        return $this->respond(['url' => $filename]);
+    }
 }
 
