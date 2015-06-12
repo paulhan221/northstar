@@ -24,7 +24,7 @@ class AWS
             Storage::disk('s3')->put($filename, file_get_contents($file));
         }
 
-        return 'https://s3.amazonaws.com/profiles-dosomething-org/' . $filename;
+        return getenv('S3_URL') . $filename;
     }
 
 }
