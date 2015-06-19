@@ -19,6 +19,12 @@ return [
         'version' => 'v1',
     ],
 
+    'parse' => [
+        'parse_app_id' => env('PARSE_APP_ID'),
+        'parse_api_key' => env('PARSE_API_KEY'),
+        'parse_master_key' => env('PARSE_MASTER_KEY'),
+    ],
+
 ];
 
 

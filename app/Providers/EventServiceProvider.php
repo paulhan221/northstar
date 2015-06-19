@@ -12,11 +12,10 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'event.name' => [
-            'EventListener',
+        'Northstar\Events\UserSignedUp' => [
+            'Northstar\Handlers\Events\SendSignupPushNotification',
         ],
     ];
-
     /**
      * Register any other events for your application.
      *
