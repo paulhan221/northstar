@@ -234,22 +234,22 @@ class DrupalAPI
     public function storeKudos($drupal_id, $request)
     {
         $payload = [
-            'drupal_id' => $drupal_id,
-            'term_ids' => $request->term_id,
-            'reportback_item_id' => $request->reportback_item_id
+            'reportback_item_id' => $request->reportback_item_id,
+            'user_id' => $drupal_id,
+            // 'user_id' => $user->id,
+            'term_ids' => [$request->kudos_id],
         ];
 
-        $response = $this->client->post('/kudos', [
-            'body' => json_encode($payload)
+        $response = $this->client->post('kudos.json', [
+            'body' => json_encode($payload),
+            'cookies' => $this->getAuthenticationCookie(),
+            'headers' => [
+                'X-CSRF-Token' => $this->getAuthenticationToken()
+            ]
             ]);
 
         $body = $response->json();
-        $kudos = $body[0];
 
-        if (!$kudos) {
-            throw new \Exception('Could not save kudos.');
-        }
-
-        return $kudos;
+        return $body;
     }
 }
