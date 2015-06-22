@@ -236,7 +236,6 @@ class DrupalAPI
         $payload = [
             'reportback_item_id' => $request->reportback_item_id,
             'user_id' => $drupal_id,
-            // 'user_id' => $user->id,
             'term_ids' => [$request->kudos_id],
         ];
 

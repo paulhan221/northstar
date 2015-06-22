@@ -24,18 +24,5 @@ class KudosController extends Controller
         return $this->respond($response);
     }
 
-    // public function destroy(Request $request)
-    // {
-    //     $user = User::where('_id', $id)->first();
-
-    //     if ($user instanceof User) {
-    //         $user->delete();
-
-    //         return $this->respond('No Content.');
-    //     } else {
-    //         throw new NotFoundHttpException('The resource does not exist.');
-    //     }
-    // }
-
 }
 
