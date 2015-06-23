@@ -17,7 +17,7 @@ class KudosController extends Controller
    * Store a new kudos from a user.
    * Kudos request made from mobile app and forwarded to Northstar.
    * Northstar finds the drupal user and sends request on to Drupal.
-   * POST northstar.com/kudos
+   * POST /kudos
    *
    * @param Request $request
    * @return Response
