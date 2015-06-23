@@ -14,7 +14,11 @@ class AvatarController extends Controller
 
    /**
    * Store a new avatar for a user.
-   * POST northstar.com/users/{id}/avatar
+   * POST /users/{id}/avatar
+   *
+   * @param Request $request
+   * @param $id - User ID
+   * @return Response
    */
     public function store(Request $request, $id)
     {

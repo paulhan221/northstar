@@ -13,6 +13,15 @@ class KudosController extends Controller
         $this->drupal = $drupal;
     }
 
+   /**
+   * Store a new kudos from a user.
+   * Kudos request made from mobile app and forwarded to Northstar.
+   * Northstar finds the drupal user and sends request on to Drupal.
+   * POST /kudos
+   *
+   * @param Request $request
+   * @return Response
+   */
     public function store(Request $request)
     {
         $user = User::current();
