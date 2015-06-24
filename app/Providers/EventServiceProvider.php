@@ -18,6 +18,9 @@ class EventServiceProvider extends ServiceProvider
         'Northstar\Events\UserGotKudo' => [
             'Northstar\Handlers\Events\SendKudoPushNotification',
         ],
+        'Northstar\Events\UserReportedBack' => [
+            'Northstar\Handlers\Events\SendReportbackPushNotification',
+        ],
     ];
     /**
      * Register any other events for your application.
