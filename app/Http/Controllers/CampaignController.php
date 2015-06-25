@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Northstar\Events\UserSignedUp;
+use Northstar\Events\UserReportedBack;
 use Northstar\Models\Campaign;
 use Northstar\Models\User;
 use Northstar\Services\DrupalAPI;
@@ -169,6 +170,9 @@ class CampaignController extends Controller
 
         $campaign->reportback_id = $reportback_id;
         $campaign->save();
+
+        // Fire reportback event.
+        event(new UserReportedBack($user, $campaign));
 
         return $this->respond(['reportback_id' => $reportback_id, 'created_at' => $campaign->updated_at], $statusCode);
     }

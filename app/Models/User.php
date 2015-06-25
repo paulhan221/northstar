@@ -134,4 +134,14 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $user;
     }
 
+    /**
+     * Scope a query to get all of the users in a group.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeGroup($query, $signup_id)
+    {
+        // Get signup group.
+        return $query->where('campaigns', 'elemMatch', ['signup_id' => (int)$signup_id])->orWhere('campaigns', 'elemMatch', ['signup_source' => $signup_id])->get();
+    }
 }

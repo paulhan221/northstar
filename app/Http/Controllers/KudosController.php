@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Northstar\Services\DrupalAPI;
 use Northstar\Models\User;
+use Northstar\Events\UserGotKudo;
 
 
 class KudosController extends Controller
