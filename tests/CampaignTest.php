@@ -57,7 +57,7 @@ class CampaignTest extends TestCase
 
     /**
      * Test for retrieving a user's campaigns
-     * GET /users/campaigns
+     * GET /users/:term/:id/campaigns
      *
      * @return void
      */
@@ -76,7 +76,7 @@ class CampaignTest extends TestCase
 
     /**
      * Test for submiting a campaign signup
-     * POST /campaigns/:nid/signup
+     * POST /user/campaigns/:nid/signup
      *
      * @return void
      */
@@ -105,8 +105,29 @@ class CampaignTest extends TestCase
     }
 
     /**
+     * Test for submitting a duplicate campaign signup
+     * POST /user/campaigns/:nid/signup
+     *
+     * @return void
+     */
+    public function testDuplicateCampaignSignup()
+    {
+        $payload = ['source' => 'test'];
+
+        $response = $this->call('POST', 'v1/user/campaigns/123/signup', [], [], [], $this->signedUpServer, json_encode($payload));
+        $content = $response->getContent();
+        $data = json_decode($content, true);
+
+        // Verify a 200 status code
+        $this->assertEquals(200, $response->getStatusCode());
+
+        // Verify the signup_id is the same as what was already there
+        $this->assertEquals(100, $data['data']['signup_id']);
+    }
+
+    /**
      * Test for submitting a new campaign report back.
-     * POST /campaigns/:nid/reportback
+     * POST /user/campaigns/:nid/reportback
      *
      * @return void
      */
@@ -140,7 +161,7 @@ class CampaignTest extends TestCase
 
     /**
      * Test for successful update of an existing campaign report back.
-     * PUT /campaigns/:nid/reportback
+     * PUT /user/campaigns/:nid/reportback
      *
      * @return void
      */
@@ -174,7 +195,7 @@ class CampaignTest extends TestCase
 
     /**
      * Test for creating a reportback when signup does not exist.
-     * PUT /campaigns/:nid/reportback
+     * PUT /user/campaigns/:nid/reportback
      *
      * @return void
      */

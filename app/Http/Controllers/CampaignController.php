@@ -99,7 +99,7 @@ class CampaignController extends Controller
 
         if ($campaign) {
             // Campaign already signed up for. Return existing campaign object.
-            $response = $campaign;
+            return $this->respond($campaign, 200);
         } else {
             // Create a Drupal signup via Drupal API, and store signup ID in Northstar.
             $signup_id = $this->drupal->campaignSignup($user->drupal_id, $campaign_id, $request->input('source'));
@@ -118,9 +118,9 @@ class CampaignController extends Controller
                 'signup_id' => $campaign->signup_id,
                 'created_at' => $campaign->created_at,
             );
-        }
 
-        return $this->respond($response, 201);
+            return $this->respond($response, 201);
+        }
     }
 
 
