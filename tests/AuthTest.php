@@ -32,6 +32,19 @@ class AuthTest extends TestCase
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
             'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz1='
         );
+
+        $this->serverMissingToken = array(
+            'HTTP_Accept' => 'application/json',
+            'HTTP_X-DS-Application-Id' => '456',
+            'HTTP_X-DS-REST-API-Key' => 'abc4324',
+        );
+
+        $this->serverFakeToken = array(
+            'HTTP_Accept' => 'application/json',
+            'HTTP_X-DS-Application-Id' => '456',
+            'HTTP_X-DS-REST-API-Key' => 'abc4324',
+            'HTTP_Session' => 'thisisafaketoken',
+        );
     }
 
     /**
@@ -109,5 +122,25 @@ class AuthTest extends TestCase
         $user = json_decode($getContent, true);
 
         $this->assertEquals(0, count($user['data'][0]['parse_installation_ids']));
+    }
+
+    /**
+     * Tests that a proper error is thrown when a route requiring an auth token
+     * is given no token.
+     */
+    public function testMissingToken() {
+        $response = $this->call('GET', 'v1/user/campaigns/123', [], [], [], $this->serverMissingToken);
+
+        $this->assertEquals(401, $response->getStatusCode());
+    }
+
+    /**
+     * Tests that a proper error is thrown when a route requiring an auth token
+     * is given a fake token.
+     */
+    public function testFakeToken() {
+        $response = $this->call('GET', 'v1/user/campaigns/123', [], [], [], $this->serverFakeToken);
+
+        $this->assertEquals(401, $response->getStatusCode());
     }
 }
