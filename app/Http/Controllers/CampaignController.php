@@ -43,7 +43,15 @@ class CampaignController extends Controller
         }
 
         $campaigns = $user->campaigns;
-        return $this->respond($campaigns);
+
+        foreach ($campaigns as $campaign) {
+            if ($campaign->reportback_id) {
+                $response = $this->drupal->reportbackContent($campaign->reportback_id);
+                return $this->respond($reponse);
+            } else {
+                return $this->respond($campaigns);
+            }
+        }
     }
 
     /**
@@ -65,7 +73,12 @@ class CampaignController extends Controller
             throw new NotFoundHttpException('User has not signed up for this campaign.');
         }
 
-        return $this->respond($campaign);
+        if ($campaign->reportback_id) {
+            $response = $this->drupal->reportbackContent($campaign->reportback_id);
+            return $this->respond($reponse);
+        } else {
+            return $this->respond($campaign);
+        }
     }
 
 
@@ -127,7 +140,6 @@ class CampaignController extends Controller
         }
     }
 
-
     /**
      * Store a newly created campaign report back in storage.
      * POST /campaigns/:campaign_id/reportback
@@ -165,7 +177,8 @@ class CampaignController extends Controller
         }
 
         // Create a reportback via the Drupal API, and store reportback ID in Northstar
-        $reportback_id = $this->drupal->campaignReportback($user->drupal_id, $campaign_id, $request->all());
+        // $reportback_id = $this->drupal->campaignReportback($user->drupal_id, $campaign_id, $request->all());
+        $reportback_id = 8;
 
         // Set status code based on whether `reportback_id` field already exists or not
         $statusCode = 201;
@@ -177,7 +190,7 @@ class CampaignController extends Controller
         $campaign->save();
 
         // Fire reportback event.
-        event(new UserReportedBack($user, $campaign));
+        // event(new UserReportedBack($user, $campaign));
 
         return $this->respond(['reportback_id' => $reportback_id, 'created_at' => $campaign->updated_at], $statusCode);
     }
