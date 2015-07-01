@@ -3,6 +3,7 @@
 use Northstar\Models\Token;
 use Closure;
 use Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AuthenticateToken
 {
@@ -13,16 +14,17 @@ class AuthenticateToken
      * @param  \Illuminate\Http\Request $request
      * @param  \Closure $next
      * @return mixed
+     * @throws HttpException
      */
     public function handle($request, Closure $next)
     {
         $token = $request->header('Session');
         if (!$token) {
-            return Response::json("No token found.");
+            throw new HttpException(401, 'No token found.');
         }
 
         if (!Token::where('key', '=', $token)->exists()) {
-            return Response::json("Token mismatched.");
+            throw new HttpException(401, 'Token mismatched.');
         }
 
         return $next($request);
