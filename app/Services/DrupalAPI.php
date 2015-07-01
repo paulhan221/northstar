@@ -252,22 +252,13 @@ class DrupalAPI
         return $body;
     }
 
-    public function reportbackContent($campaign->reportback_id)
+    public function reportbackContent($reportback_id)
     {
-        $payload = [
-            'reportback_id' => $campaign->reportback_id,
-        ];
-
-        $response = $this->client->get('/reportbacks/$reportback_id', [
-            'body' => json_encode($payload)
-        ]);
+        $response = $this->client->get('/reportbacks/' . $reportback_id);
 
         $body = $response->json();
 
         return $body;
-
     }
-
-
 
 }
