@@ -178,7 +178,7 @@ class CampaignController extends Controller
 
         // Create a reportback via the Drupal API, and store reportback ID in Northstar
         // $reportback_id = $this->drupal->campaignReportback($user->drupal_id, $campaign_id, $request->all());
-        $reportback_id = 8;
+        $reportback_id = 9;
 
         // Set status code based on whether `reportback_id` field already exists or not
         $statusCode = 201;
