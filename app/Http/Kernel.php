@@ -28,6 +28,7 @@ class Kernel extends HttpKernel
         'auth.token' => 'Northstar\Http\Middleware\AuthenticateToken',
         'auth.api' => 'Northstar\Http\Middleware\AuthenticateAPI',
         'guest' => 'Northstar\Http\Middleware\RedirectIfAuthenticated',
+        'user' => 'Northstar\Http\Middleware\UserResponseMiddleware',
     ];
 
 }

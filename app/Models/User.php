@@ -19,15 +19,15 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     use Authenticatable, CanResetPassword;
 
-    protected $fillable =
-        ['email', 'mobile', 'password', 'drupal_password',
-            'first_name', 'last_name', 'birthdate', 'photo', 'interests',
-            'race', 'religion',
-            'school_id' ,'college_name', 'degree_type', 'major_name', 'hs_gradyear', 'hs_name', 'sat_math', 'sat_verbal', 'sat_writing',
-            'addr_street1', 'addr_street2', 'addr_city', 'addr_state', 'addr_zip', 'country',
-            'cgg_id', 'drupal_id', 'agg_id', 'source',
-            'parse_installation_ids'
-        ];
+    protected $fillable = [
+        'email', 'mobile', 'password', 'drupal_password',
+        'first_name', 'last_name', 'birthdate', 'photo', 'interests',
+        'race', 'religion',
+        'school_id' ,'college_name', 'degree_type', 'major_name', 'hs_gradyear', 'hs_name', 'sat_math', 'sat_verbal', 'sat_writing',
+        'addr_street1', 'addr_street2', 'addr_city', 'addr_state', 'addr_zip', 'country',
+        'cgg_id', 'drupal_id', 'agg_id', 'source',
+        'parse_installation_ids'
+    ];
 
     /**
      * The database collection used by the model.
@@ -41,7 +41,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      *
      * @var array
      */
-    protected $hidden = ['password'];
+    protected $hidden = ['drupal_password', 'password'];
 
     /**
      * The attributes that should be casted to native types.
