@@ -47,7 +47,6 @@ class CampaignController extends Controller
         foreach ($campaigns as $campaign) {
             if ($campaign->reportback_id) {
                 $response = $this->drupal->reportbackContent($campaign->reportback_id);
-                // dd($response['data']);
                 $campaign['reportback_data'] = $response['data'];
             }
         }
