@@ -17,9 +17,9 @@ class SignupGroupController extends Controller
      */
     public function show($id)
     {
-        // signup_id is saved as a number and signup_source is saved as a string
+        // signup_id and signup_group are saved as numbers
         $group = User::where('campaigns', 'elemMatch', ['signup_id' => (int)$id])
-                        ->orWhere('campaigns', 'elemMatch', ['signup_source' => $id])->get();
+                        ->orWhere('campaigns', 'elemMatch', ['signup_group' => (int)$id])->get();
 
         if (count($group) == 0) {
             throw new NotFoundHttpException("No users found for the group ID.");
@@ -27,7 +27,7 @@ class SignupGroupController extends Controller
             // Get the campaign id associated with the signup group ID
             for ($i = 0; $i < count($group[0]->campaigns); $i++) {
                 $campaign = $group[0]->campaigns[$i];
-                if ($campaign->signup_id == $id || $campaign->signup_source == $id) {
+                if ($campaign->signup_id == $id || $campaign->signup_group == $id) {
                     $campaign_id = $campaign->drupal_id;
                     break;
                 }

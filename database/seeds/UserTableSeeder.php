@@ -102,7 +102,8 @@ class UserTableSeeder extends Seeder
                     '_id' => '3f10c910251bcc636aa5477b',
                     'drupal_id' => 123,
                     'signup_id' => 102,
-                    'signup_source' => '100'
+                    'signup_source' => 'test',
+                    'signup_group' => 100
                 ]
             ]
         ]);

@@ -109,6 +109,8 @@ class CampaignController extends Controller
             $campaign->drupal_id = $campaign_id;
             $campaign->signup_id = $signup_id;
             $campaign->signup_source = $request->input('source');
+            // If group is specified, use that. Otherwise, use the signup_id.
+            $campaign->signup_group = $request->input('group') ?: $signup_id;
             $campaign = $user->campaigns()->save($campaign);
 
             // Fire sign up event.
@@ -116,6 +118,8 @@ class CampaignController extends Controller
 
             $response = array(
                 'signup_id' => $campaign->signup_id,
+                'signup_source' => $campaign->signup_source,
+                'signup_group' => $campaign->signup_group,
                 'created_at' => $campaign->created_at,
             );
 
