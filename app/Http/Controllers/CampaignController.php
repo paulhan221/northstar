@@ -47,7 +47,8 @@ class CampaignController extends Controller
         foreach ($campaigns as $campaign) {
             if ($campaign->reportback_id) {
                 $response = $this->drupal->reportbackContent($campaign->reportback_id);
-                $campaign['reportback_data'] = $response;
+                // dd($response['data']);
+                $campaign['reportback_data'] = $response['data'];
             }
         }
 
@@ -68,14 +69,14 @@ class CampaignController extends Controller
         $user = User::current();
 
         $campaign = $user->campaigns()->where('drupal_id', $campaign_id)->first();
-
+        echo("hello");
         if (!$campaign) {
             throw new NotFoundHttpException('User has not signed up for this campaign.');
         }
 
         if ($campaign->reportback_id) {
             $response = $this->drupal->reportbackContent($campaign->reportback_id);
-            $campaign['reportback_data'] = $response;
+            $campaign['reportback_data'] = $response['data'];
         }
 
         return $this->respond($campaign);
