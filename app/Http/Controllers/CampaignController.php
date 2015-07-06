@@ -47,10 +47,11 @@ class CampaignController extends Controller
         foreach ($campaigns as $campaign) {
             if ($campaign->reportback_id) {
                 $response = $this->drupal->reportbackContent($campaign->reportback_id);
-                return $this->respond($reponse);
+                $campaign['reportback_data'] = $response;
             } else {
                 return $this->respond($campaigns);
             }
+            return $this->respond($campaigns);
         }
     }
 
@@ -75,7 +76,8 @@ class CampaignController extends Controller
 
         if ($campaign->reportback_id) {
             $response = $this->drupal->reportbackContent($campaign->reportback_id);
-            return $this->respond($reponse);
+            $campaign['reportback_data'] = $response;
+            return $this->respond($campaign);
         } else {
             return $this->respond($campaign);
         }

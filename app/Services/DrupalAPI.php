@@ -254,7 +254,7 @@ class DrupalAPI
 
     public function reportbackContent($reportback_id)
     {
-        $response = $this->client->get('/reportbacks/' . $reportback_id . '.json');
+        $response = $this->client->get('reportbacks/' . $reportback_id . '.json');
 
         return $response->json();
     }
