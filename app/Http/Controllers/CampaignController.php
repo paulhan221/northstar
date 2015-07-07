@@ -43,6 +43,14 @@ class CampaignController extends Controller
         }
 
         $campaigns = $user->campaigns;
+
+        foreach ($campaigns as $campaign) {
+            if ($campaign->reportback_id) {
+                $response = $this->drupal->reportbackContent($campaign->reportback_id);
+                $campaign['reportback_data'] = $response['data'];
+            }
+        }
+
         return $this->respond($campaigns);
     }
 
@@ -65,7 +73,13 @@ class CampaignController extends Controller
             throw new NotFoundHttpException('User has not signed up for this campaign.');
         }
 
+        if ($campaign->reportback_id) {
+            $response = $this->drupal->reportbackContent($campaign->reportback_id);
+            $campaign['reportback_data'] = $response['data'];
+        }
+
         return $this->respond($campaign);
+
     }
 
 
@@ -126,7 +140,6 @@ class CampaignController extends Controller
             return $this->respond($response, 201);
         }
     }
-
 
     /**
      * Store a newly created campaign report back in storage.

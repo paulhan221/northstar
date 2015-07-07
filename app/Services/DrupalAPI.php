@@ -251,4 +251,21 @@ class DrupalAPI
 
         return $body;
     }
+
+    /**
+     * Get a user's full reportback content if reportback exists.
+     *
+     * @param String $term - email or mobile
+     * @param String $id - email or mobile
+     * @param String $campaign_id - NID of campaign on the Drupal site
+     * @return Array - Contents of reportback
+     *
+     */
+    public function reportbackContent($reportback_id)
+    {
+        $response = $this->client->get('reportbacks/' . $reportback_id . '.json');
+
+        return $response->json();
+    }
+
 }
