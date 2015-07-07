@@ -2,6 +2,7 @@
 
 namespace Northstar\Http\Middleware;
 
+use Northstar\Models\Campaign;
 use Northstar\Models\User;
 use Closure;
 
@@ -15,11 +16,10 @@ class UserResponseMiddleware {
         // Ensure user objects have all fillable properties set with
         if (is_array($response->data)) {
             foreach ($response->data as $user) {
-                self::fillWithNullValues($user);
+                self::fillUser($user);
             }
-        }
-        else if (is_object($response->data)) {
-            self::fillWithNullValues($response->data);
+        } else if (is_object($response->data)) { // @todo NEED TO TEST THIS ONE
+            self::fillUser($response->data);
         }
 
         return json_encode($response);
@@ -31,14 +31,38 @@ class UserResponseMiddleware {
      *
      * @param $user User object
      */
-    private function fillWithNullValues(&$user)
+    private function fillUser(&$user)
     {
         $tmp = new User();
 
         $fillableNotHidden = array_diff($tmp->getFillable(), $tmp->getHidden());
 
         foreach ($fillableNotHidden as $key) {
-            $user->$key = isset($user->$key) ?: null;
+            $user->$key = isset($user->$key) ? $user->$key : null;
+        }
+
+        // Fill campaigns activity data too, if any
+        if (!empty($user->campaigns) && is_array($user->campaigns)) {
+            foreach ($user->campaigns as $campaign) {
+                self::fillCampaign($campaign);
+            }
+        }
+    }
+
+    /**
+     * For all Campaign attributes not hidden, where keys are unset, set those
+     * value to null.
+     *
+     * @param $campaign User campaign activity data
+     */
+    private function fillCampaign(&$campaign)
+    {
+        $tmp = new Campaign();
+
+        $attrsNotHidden = array_diff($tmp->getAttributes(), $tmp->getHidden());
+
+        foreach ($attrsNotHidden as $key => $value) {
+            $campaign->$key = isset($campaign->$key) ? $campaign->$key : null;
         }
     }
 

@@ -38,4 +38,17 @@ class Campaign extends Eloquent
      */
     protected $dates = ['created_at', 'updated_at'];
 
+    /**
+     * Setting default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'drupal_id' => null,
+        'reportback_id' => null,
+        'signup_group' => null,
+        'signup_id' => null,
+        'signup_source' => null,
+    ];
+
 }

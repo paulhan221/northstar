@@ -19,12 +19,15 @@ Route::get('/', function () {
 Route::group(['prefix' => 'v1', 'middleware' => 'auth.api'], function () {
     // Campaigns.
     Route::group(['middleware' => 'auth.token'], function () {
-        Route::get('user/campaigns/{campaign_id}', 'CampaignController@show');
-        Route::post('user/campaigns/{campaign_id}/signup', 'CampaignController@signup');
-        Route::post('user/campaigns/{campaign_id}/reportback', 'CampaignController@reportback');
-        Route::put('user/campaigns/{campaign_id}/reportback', 'CampaignController@reportback');
         Route::post('kudos', 'KudosController@store');
         Route::delete('kudos', 'KudosController@delete');
+
+        Route::group(['middleware' => 'campaign'], function () {
+            Route::get('user/campaigns/{campaign_id}', 'CampaignController@show');
+            Route::post('user/campaigns/{campaign_id}/signup', 'CampaignController@signup');
+            Route::post('user/campaigns/{campaign_id}/reportback', 'CampaignController@reportback');
+            Route::put('user/campaigns/{campaign_id}/reportback', 'CampaignController@reportback');
+        });
     });
 
     // Sessions.
@@ -34,9 +37,12 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth.api'], function () {
     // Users.
     Route::group(['middleware' => 'user'], function() {
         Route::resource('users', 'UserController');
-        Route::get('users/{term}/{id}/campaigns', 'CampaignController@index');
         Route::get('users/{term}/{id}', 'UserController@show');
         Route::post('users/{id}/avatar', 'AvatarController@store');
+
+        Route::group(['middleware' => 'campaign'], function () {
+            Route::get('users/{term}/{id}/campaigns', 'CampaignController@index');
+        });
     });
 
     // Signup Groups.

@@ -29,6 +29,7 @@ class Kernel extends HttpKernel
         'auth.api' => 'Northstar\Http\Middleware\AuthenticateAPI',
         'guest' => 'Northstar\Http\Middleware\RedirectIfAuthenticated',
         'user' => 'Northstar\Http\Middleware\UserResponseMiddleware',
+        'campaign' => 'Northstar\Http\Middleware\CampaignResponseMiddleware',
     ];
 
 }
