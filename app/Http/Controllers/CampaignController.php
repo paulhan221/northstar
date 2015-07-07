@@ -68,7 +68,7 @@ class CampaignController extends Controller
         $user = User::current();
 
         $campaign = $user->campaigns()->where('drupal_id', $campaign_id)->first();
-        echo("hello");
+
         if (!$campaign) {
             throw new NotFoundHttpException('User has not signed up for this campaign.');
         }
