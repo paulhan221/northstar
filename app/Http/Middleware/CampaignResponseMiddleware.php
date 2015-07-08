@@ -10,17 +10,22 @@ class CampaignResponseMiddleware {
     public function handle($request, Closure $next)
     {
         $response = $next($request);
+        if (!is_object($response)) {
+            return $response;
+        }
+
+        $statusCode = $response->getStatusCode();
         $response = $response->getData();
 
         if (is_array($response->data)) {
             foreach ($response->data as $campaign) {
-                self::fillCampaign($campaign);
+                $this->fillCampaign($campaign);
             }
         } elseif (is_object($response->data)) {
-            self::fillCampaign($response->data);
+            $this->fillCampaign($response->data);
         }
 
-        return json_encode($response);
+        return response()->json($response, $statusCode, array(), JSON_UNESCAPED_SLASHES);
     }
 
     /**

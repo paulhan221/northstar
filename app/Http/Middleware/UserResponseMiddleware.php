@@ -11,18 +11,25 @@ class UserResponseMiddleware {
     public function handle($request, Closure $next)
     {
         $response = $next($request);
+        if (!is_object($response)) {
+            return $response;
+        }
+
+        $statusCode = $response->getStatusCode();
         $response = $response->getData();
 
         // Ensure user objects have all fillable properties set with
-        if (is_array($response->data)) {
-            foreach ($response->data as $user) {
-                self::fillUser($user);
+        if (isset($response->data)) {
+            if (is_array($response->data)) {
+                foreach ($response->data as $user) {
+                    $this->fillUser($user);
+                }
+            } else if (is_object($response->data)) {
+                $this->fillUser($response->data);
             }
-        } else if (is_object($response->data)) { // @todo NEED TO TEST THIS ONE
-            self::fillUser($response->data);
         }
 
-        return json_encode($response);
+        return response()->json($response, $statusCode, array(), JSON_UNESCAPED_SLASHES);
     }
 
     /**
@@ -44,7 +51,7 @@ class UserResponseMiddleware {
         // Fill campaigns activity data too, if any
         if (!empty($user->campaigns) && is_array($user->campaigns)) {
             foreach ($user->campaigns as $campaign) {
-                self::fillCampaign($campaign);
+                $this->fillCampaign($campaign);
             }
         }
     }
