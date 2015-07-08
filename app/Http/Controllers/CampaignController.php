@@ -111,10 +111,10 @@ class CampaignController extends Controller
         // Check if campaign signup already exists.
         $campaign = $user->campaigns()->where('drupal_id', $campaign_id)->first();
 
-        if ($campaign) {
-            // Campaign already signed up for. Return existing campaign object.
-            return $this->respond($campaign, 200);
-        } else {
+        $statusCode = 200;
+        if (!$campaign) {
+            $statusCode = 201;
+
             // Create a Drupal signup via Drupal API, and store signup ID in Northstar.
             $signup_id = $this->drupal->campaignSignup($user->drupal_id, $campaign_id, $request->input('source'));
 
@@ -129,16 +129,9 @@ class CampaignController extends Controller
 
             // Fire sign up event.
             event(new UserSignedUp($user, $campaign));
-
-            $response = array(
-                'signup_id' => $campaign->signup_id,
-                'signup_source' => $campaign->signup_source,
-                'signup_group' => $campaign->signup_group,
-                'created_at' => $campaign->created_at,
-            );
-
-            return $this->respond($response, 201);
         }
+
+        return $this->respond($campaign, $statusCode);
     }
 
     /**
