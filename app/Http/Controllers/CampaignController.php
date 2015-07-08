@@ -112,7 +112,7 @@ class CampaignController extends Controller
         $campaign = $user->campaigns()->where('drupal_id', $campaign_id)->first();
 
         $statusCode = 200;
-        if ($campaign) {
+        if (!$campaign) {
             $statusCode = 201;
 
             // Create a Drupal signup via Drupal API, and store signup ID in Northstar.
