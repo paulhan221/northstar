@@ -80,6 +80,9 @@ class UserController extends Controller
                     }
                 }
             }
+            if (Input::has('created_at')) {
+                $user->created_at = Input::get('created_at');
+            }
 
             $user->save();
 
