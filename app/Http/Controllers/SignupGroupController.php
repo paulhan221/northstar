@@ -8,6 +8,11 @@ class SignupGroupController extends Controller
 {
     protected $drupal;
 
+    public function __construct(DrupalAPI $drupal)
+    {
+        $this->drupal = $drupal;
+    }
+
     /**
      * Display the users who share the specified signup group id.
      * GET /signup-group/:id
@@ -36,9 +41,6 @@ class SignupGroupController extends Controller
             }
         }
 
-        // Drupal API client
-        $drupal = new DrupalAPI;
-
         foreach ($group as &$user) {
             if (isset($user->campaigns)) {
                 for ($i = 0; $i < count($user->campaigns); $i++) {
@@ -50,7 +52,7 @@ class SignupGroupController extends Controller
 
                     if (isset($user->campaigns[$i]->reportback_id)) {
                         // get reportback data from drupal
-                        $rbResponse = $drupal->reportbackContent($user->campaigns[$i]->reportback_id);
+                        $rbResponse = $this->drupal->reportbackContent($user->campaigns[$i]->reportback_id);
                         $user->campaigns[$i]->reportback_data = $rbResponse['data'];
                     }
                 }
