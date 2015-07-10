@@ -56,7 +56,7 @@ class UserTableSeeder extends Seeder
                 [
                     '_id' => '5480c950bffebc651c8b456e',
                     'drupal_id' => 123,
-                    'signup_id' => 100,
+                    'signup_id' => '100',
                     'signup_source' => 'android'
                 ]
             ]
@@ -82,7 +82,7 @@ class UserTableSeeder extends Seeder
                 [
                     '_id' => '3f10c910251bcc636aa5477a',
                     'drupal_id' => 123,
-                    'signup_id' => 101,
+                    'signup_id' => '101',
                     'signup_source' => 'ios',
                     'reportback_id' => 125
                 ]
@@ -101,9 +101,9 @@ class UserTableSeeder extends Seeder
                 [
                     '_id' => '3f10c910251bcc636aa5477b',
                     'drupal_id' => 123,
-                    'signup_id' => 102,
+                    'signup_id' => '102',
                     'signup_source' => 'test',
-                    'signup_group' => 100
+                    'signup_group' => '100'
                 ]
             ]
         ]);

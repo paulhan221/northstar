@@ -35,14 +35,15 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth.api'], function () {
     Route::post('logout', 'AuthController@logout');
 
     // Users.
-    Route::group(['middleware' => 'user'], function() {
+    Route::group(['middleware' => 'user'], function () {
         Route::resource('users', 'UserController');
         Route::get('users/{term}/{id}', 'UserController@show');
         Route::post('users/{id}/avatar', 'AvatarController@store');
+    });
 
-        Route::group(['middleware' => 'campaign'], function () {
-            Route::get('users/{term}/{id}/campaigns', 'CampaignController@index');
-        });
+    // User campaign activity.
+    Route::group(['middleware' => 'campaign'], function () {
+        Route::get('users/{term}/{id}/campaigns', 'CampaignController@index');
     });
 
     // Signup Groups.
