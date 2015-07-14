@@ -47,6 +47,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth.api'], function () {
     });
 
     // Signup Groups.
+    Route::resource('signup-group', 'SignupGroupController');
     Route::get('signup-group/{id}', 'SignupGroupController@show');
 
     // Api Keys.
