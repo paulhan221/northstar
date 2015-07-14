@@ -27,16 +27,15 @@ class SignupGroupController extends Controller
         $response = [];
 
         if ($request->has('ids')) {
-            $groupIds = explode(',', $request->input('ids'));
+            $group_ids = explode(',', $request->input('ids'));
 
-            foreach ($groupIds as $groupId) {
-                $group = $this->getGroup($groupId);
+            foreach ($group_ids as $group_id) {
+                $group = $this->getGroup($group_id);
                 if (!empty($group)) {
                     $response[] = $group;
                 }
             }
-        }
-        else {
+        } else {
             throw new BadRequestHttpException("Missing ids query parameter.");
         }
 

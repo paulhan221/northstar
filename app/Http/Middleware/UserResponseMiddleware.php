@@ -51,25 +51,8 @@ class UserResponseMiddleware {
         // Fill campaigns activity data too, if any
         if (!empty($user->campaigns) && is_array($user->campaigns)) {
             foreach ($user->campaigns as $campaign) {
-                $this->fillCampaign($campaign);
+                Campaign::populateAllAttributes($campaign);
             }
-        }
-    }
-
-    /**
-     * For all Campaign attributes not hidden, where keys are unset, set those
-     * value to null.
-     *
-     * @param $campaign User campaign activity data
-     */
-    private function fillCampaign(&$campaign)
-    {
-        $tmp = new Campaign();
-
-        $attrsNotHidden = array_diff($tmp->getAttributes(), $tmp->getHidden());
-
-        foreach ($attrsNotHidden as $key => $value) {
-            $campaign->$key = isset($campaign->$key) ? $campaign->$key : null;
         }
     }
 
