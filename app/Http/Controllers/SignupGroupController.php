@@ -1,8 +1,9 @@
 <?php namespace Northstar\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Northstar\Models\User;
 use Northstar\Services\DrupalAPI;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class SignupGroupController extends Controller
 {
@@ -14,26 +15,64 @@ class SignupGroupController extends Controller
     }
 
     /**
+     * Return the users in multiple groups.
+     *
+     * @param Request $request
+     *
+     * @throws BadRequestHttpException
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        $response = [];
+
+        if ($request->has('ids')) {
+            $group_ids = explode(',', $request->input('ids'));
+
+            foreach ($group_ids as $group_id) {
+                $group = $this->getGroup($group_id);
+                if (!empty($group)) {
+                    $response[] = $group;
+                }
+            }
+        } else {
+            throw new BadRequestHttpException("Missing ids query parameter.");
+        }
+
+        return $this->respond($response);
+    }
+
+    /**
      * Display the users who share the specified signup group id.
      * GET /signup-group/:id
      *
      * @param int $id - Signup Group ID
      *
      * @return \Illuminate\Http\Response
-     * @throws NotFoundHttpException
      */
     public function show($id)
     {
+        $response = $this->getGroup($id);
+
+        return $this->respond($response);
+    }
+
+    /**
+     * Helper function to query for and return group information by signup_group id.
+     *
+     * @param string $id - Signup Group ID
+     *
+     * @return array
+     */
+    private function getGroup($id)
+    {
         // signup_id and signup_group are saved as numbers
         $group = User::where('campaigns', 'elemMatch', ['signup_id' => $id])
-                        ->orWhere('campaigns', 'elemMatch', ['signup_group' => $id])->get();
-
-        if (count($group) == 0) {
-            throw new NotFoundHttpException("No users found for the group ID.");
-        }
+            ->orWhere('campaigns', 'elemMatch', ['signup_group' => $id])->get();
 
         // Get the campaign id associated with the signup group ID
-        for ($i = 0; $i < count($group[0]->campaigns); $i++) {
+        $campaign_id = null;
+        for ($i = 0; count($group) > 0 && $i < count($group[0]->campaigns); $i++) {
             $campaign = $group[0]->campaigns[$i];
             if ($campaign->signup_id == $id || $campaign->signup_group == $id) {
                 $campaign_id = $campaign->drupal_id;
@@ -60,11 +99,12 @@ class SignupGroupController extends Controller
         }
 
         $response = [
+            'signup_group' => $id,
             'campaign_id' => $campaign_id,
             'users' => $group
         ];
 
-        return $this->respond($response);
+        return $response;
     }
 
 }

@@ -51,4 +51,27 @@ class Campaign extends Eloquent
         'signup_source' => null,
     ];
 
+    /**
+     * For all Campaign attributes not hidden, where keys are unset, set those
+     * value to null.
+     *
+     * @param $campaign User campaign activity data
+     */
+    public static function populateAllAttributes(&$campaign)
+    {
+        $tmp = new Campaign();
+
+        $attrs_not_hidden = array_diff($tmp->getAttributes(), $tmp->getHidden());
+
+        foreach ($attrs_not_hidden as $key => $value) {
+            if ($key == 'signup_group') {
+                $default_value = $campaign->signup_id;
+            } else {
+                $default_value = null;
+            }
+
+            $campaign->$key = isset($campaign->$key) ? $campaign->$key : $default_value;
+        }
+    }
+
 }
