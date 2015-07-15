@@ -65,7 +65,7 @@ class Campaign extends Eloquent
 
         foreach ($attrs_not_hidden as $key => $value) {
             if ($key == 'signup_group') {
-                $default_value = $campaign->signup_id;
+                $default_value = isset($campaign->signup_id) ? $campaign->signup_id : null;
             } else {
                 $default_value = null;
             }
