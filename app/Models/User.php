@@ -139,9 +139,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeGroup($query, $signup_id)
+    public function scopeGroup($query, $id)
     {
         // Get signup group.
-        return $query->where('campaigns', 'elemMatch', ['signup_id' => (int)$signup_id])->orWhere('campaigns', 'elemMatch', ['signup_group' => (int)$signup_id])->get();
+        return $query->where('campaigns', 'elemMatch', ['signup_id' => $id])
+            ->orWhere('campaigns', 'elemMatch', ['signup_group' => $id])->get();
     }
 }
