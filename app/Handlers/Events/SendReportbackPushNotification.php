@@ -39,7 +39,11 @@ class SendReportbackPushNotification {
      */
     public function handle(UserReportedBack $event)
     {
-        $group = User::group($event->campaign->signup_group);
+        if (!empty($event->campaign->signup_group)) {
+            $group = User::group($event->campaign->signup_group);
+        } else {
+            $group = [];
+        }
 
         // If group count is only 1, safe to assume the 1 user is the one who reported back
         if (count($group) <= 1) {
