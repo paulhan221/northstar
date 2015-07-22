@@ -25,9 +25,6 @@ class Campaign extends Eloquent
      */
     protected $casts = [
         'quantity' => 'integer',
-        'reportback_id' => 'integer',
-        'signup_id' => 'integer',
-        'signup_group' => 'integer',
     ];
 
     /**

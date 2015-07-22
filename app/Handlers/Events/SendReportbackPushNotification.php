@@ -87,16 +87,16 @@ class SendReportbackPushNotification {
                     'extras' => [
                         'completion' => [
                             'message' => $message,
-                        ],
-                        'group' => [
-                            'data' => [
-                                'campaign_id' => $event->campaign->drupal_id,
-                                'users' => $group,
-                            ]
-                        ],
-                        'reportback_items' => [
-                            'total' => 1,
-                            'data' => [$latest_item],
+                            'group' => [
+                                'data' => [
+                                    'campaign_id' => $event->campaign->drupal_id,
+                                    'users' => $group,
+                                ]
+                            ],
+                            'reportback_items' => [
+                                'total' => 1,
+                                'data' => [$latest_item],
+                            ],
                         ],
                     ],
                 ];
