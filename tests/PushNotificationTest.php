@@ -5,7 +5,8 @@ use Northstar\Handlers\Events\SendReportbackPushNotification;
 use Northstar\Models\User;
 use Northstar\Models\Campaign;
 
-class PushNotificationTest extends TestCase {
+class PushNotificationTest extends TestCase
+{
 
     public function setUp()
     {
@@ -53,8 +54,11 @@ class PushNotificationTest extends TestCase {
                             'created_at' => '1234567890',
                             'status' => 'approved'
                         ],
-                    ]
-                ]
+                    ],
+                ],
+                'campaign' => [
+                    'title' => 'Test Campaign',
+                ],
             ]
         ];
 
@@ -75,6 +79,7 @@ class PushNotificationTest extends TestCase {
         $this->assertArrayHasKey('extras', $push_data);
         $this->assertArrayHasKey('completion', $push_data['extras']);
         $completion = $push_data['extras']['completion'];
+        $this->assertEquals($push_data['alert'], 'Push U. shared a photo in your Test Campaign group.');
         $this->assertEquals($push_data['alert'], $completion['message']);
         $this->assertArrayHasKey('message', $completion);
         $this->assertArrayHasKey('group', $completion);
@@ -84,4 +89,5 @@ class PushNotificationTest extends TestCase {
         $this->assertCount(1, $completion['reportback_items']['data']);
         $this->assertEquals($campaign->reportback_id, $completion['reportback_items']['data'][0]['id']);
     }
+
 }

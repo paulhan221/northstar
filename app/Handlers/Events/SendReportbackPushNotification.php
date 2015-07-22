@@ -72,14 +72,32 @@ class SendReportbackPushNotification {
         $reportback_items = $reportback_response['data']['reportback_items']['total'];
         $latest_item = $reportback_response['data']['reportback_items']['data'][$reportback_items - 1];
 
+        // Get campaign content
+        $campaign_title = $reportback_response['data']['campaign']['title'];
+
+        // Get the user first name and last initial
+        $reportback_user = User::where('drupal_id', '=', $event->user->drupal_id)->first();
+        $username = 'A member';
+
+        if (!empty($reportback_user)) {
+            if (!empty($reportback_user->first_name)) {
+                $username = $reportback_user->first_name;
+            }
+
+            if (!empty($reportback_user->last_name)) {
+                $username .= ' ' . substr($reportback_user->last_name, 0, 1) . '.';
+            }
+        }
+
         // Loop through the users in the group.
         $push_data = [];
         foreach ($group as $user) {
             $drupal_id = $user->drupal_id;
             // Check that this user is not the user that triggered the event.
             if ($drupal_id !== $event->user->drupal_id && !empty($user->parse_installation_ids)) {
-                // @TODO The user id and campaign id need to be turned into user name and campaign name
-                $message = $event->user->drupal_id . ' shared a photo in your ' . $event->campaign->drupal_id . ' group.';
+
+                // Message sent in the push notification
+                $message = $username . ' shared a photo in your ' . $campaign_title . ' group.';
 
                 // @TODO group.data.users doesn't include detailed reportback info for each user, is that ok?
                 $data = [
@@ -91,7 +109,7 @@ class SendReportbackPushNotification {
                                 'data' => [
                                     'campaign_id' => $event->campaign->drupal_id,
                                     'users' => $group,
-                                ]
+                                ],
                             ],
                             'reportback_items' => [
                                 'total' => 1,

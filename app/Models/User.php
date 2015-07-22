@@ -49,7 +49,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      * @var array
      */
     protected $casts = [
-        'drupal_id' => 'integer',
         'cgg_id' => 'integer'
     ];
 

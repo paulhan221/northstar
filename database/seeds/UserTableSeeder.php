@@ -133,6 +133,8 @@ class UserTableSeeder extends Seeder
         User::create(array(
             '_id' => 'bf1039b0271bcc636aa5477e',
             'drupal_id' => '100006',
+            'first_name' => 'Push',
+            'last_name' => 'User',
             'parse_installation_ids' => 'parse-101',
             'campaigns' => [
                 [
