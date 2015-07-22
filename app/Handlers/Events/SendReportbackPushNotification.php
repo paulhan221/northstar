@@ -39,6 +39,21 @@ class SendReportbackPushNotification {
      */
     public function handle(UserReportedBack $event)
     {
+        $pushes = $this->createPushData($event);
+        foreach ($pushes as $push) {
+            // Send notifications to the user's devices.
+            $this->parse->sendPushNotification($push['installation_ids'], $push['data']);
+        }
+    }
+
+    /**
+     * Compile push data per user to send to Parse.
+     *
+     * @param UserReportedBack $event
+     * @return array
+     */
+    public function createPushData(UserReportedBack $event)
+    {
         if (!empty($event->campaign->signup_group)) {
             $group = User::group($event->campaign->signup_group);
         } else {
@@ -47,17 +62,18 @@ class SendReportbackPushNotification {
 
         // If group count is only 1, safe to assume the 1 user is the one who reported back
         if (count($group) <= 1) {
-            return;
+            return [];
         }
 
         // Get reportback content
         $reportback_response = $this->drupal->reportbackContent($event->campaign->reportback_id);
 
         // Assuming the last item in this array is the latest reportback submitted
-        $reportback_items = $reportback_response['data']['reportback_items']['data']['total'];
+        $reportback_items = $reportback_response['data']['reportback_items']['total'];
         $latest_item = $reportback_response['data']['reportback_items']['data'][$reportback_items - 1];
 
         // Loop through the users in the group.
+        $push_data = [];
         foreach ($group as $user) {
             $drupal_id = $user->drupal_id;
             // Check that this user is not the user that triggered the event.
@@ -85,9 +101,13 @@ class SendReportbackPushNotification {
                     ],
                 ];
 
-                // Send notifications to the user's devices.
-                $this->parse->sendPushNotification($user->parse_installation_ids, $data);
+                $push_data[] = [
+                    'installation_ids' => $user->parse_installation_ids,
+                    'data' => $data,
+                ];
             }
         }
+
+        return $push_data;
     }
 }
