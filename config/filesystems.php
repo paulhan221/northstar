@@ -54,6 +54,8 @@ return [
             'secret' => env('S3_SECRET'),
             'region' => 'us-east-1',
             'bucket' => env('S3_BUCKET'),
+            'base_url' => 'https://s3-external-1.amazonaws.com'
+
         ],
 
         'rackspace' => [
