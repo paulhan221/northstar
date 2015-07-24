@@ -23,7 +23,7 @@ class UserTableSeeder extends Seeder
             'email' => 'test@dosomething.org',
             'mobile' => '5555550100',
             'password' => 'secret',
-            'drupal_id' => 100001,
+            'drupal_id' => '100001',
             'addr_street1' => '123',
             'addr_street2' => '456',
             'addr_city' => 'Paris',
@@ -41,7 +41,7 @@ class UserTableSeeder extends Seeder
             'email' => 'test1@dosomething.org',
             'mobile' => '5555550101',
             'password' => 'secret',
-            'drupal_id' => 100002,
+            'drupal_id' => '100002',
             'addr_street1' => '123',
             'addr_street2' => '456',
             'addr_city' => 'Paris',
@@ -55,9 +55,9 @@ class UserTableSeeder extends Seeder
             'campaigns' => [
                 [
                     '_id' => '5480c950bffebc651c8b456e',
-                    'drupal_id' => 123,
+                    'drupal_id' => '123',
                     'signup_id' => '100',
-                    'signup_source' => 'android'
+                    'signup_source' => 'android',
                 ]
             ]
         ]);
@@ -68,7 +68,7 @@ class UserTableSeeder extends Seeder
             'email' => 'test2@dosomething.org',
             'mobile' => '5555550102',
             'password' => 'secret',
-            'drupal_id' => 100003,
+            'drupal_id' => '100003',
             'addr_street1' => '123',
             'addr_street2' => '456',
             'addr_city' => 'Paris',
@@ -81,10 +81,10 @@ class UserTableSeeder extends Seeder
             'campaigns' => [
                 [
                     '_id' => '3f10c910251bcc636aa5477a',
-                    'drupal_id' => 123,
+                    'drupal_id' => '123',
                     'signup_id' => '101',
                     'signup_source' => 'ios',
-                    'reportback_id' => 125
+                    'reportback_id' => '125'
                 ]
             ]
         ]);
@@ -95,15 +95,15 @@ class UserTableSeeder extends Seeder
             'email' => 'test3@dosomething.org',
             'mobile' => '5555550102',
             'password' => 'secret',
-            'drupal_id' => 100004,
+            'drupal_id' => '100004',
             'birthdate' => '12/17/91',
             'campaigns' => [
                 [
                     '_id' => '3f10c910251bcc636aa5477b',
-                    'drupal_id' => 123,
+                    'drupal_id' => '123',
                     'signup_id' => '102',
                     'signup_source' => 'test',
-                    'signup_group' => '100'
+                    'signup_group' => '100',
                 ]
             ]
         ]);
@@ -114,11 +114,44 @@ class UserTableSeeder extends Seeder
             'parse_installation_ids' => 'parse-abc123'
         ));
 
+        // User 1 for push notification tests
+        User::create(array(
+            '_id' => 'bf1039b0271bcc636aa5477d',
+            'drupal_id' => '100005',
+            'parse_installation_ids' => 'parse-100',
+            'campaigns' => [
+                [
+                    'drupal_id' => '123',
+                    'signup_id' => '200',
+                    'signup_source' => 'test',
+                    'signup_group' => '200',
+                ]
+            ]
+        ));
+
+        // User 2 for push notification tests
+        User::create(array(
+            '_id' => 'bf1039b0271bcc636aa5477e',
+            'drupal_id' => '100006',
+            'first_name' => 'Push',
+            'last_name' => 'User',
+            'parse_installation_ids' => 'parse-101',
+            'campaigns' => [
+                [
+                    'drupal_id' => '123',
+                    'signup_id' => '201',
+                    'signup_source' => 'test',
+                    'signup_group' => '200',
+                    'reportback_id' => '1000',
+                ]
+            ]
+        ));
+
         User::create(array(
             'email' => 'info@dosomething.org',
             'mobile' => '5555550104',
             'password' => 'secret',
-            'drupal_id' => 456788,
+            'drupal_id' => '456788',
             'addr_street1' => '456',
             'addr_street2' => '33',
             'addr_city' => 'Example',

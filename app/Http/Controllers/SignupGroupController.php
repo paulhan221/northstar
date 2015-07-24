@@ -67,8 +67,7 @@ class SignupGroupController extends Controller
     private function getGroup($id)
     {
         // signup_id and signup_group are saved as numbers
-        $group = User::where('campaigns', 'elemMatch', ['signup_id' => $id])
-            ->orWhere('campaigns', 'elemMatch', ['signup_group' => $id])->get();
+        $group = User::group($id);
 
         // Get the campaign id associated with the signup group ID
         $campaign_id = null;
