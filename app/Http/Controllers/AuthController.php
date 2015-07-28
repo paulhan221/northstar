@@ -43,7 +43,7 @@ class AuthController extends Controller
             $data = $user;
             return $this->respond($user);
         } else {
-            throw new HttpException(412, 'Incorrect password.');
+            throw new HttpException(412, 'Invalid username or password.');
         }
 
     }
