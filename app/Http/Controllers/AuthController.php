@@ -33,7 +33,7 @@ class AuthController extends Controller
         }
 
         if (!($user instanceof User)) {
-            throw new NotFoundHttpException('User is not registered.');
+            throw new NotFoundHttpException('Invalid username or password.');
         } elseif (Hash::check($input['password'], $user->password)) {
             $token = $user->login();
             $token->user = $user->toArray();
@@ -43,7 +43,7 @@ class AuthController extends Controller
             $data = $user;
             return $this->respond($user);
         } else {
-            throw new HttpException(412, 'Incorrect password.');
+            throw new HttpException(412, 'Invalid username or password.');
         }
 
     }
