@@ -186,6 +186,7 @@ class UserTableSeeder extends Seeder
                     'addr_zip' => $faker->postcode,
                     'country' => $faker->country,
                     'cgg_id' => $index,
+                    'source' => $faker->randomElement(['cgg', 'drupal', 'agg', 'services']),
                 ]);
             }
         }
