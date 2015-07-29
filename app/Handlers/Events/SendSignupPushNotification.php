@@ -2,8 +2,8 @@
 
 use Northstar\Events\UserSignedUp;
 use Northstar\Models\User;
-
 use Northstar\Services\Parse;
+
 
 class SendSignupPushNotification {
 
@@ -14,12 +14,6 @@ class SendSignupPushNotification {
     protected $parse;
 
     /**
-     * Drupal API wrapper
-     * @var DrupalAPI
-     */
-    protected $drupal;
-
-    /**
      * Create the event handler.
      *
      * @return void
@@ -27,7 +21,6 @@ class SendSignupPushNotification {
     public function __construct(Parse $parse)
     {
       $this->parse = $parse;
-      $this->drupal = $drupal;
     }
 
     /**
@@ -65,16 +58,16 @@ class SendSignupPushNotification {
         }
 
         // Get the user first name and last initial
-        $user_firstname = User::where('drupal_id', '=', $event->user->drupal_id)->first();
+        $signup_user = User::where('drupal_id', '=', $event->user->drupal_id)->first();
         $username = 'A member';
 
-        if (!empty($reportback_user)) {
-            if (!empty($reportback_user->first_name)) {
-                $username = $reportback_user->first_name;
+        if (!empty($signup_user)) {
+            if (!empty($signup_user->first_name)) {
+                $username = $signup_user->first_name;
             }
 
-            if (!empty($reportback_user->last_name)) {
-                $username .= ' ' . substr($reportback_user->last_name, 0, 1) . '.';
+            if (!empty($signup_user->last_name)) {
+                $username .= ' ' . substr($signup_user->last_name, 0, 1) . '.';
             }
         }
 
@@ -92,7 +85,7 @@ class SendSignupPushNotification {
                 $data = [
                     'alert' => $message,
                     'extras' => [
-                        'group' => [
+                        'invitation' => [
                             'message' => $message,
                             'group' => [
                                 'data' => [
@@ -100,7 +93,7 @@ class SendSignupPushNotification {
                                     'users' => $group,
                                 ],
                             ],
-                        ],
+                        ]
                     ],
                 ];
 
