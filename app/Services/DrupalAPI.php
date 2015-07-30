@@ -249,6 +249,9 @@ class DrupalAPI
 
         $body = $response->json();
 
+        // Fire kudo event.
+        event(new UserGotKudo($request->reportback_item_id));
+
         return $body;
     }
 
@@ -264,6 +267,21 @@ class DrupalAPI
     public function reportbackContent($reportback_id)
     {
         $response = $this->client->get('reportbacks/' . $reportback_id . '.json');
+
+        return $response->json();
+    }
+
+    /**
+     * Get a specific reportback item.
+     *
+     * @param String $reportback_item_id
+     *
+     * @return Array - Contents of the reportback item.
+     *
+     */
+    public function reportbackItemContent($reportback_item_id)
+    {
+        $response = $this->client->get('reportback-items/' . $reportback_item_id . '.json');
 
         return $response->json();
     }
