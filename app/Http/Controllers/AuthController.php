@@ -27,7 +27,8 @@ class AuthController extends Controller
         ]);
 
         if ($request->has('email')) {
-            $user = User::where('email', '=', $input['email'])->first();
+            $email = strtolower($request->email);
+            $user = User::where('email', '=', $email)->first();
         } elseif ($request->has('mobile')) {
             $user = User::where('mobile', '=', $input['mobile'])->first();
         }
