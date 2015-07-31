@@ -55,7 +55,6 @@ class SendKudoPushNotification {
      */
     public function createPushData(UserGotKudo $event)
     {
-
         // Get reportback item content that recieved the kudo.
         $reportback_response = $this->drupal->reportbackItemContent($event->reportback_item_id);
 
