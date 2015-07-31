@@ -249,9 +249,6 @@ class DrupalAPI
 
         $body = $response->json();
 
-        // Fire kudo event.
-        event(new UserGotKudo($request->reportback_item_id));
-
         return $body;
     }
 

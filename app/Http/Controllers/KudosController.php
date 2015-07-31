@@ -31,6 +31,9 @@ class KudosController extends Controller
 
         $response = $this->drupal->storeKudos($drupal_id, $request);
 
+        // Fire kudo event.
+        event(new UserGotKudo($request->reportback_item_id));
+
         return $this->respond($response);
     }
 
