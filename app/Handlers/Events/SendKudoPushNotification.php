@@ -2,43 +2,91 @@
 
 use Northstar\Events\UserGotKudo;
 use Northstar\Models\User;
-
+use Northstar\Services\DrupalAPI;
 use Northstar\Services\Parse;
+
 
 class SendKudoPushNotification {
 
-  /**
-   * Parse API wrapper.
-   * @var Parse
-   */
-  protected $parse;
+    /**
+    * Parse API wrapper.
+    * @var Parse
+    */
+    protected $parse;
 
-  /**
-   * Create the event handler.
-   *
-   * @return void
-   */
-  public function __construct(Parse $parse)
-  {
-    $this->parse = $parse;
-  }
+    /**
+     * Drupal API wrapper
+     * @var DrupalAPI
+     */
+    protected $drupal;
 
-
-	/**
-	 * Handle the event.
-	 *
-	 * @param  UserGotKudo  $event
-	 * @return void
-	 */
-	public function handle(UserGotKudo $event)
-	{
-    // @TODO - This is placeholder content.
-    $data = array("alert" => "You just got a kudo");
-
-    // Send notifications to the users devices.
-    if (!empty($user->parse_installation_ids)) {
-      $this->parse->sendPushNotification($user->parse_installation_ids, $data);
+    /**
+    * Create the event handler.
+    *
+    * @return void
+    */
+    public function __construct(Parse $parse, DrupalAPI $drupal)
+    {
+        $this->parse = $parse;
+        $this->drupal = $drupal;
     }
-	}
 
+    /**
+     * Handle the event.
+     *
+     * @param  UserGotKudo $event
+     * @return void
+     */
+    public function handle(UserGotKudo $event)
+    {
+        $pushes = $this->createPushData($event);
+        foreach ($pushes as $push) {
+            // Send notifications to the user's devices.
+            $this->parse->sendPushNotification($push['installation_ids'], $push['data']);
+        }
+    }
+
+
+    /**
+     * Compile push data per user to send to Parse.
+     *
+     * @param UserGotKudo $event
+     * @return array
+     */
+    public function createPushData(UserGotKudo $event)
+    {
+        // Get reportback item content that recieved the kudo.
+        $reportback_response = $this->drupal->reportbackItemContent($event->reportback_item_id);
+
+        // Get the user who owns that reportback item.
+        $user = User::where('drupal_id', '=', $reportback_response['data'][0]['user']['id'])->first();
+
+        if (empty($user->parse_installation_ids)) {
+            return [];
+        }
+
+        // Message sent in the push notification
+        $message = 'Your photo received a kudos!';
+
+        // Build the push data object.
+        $data = [
+            'alert' => $message,
+            'extras' => [
+                'kudos' => [
+                    'title' => 'Kudos',
+                    'message' => $message,
+                    'reportback_item' => [
+                        'data' => $reportback_response,
+                    ],
+                ],
+            ],
+        ];
+
+        $push_data[] = [
+            'installation_ids' => $user->parse_installation_ids,
+            'data' => $data,
+        ];
+
+        return $push_data;
+    }
 }

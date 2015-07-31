@@ -1,22 +1,21 @@
 <?php namespace Northstar\Events;
 
 use Illuminate\Queue\SerializesModels;
-use Northstar\Models\User;
 
 class UserGotKudo extends Event {
 
 	use SerializesModels;
 
-	public $user;
+	public $reportback_item_id;
 
 	/**
 	 * Create a new event instance.
 	 *
 	 * @return void
 	 */
-	public function __construct(User $user)
+	public function __construct($reportback_item_id)
 	{
-		$this->user = $user;
+		$this->reportback_item_id = $reportback_item_id;
 	}
 
 }
