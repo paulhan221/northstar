@@ -7,6 +7,7 @@ use Input;
 use Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+
 class UserController extends Controller
 {
 
@@ -39,9 +40,17 @@ class UserController extends Controller
 
         // Does this user exist already?
         if (Input::has('email')) {
-            $user = User::where('email', '=', $check['email'])->first();
+            $password_check = password_verify($input['password'], User::where('email', '=', $check['email'])->first()->password);
+
+            if ($password_check) {
+                $user = User::where('email', '=', $check['email'])->first();
+            }
         } elseif (Input::has('mobile')) {
-            $user = User::where('mobile', '=', $check['mobile'])->first();
+            $password_check = password_verify($input['password'], User::where('mobile', '=', $check['mobile'])->first()->password);
+
+            if ($password_check) {
+                $user = User::where('mobile', '=', $check['mobile'])->first();
+            }
         }
 
         // If there is no user found, create a new one.
