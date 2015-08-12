@@ -19,8 +19,15 @@ class UserController extends Controller
      */
     public function index()
     {
-        $query = User::query();
-        return $this->respondPaginated($query);
+       if(empty(Input::all())){
+           $query = User::query();
+           return $this->respondPaginated($query);
+       }else{
+           $inputs = Input::all();
+           $users = User::where($inputs);
+           return $this->respondPaginated($users);
+       }
+        throw new NotFoundHttpException('The resource does not exist.');
     }
 
 

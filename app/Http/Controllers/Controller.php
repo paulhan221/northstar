@@ -21,6 +21,7 @@ abstract class Controller extends BaseController
      */
     protected function respond($data, $code = 200, $status = 'success')
     {
+
         $response = [];
         if (is_string($data)) {
             $response[$status] = ['message' => $data];
